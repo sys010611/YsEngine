@@ -1,5 +1,8 @@
 #include "Camera.h"
 
+#include "Window.h"
+#include "glm/glm.hpp"
+
 Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat moveSpeed, GLfloat turnSpeed)
 {
 	position = startPosition;
@@ -10,8 +13,12 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	this->moveSpeed = moveSpeed;
 	this->turnSpeed = turnSpeed;
 
+	nearClippingPlane = 0.1f;
+	farClippingPlane = 100.f;
+
 	update();
 }
+
 
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
@@ -71,9 +78,15 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
-glm::mat4 Camera::calculateViewMatrix()
+glm::mat4 Camera::GetViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);
+}
+
+glm::mat4 Camera::GetProjectionMatrix(Window* window)
+{
+	return glm::perspective(glm::radians(45.0f),
+		 (GLfloat)window->getBufferWidth() / window->getBufferHeight(), nearClippingPlane, farClippingPlane);
 }
 
 glm::vec3 Camera::GetPosition()

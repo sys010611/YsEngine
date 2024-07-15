@@ -5,11 +5,11 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
+class FrameBuffer;
+
 class Window
 {
 public:
-	Window();
-
 	Window(GLint windowWidth, GLint windowHeight);
 
 	int Initialise();
@@ -19,13 +19,17 @@ public:
 
 	bool GetShouldClose() { return glfwWindowShouldClose(mainWindow); }
 
+	bool* GetMouseButton() { return mouseButton; }
 	bool* GetKeys() { return keys; }
+
 	GLfloat getXChange();
 	GLfloat getYChange();
 
 	GLFWwindow* GetGLFWwindow() { return mainWindow; }
 
 	void swapBuffers() { glfwSwapBuffers(mainWindow); }
+
+	void SetSceneBuffer(FrameBuffer* sceneBuffer);
 
 	~Window();
 
@@ -42,10 +46,12 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	bool mouseButton[8];
-	bool mouseClicked;
+	bool mouseRightButtonClicked; // 마우스 오른쪽 버튼이 클릭되었는지
 
 	void createCallbacks();
 	static void handleKeys(GLFWwindow* window, int key, int code, int action, int mode);
 	static void handleMouseButton(GLFWwindow* window, int button, int action, int mods);
 	static void handleMousePos(GLFWwindow* window, double xPos, double yPos);
+
+	FrameBuffer* sceneBuffer;
 };

@@ -1,5 +1,7 @@
 #include "Window.h"
+
 #include <iostream>
+#include "FrameBuffer.h"
 
 Window::Window(GLint windowWidth, GLint windowHeight)
 {
@@ -18,7 +20,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	xChange = 0.0f;
 	yChange = 0.0f;
 
-	mouseClicked = false;
+	mouseRightButtonClicked = false;
 }
 
 int Window::Initialise()
@@ -130,17 +132,18 @@ void Window::handleMouseButton(GLFWwindow* window, int button, int action, int m
 		myWindow->mouseButton[button] = true;
 	else
 		myWindow->mouseButton[button] = false;
+
 }
 
 void Window::handleMousePos(GLFWwindow* window, double xPos, double yPos)
 {
 	Window* myWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
-	if (myWindow->mouseButton[GLFW_MOUSE_BUTTON_1])
+	if (myWindow->mouseButton[GLFW_MOUSE_BUTTON_2])
 	{
-		if (!myWindow->mouseClicked)
+		if (!myWindow->mouseRightButtonClicked)
 		{
-			myWindow->mouseClicked = true;
+			myWindow->mouseRightButtonClicked = true;
 		}
 		else
 		{
@@ -153,8 +156,13 @@ void Window::handleMousePos(GLFWwindow* window, double xPos, double yPos)
 	}
 	else
 	{
-		myWindow->mouseClicked = false;
+		myWindow->mouseRightButtonClicked = false;
 	}
+}
+
+void Window::SetSceneBuffer(FrameBuffer* sceneBuffer)
+{
+	this->sceneBuffer = sceneBuffer;
 }
 
 Window::~Window()

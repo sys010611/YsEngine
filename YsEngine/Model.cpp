@@ -8,11 +8,17 @@
 
 #include <GL/glew.h>
 
+#include <glm/glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+
 Model::Model()
 {
 	translate = glm::vec3(0.f, 0.f, 0.f);
 	rotate = glm::vec3(0.f, 0.f, 0.f);
 	scale = glm::vec3(1.f, 1.f, 1.f);
+
+	modelMat = GetModelMat();
 
 	material = nullptr;
 }
@@ -183,6 +189,17 @@ void Model::LoadMaterials(const aiScene* scene)
 
 	// specularMap이 존재하지 않을 경우
 	material = new Material(4.f, 64.f);
+}
+
+glm::mat4 Model::GetModelMat()
+{
+	// model Matrix 구성
+	glm::mat4 T = glm::translate(glm::mat4(1.f), glm::vec3(translate[0], translate[1], translate[2]));
+	glm::mat4 R = glm::mat4_cast(glm::quat(glm::vec3(glm::radians(rotate[0]), glm::radians(rotate[1]), glm::radians(rotate[2]))));
+	glm::mat4 S = glm::scale(glm::mat4(1.f), glm::vec3(scale[0], scale[1], scale[2]));
+	glm::mat4 modelMat = T * R * S;
+
+	return modelMat;
 }
 
 Model::~Model()

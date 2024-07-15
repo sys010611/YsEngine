@@ -7,6 +7,8 @@
 
 #include <GLFW\glfw3.h>
 
+class Window;
+
 class Camera
 {
 public:
@@ -17,7 +19,8 @@ public:
 
 	glm::vec3 GetPosition();
 
-	glm::mat4 calculateViewMatrix();
+	glm::mat4 GetViewMatrix();
+	glm::mat4 GetProjectionMatrix(Window* window);
 
 	~Camera();
 
@@ -33,6 +36,9 @@ private:
 
 	GLfloat moveSpeed;
 	GLfloat turnSpeed;
+
+	GLfloat nearClippingPlane;
+	GLfloat farClippingPlane;
 
 	void update();
 };

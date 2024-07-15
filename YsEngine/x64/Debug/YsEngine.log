@@ -1,3 +1,14 @@
-﻿  main.cpp
-E:\YsEngine\YsEngine\main.cpp(201,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_impl_glfw.cpp
+  imgui_impl_opengl3.cpp
+  imgui_stdlib.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  main.cpp
+E:\YsEngine\YsEngine\main.cpp(179,83): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(179,52): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(187,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
   YsEngine.vcxproj -> E:\YsEngine\YsEngine\x64\Debug\YsEngine.exe

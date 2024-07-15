@@ -22,13 +22,15 @@
 #include "PointLight.h"
 #include "Texture.h"
 #include "Material.h"
+#include "FrameBuffer.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "ImGuizmo.h"
 
-#define WIDTH 1280
-#define HEIGHT 720
+#define WIDTH 1600
+#define HEIGHT 900
 
 Window* mainWindow;
 Camera* camera;
@@ -76,66 +78,11 @@ void GetShaderHandles()
 	loc_eyePos = shaderList[0]->GetEyePosLoc();
 }
 
-void compose_imgui_frame(Model* currModel)
-{
-	// Start the Dear ImGui frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-
-	// control window
-	{
-		// Model
-		ImGui::Begin("Model");
-
-		ImGui::SliderFloat3("Translate", currModel->GetTranslate(), -100.f, 100.f);
-		ImGui::InputFloat3("Rotate", currModel->GetRotate());
-		ImGui::SliderFloat3("Scale", currModel->GetScale(), -10.f, 10.f);
-
-		ImGui::End();
-
-
-		// Directional Light
-		ImGui::Begin("DirectionalLight");
-
-		ImGui::SliderFloat("Ambient", &dLight_ambient, 0.f, 5.f);
-		ImGui::SliderFloat("Diffuse", &dLight_diffuse, 0.f, 5.f);
-
-		ImGui::End();
-
-		
-		// Material
-		Material* currMaterial = currModel->GetMaterial();
-		ImGui::Begin("Material");
-
-		ImGui::SliderFloat("Specular", &currMaterial->specular, 0.f, 5.f);
-		ImGui::SliderFloat("Shininess", &currMaterial->shininess, 0.f, 512.f);
-
-		ImGui::End();
-	}
-}
-
-glm::mat4 GetModelMat(Model* currModel)
-{
-	GLfloat* translate = currModel->GetTranslate();
-	GLfloat* rotate = currModel->GetRotate();
-	GLfloat* scale = currModel->GetScale();
-
-	// model Matrix 구성
-	glm::mat4 T = glm::translate(glm::mat4(1.f), glm::vec3(translate[0], translate[1], translate[2]));
-	glm::mat4 R = glm::mat4_cast(glm::quat(glm::vec3(rotate[0], rotate[1], rotate[2])));
-	glm::mat4 S = glm::scale(glm::mat4(1.f), glm::vec3(scale[0], scale[1], scale[2]));
-	glm::mat4 modelMat = T * R * S;
-
-	return modelMat;
-}
-
 glm::mat4 GetPVM(glm :: mat4& modelMat)
 {
 	// PVM 구성
-	glm::mat4 view = camera->calculateViewMatrix();
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f),
-		(GLfloat)mainWindow->getBufferWidth() / mainWindow->getBufferHeight(), 0.1f, 100.0f);
+	glm::mat4 view = camera->GetViewMatrix();
+	glm::mat4 projection = camera->GetProjectionMatrix(mainWindow);
 	glm::mat4 PVM = projection * view * modelMat;
 
 	return PVM;
@@ -152,6 +99,39 @@ void MoveCamera()
 	camera->mouseControl(mainWindow->getXChange(), mainWindow->getYChange());
 }
 
+void compose_imgui_frame(Model* currModel, FrameBuffer* sceneBuffer)
+{
+	// control window
+	{
+		// Model
+		ImGui::Begin("Model");
+
+		ImGui::InputFloat3("Translate", currModel->GetTranslate());
+		ImGui::InputFloat3("Rotate", currModel->GetRotate());
+		ImGui::InputFloat3("Scale", currModel->GetScale());
+
+
+		ImGui::End();
+
+		// Directional Light
+		ImGui::Begin("DirectionalLight");
+
+		ImGui::SliderFloat("Ambient", &dLight_ambient, 0.f, 5.f);
+		ImGui::SliderFloat("Diffuse", &dLight_diffuse, 0.f, 5.f);
+
+		ImGui::End();
+
+
+		// Material
+		Material* currMaterial = currModel->GetMaterial();
+		ImGui::Begin("Material");
+
+		ImGui::SliderFloat("Specular", &currMaterial->specular, 0.f, 5.f);
+		ImGui::SliderFloat("Shininess", &currMaterial->shininess, 0.f, 512.f);
+
+		ImGui::End();
+	}
+}
 
 int main()
 {
@@ -168,10 +148,12 @@ int main()
 
 	CreateShader();
 
+	// 카메라
 	GLfloat initialPitch = 0.f;
 	GLfloat initialYaw = -90.f; // 카메라가 -z축을 보고 있도록
 	camera = new Camera(glm::vec3(0.f, 0.f, 20.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
 	
+	// Directional Light
 	dLight_ambient = 0.5f;
 	dLight_diffuse = 0.5f;
 	directionalLight = new DirectionalLight
@@ -179,6 +161,7 @@ int main()
 		glm::vec4(1.f, 1.f, 1.f, 1.f), 
 		glm::vec3(1.f, 1.5f, -1.f));
 
+	// 모델
 	model_2B = new Model();
 	std::string modelPath = "2b_nier_automata/scene.gltf";
 	model_2B->LoadModel(modelPath);
@@ -193,11 +176,14 @@ int main()
 	ImGui_ImplGlfw_InitForOpenGL(mainWindow->GetGLFWwindow(), true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones. 
 	ImGui_ImplOpenGL3_Init();
 
+	FrameBuffer sceneBuffer(mainWindow->getBufferWidth(), mainWindow->getBufferHeight());
+
+	mainWindow->SetSceneBuffer(&sceneBuffer);
     /////////////////////////
     /// while loop
     ////////////////////////
-    while (!mainWindow->GetShouldClose())
-    {
+	while (!mainWindow->GetShouldClose())
+	{
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
@@ -205,28 +191,31 @@ int main()
 		// Get + Handle User Input
 		glfwPollEvents();
 
-		const auto& io = ImGui::GetIO();
-		if (!io.WantCaptureMouse && !io.WantCaptureKeyboard)
+		if (mainWindow->GetMouseButton()[GLFW_MOUSE_BUTTON_2])
 			MoveCamera();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+
+		ImGui::NewFrame();
 
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// -------------------------------------------------------------------
+		// --------------------------------------------------------------------------------
+		sceneBuffer.Bind();
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// --------------------------------------------------------------------------------
 
 		shaderList[0]->UseShader();
-
-		// 쉐이더 내부 변수 위치들 가지고오기
 		GetShaderHandles();
-		glUniform1i(loc_sampler, 0); // sampler를 0번 텍스쳐 유닛과 연결
 
+		glUniform1i(loc_sampler, 0);
 		Model* currModel = model_2B;
 
-		// imgui 창 그리기
-		compose_imgui_frame(currModel);
-
-		glm::mat4 modelMat = GetModelMat(currModel);
+		glm::mat4 modelMat = currModel->GetModelMat();
 		glm::mat4 PVM = GetPVM(modelMat);
 		glm::mat4 normalMat = GetNormalMat(modelMat);
 		glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
@@ -236,21 +225,67 @@ int main()
 		shaderList[0]->UseDirectionalLight(directionalLight, dLight_ambient, dLight_diffuse);
 
 		glm::vec4 camPos = glm::vec4(camera->GetPosition(), 1.f);
-		glm::vec3 camPos_wc = modelMat * camPos;
+		glm::vec3 camPos_wc = glm::vec3(modelMat * camPos);
 		glUniform3f(loc_eyePos, camPos_wc.x, camPos_wc.y, camPos_wc.z);
 
 		shaderList[0]->UseMaterial(model_2B->GetMaterial());
-
 		model_2B->RenderModel();
 
-		//-------------------------------------------------------------------
-
 		glUseProgram(0);
+
+		// --------------------------------------------------------------------------------
+		sceneBuffer.Unbind();
+		// --------------------------------------------------------------------------------
+
+		// Render ImGui
+		ImGui::Begin("Scene", NULL, ImGuiWindowFlags_NoMove);
+
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		const float window_width = ImGui::GetContentRegionAvail().x;
+		const float window_height = ImGui::GetContentRegionAvail().y;
+
+		// 프레임버퍼 텍스처를 ImGui 윈도우에 렌더링
+		ImGui::GetWindowDrawList()->AddImage(
+			(void*)(intptr_t)sceneBuffer.getFrameTexture(),
+			ImVec2(pos.x, pos.y),
+			ImVec2(pos.x + window_width, pos.y + window_height),
+			ImVec2(0, 1),
+			ImVec2(1, 0)
+		);
+		{
+			// Gizmos
+			ImGuizmo::SetOrthographic(false);
+			//ImGuizmo::SetDrawlist();
+			ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
+			ImGuizmo::SetRect(pos.x, pos.y, window_width, window_height);
+
+			glm::mat4 model = currModel->GetModelMat();
+			glm::mat4 view = camera->GetViewMatrix();
+			const glm::mat4& projection = camera->GetProjectionMatrix(mainWindow);
+
+			ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection),
+				ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(model));
+
+			if (ImGuizmo::IsUsing())
+			{
+				std::cout << "isusing" << std::endl;
+				glm::vec3 translation, rotation, scale;
+				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(model), &translation[0], &rotation[0], &scale[0]);
+
+				currModel->SetTranslate(translation);
+				currModel->SetRotate(rotation);
+				currModel->SetScale(scale);
+			}
+		}
+		ImGui::End();
+
+		compose_imgui_frame(currModel, &sceneBuffer);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		mainWindow->swapBuffers();
-    }
+	}
+
     return 0;
 }
