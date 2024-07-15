@@ -255,8 +255,8 @@ int main()
 		{
 			// Gizmos
 			ImGuizmo::SetOrthographic(false);
-			//ImGuizmo::SetDrawlist();
-			ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
+			ImGuizmo::SetDrawlist();
+			//ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
 			ImGuizmo::SetRect(pos.x, pos.y, window_width, window_height);
 
 			glm::mat4 model = currModel->GetModelMat();

@@ -1,6 +1,6 @@
 // dear imgui, v1.90.9
 // (headers)
-
+#define IMGUI_DEFINE_MATH_OPERATORS
 // Help:
 // - See links below.
 // - Call and read ImGui::ShowDemoWindow() in imgui_demo.cpp. All applications in examples/ are doing that.

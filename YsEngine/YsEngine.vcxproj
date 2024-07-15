@@ -139,6 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\GraphEditor.cpp" />
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImCurveEdit.cpp" />
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImGradient.cpp" />
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImGuizmo.cpp" />
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImSequencer.cpp" />
     <ClCompile Include="..\External Libs\IMGUI\imgui.cpp" />
     <ClCompile Include="..\External Libs\IMGUI\imgui_demo.cpp" />
     <ClCompile Include="..\External Libs\IMGUI\imgui_draw.cpp" />
@@ -157,6 +162,12 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\GraphEditor.h" />
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImCurveEdit.h" />
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImGradient.h" />
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImGuizmo.h" />
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImSequencer.h" />
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImZoomSlider.h" />
     <ClInclude Include="..\External Libs\IMGUI\imconfig.h" />
     <ClInclude Include="..\External Libs\IMGUI\imgui.h" />
     <ClInclude Include="..\External Libs\IMGUI\imgui_impl_glfw.h" />
