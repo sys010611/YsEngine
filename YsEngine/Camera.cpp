@@ -16,6 +16,8 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	nearClippingPlane = 0.1f;
 	farClippingPlane = 100.f;
 
+	canMove = false;
+
 	update();
 }
 
@@ -25,36 +27,22 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 	GLfloat velocity = moveSpeed * deltaTime;
 
 	if (keys[GLFW_KEY_W])
-	{
 		position += front * velocity;
-	}
 
 	if (keys[GLFW_KEY_S])
-	{
 		position -= front * velocity;
-	}
 
 	if (keys[GLFW_KEY_A])
-	{
 		position -= right * velocity;
-	}
 
 	if (keys[GLFW_KEY_D])
-	{
 		position += right * velocity;
-	}
 
 	if (keys[GLFW_KEY_Q])
-	{
 		position -= up * velocity;
-	}
 
 	if (keys[GLFW_KEY_E])
-	{
 		position += up * velocity;
-	}
-
-
 }
 
 void Camera::mouseControl(GLfloat xChange, GLfloat yChange)

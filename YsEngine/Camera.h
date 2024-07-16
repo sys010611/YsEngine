@@ -22,6 +22,9 @@ public:
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjectionMatrix(Window* window);
 
+	void SetCanMove(bool flag) { canMove = flag; }
+	bool CanMove() { return canMove; }
+
 	~Camera();
 
 private:
@@ -41,5 +44,7 @@ private:
 	GLfloat farClippingPlane;
 
 	void update();
+
+	bool canMove;
 };
 

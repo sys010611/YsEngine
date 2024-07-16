@@ -106,10 +106,10 @@ void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int m
 {
 	Window* myWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
 
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
+	//if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	//{
+	//	glfwSetWindowShouldClose(window, GL_TRUE);
+	//}
 
 	if (key >= 0 && key < 1024)
 	{

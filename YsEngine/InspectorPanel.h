@@ -11,7 +11,7 @@ public:
 		currModel(md), dirLight(dl)
 	{}
 
-	virtual void Render() override;
+	virtual void Update() override;
 
 	~InspectorPanel();
 

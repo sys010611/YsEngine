@@ -162,8 +162,10 @@ int main()
 		// Get + Handle User Input
 		glfwPollEvents();
 
-		if (mainWindow->GetMouseButton()[GLFW_MOUSE_BUTTON_2])
+		if (camera->CanMove())
+		{
 			MoveCamera();
+		}
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -207,8 +209,8 @@ int main()
 		sceneBuffer.Unbind();
 		// --------------------------------------------------------------------------------
 
-		scenePanel.Render();
-		inspectorPanel.Render();
+		scenePanel.Update();
+		inspectorPanel.Update();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

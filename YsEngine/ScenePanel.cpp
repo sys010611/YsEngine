@@ -1,5 +1,7 @@
 #include "ScenePanel.h"
 
+#include <iostream>
+
 #include "imgui.h"
 #include "ImGuizmo.h"
 
@@ -9,8 +11,15 @@
 #include "FrameBuffer.h"
 #include "Model.h"
 #include "Camera.h"
+#include "Window.h"
 
-void ScenePanel::Render()
+ScenePanel::ScenePanel(FrameBuffer* fb, Model* md, Camera* cam, Window* win) :
+	sceneBuffer(fb), currModel(md), camera(cam), mainWindow(win)
+{
+	currOperation = ImGuizmo::OPERATION::TRANSLATE;
+}
+
+void ScenePanel::Update()
 {
 	// Render ImGui
 	ImGui::Begin("Scene", NULL, ImGuiWindowFlags_NoMove);
@@ -38,7 +47,7 @@ void ScenePanel::Render()
 		const glm::mat4& projection = camera->GetProjectionMatrix(mainWindow);
 
 		ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection),
-			ImGuizmo::OPERATION::ROTATE, ImGuizmo::LOCAL, glm::value_ptr(model));
+			(ImGuizmo::OPERATION)currOperation, ImGuizmo::LOCAL, glm::value_ptr(model));
 
 		if (ImGuizmo::IsUsing())
 		{
@@ -50,7 +59,33 @@ void ScenePanel::Render()
 			currModel->SetScale(scale);
 		}
 	}
+
+	HandleInput();
 	ImGui::End();
+}
+
+void ScenePanel::HandleInput()
+{
+	if (ImGui::IsWindowFocused())
+	{
+		if (ImGui::IsKeyDown(ImGuiKey_MouseRight))
+		{
+			camera->SetCanMove(true);
+		}
+		else
+		{
+			camera->SetCanMove(false);
+
+			if (ImGui::IsKeyPressed(ImGuiKey_W))
+				currOperation = ImGuizmo::TRANSLATE;
+
+			if (ImGui::IsKeyPressed(ImGuiKey_E))
+				currOperation = ImGuizmo::ROTATE;
+
+			if (ImGui::IsKeyPressed(ImGuiKey_R))
+				currOperation = ImGuizmo::SCALE;
+		}
+	}
 }
 
 ScenePanel::~ScenePanel()

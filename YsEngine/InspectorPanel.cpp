@@ -6,7 +6,7 @@
 #include "DirectionalLight.h"
 #include "Material.h"
 
-void InspectorPanel::Render()
+void InspectorPanel::Update()
 {
 	ImGui::Begin("Inspector");
 
