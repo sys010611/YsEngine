@@ -17,6 +17,9 @@ ScenePanel::ScenePanel(FrameBuffer* fb, Model* md, Camera* cam, Window* win) :
 	sceneBuffer(fb), currModel(md), camera(cam), mainWindow(win)
 {
 	currOperation = ImGuizmo::OPERATION::TRANSLATE;
+
+	width = -1;
+	height = -1;
 }
 
 void ScenePanel::Update()
@@ -27,6 +30,9 @@ void ScenePanel::Update()
 	ImVec2 pos = ImGui::GetCursorScreenPos();
 	const float window_width = ImGui::GetContentRegionAvail().x;
 	const float window_height = ImGui::GetContentRegionAvail().y;
+
+	width = window_width;
+	height = window_height;
 
 	// 프레임버퍼 텍스처를 ImGui 윈도우에 렌더링
 	ImGui::GetWindowDrawList()->AddImage(
@@ -44,7 +50,7 @@ void ScenePanel::Update()
 
 		glm::mat4 model = currModel->GetModelMat();
 		glm::mat4 view = camera->GetViewMatrix();
-		const glm::mat4& projection = camera->GetProjectionMatrix(mainWindow);
+		const glm::mat4& projection = camera->GetProjectionMatrix(window_width, window_height);
 
 		ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection),
 			(ImGuizmo::OPERATION)currOperation, ImGuizmo::LOCAL, glm::value_ptr(model));

@@ -71,10 +71,10 @@ glm::mat4 Camera::GetViewMatrix()
 	return glm::lookAt(position, position + front, up);
 }
 
-glm::mat4 Camera::GetProjectionMatrix(Window* window)
+glm::mat4 Camera::GetProjectionMatrix(GLfloat width, GLfloat height)
 {
 	return glm::perspective(glm::radians(45.0f),
-		 (GLfloat)window->getBufferWidth() / window->getBufferHeight(), nearClippingPlane, farClippingPlane);
+		width / height, nearClippingPlane, farClippingPlane);
 }
 
 glm::vec3 Camera::GetPosition()

@@ -53,6 +53,9 @@ Model* currModel;
 
 DirectionalLight* directionalLight;
 
+ScenePanel* scenePanel;
+InspectorPanel* inspectorPanel;
+
 // 쉐이더 변수 핸들
 GLuint loc_modelMat = 0;
 GLuint loc_PVM = 0;
@@ -81,7 +84,7 @@ glm::mat4 GetPVM(glm :: mat4& modelMat)
 {
 	// PVM 구성
 	glm::mat4 view = camera->GetViewMatrix();
-	glm::mat4 projection = camera->GetProjectionMatrix(mainWindow);
+	glm::mat4 projection = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 	glm::mat4 PVM = projection * view * modelMat;
 
 	return PVM;
@@ -146,9 +149,8 @@ int main()
 	mainWindow->SetSceneBuffer(&sceneBuffer);
 
 	// Panel 생성
-	ScenePanel scenePanel(&sceneBuffer, currModel, camera, mainWindow);
-	InspectorPanel inspectorPanel(currModel, directionalLight);
-
+	scenePanel = new ScenePanel(&sceneBuffer, currModel, camera, mainWindow);
+	inspectorPanel = new InspectorPanel(currModel, directionalLight);
 
     ///////////////////////////////////////////////////////////////////////////
     /// main loop
@@ -209,8 +211,8 @@ int main()
 		sceneBuffer.Unbind();
 		// --------------------------------------------------------------------------------
 
-		scenePanel.Update();
-		inspectorPanel.Update();
+		scenePanel->Update();
+		inspectorPanel->Update();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

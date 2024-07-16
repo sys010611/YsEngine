@@ -1,6 +1,7 @@
 #pragma once
 #include "Panel.h"
 
+#include "GL/glew.h"
 
 class FrameBuffer;
 class Model;
@@ -15,6 +16,9 @@ public:
 	virtual void Update() override;
 	void HandleInput();
 
+	GLfloat GetWidth() { return width; }
+	GLfloat GetHeight() { return height; }
+
 	~ScenePanel();
 
 private:
@@ -24,5 +28,7 @@ private:
 	Window* mainWindow;
 
 	int currOperation;
+
+	GLfloat width, height;
 };
 
