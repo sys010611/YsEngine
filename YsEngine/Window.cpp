@@ -23,7 +23,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	mouseRightButtonClicked = false;
 }
 
-int Window::Initialise()
+int Window::Initialize()
 {
 	if (!glfwInit())
 	{

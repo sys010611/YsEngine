@@ -12,7 +12,7 @@ class Window
 public:
 	Window(GLint windowWidth, GLint windowHeight);
 
-	int Initialise();
+	int Initialize();
 
 	GLint getBufferWidth() { return bufferWidth; }
 	GLint getBufferHeight() { return bufferHeight; }

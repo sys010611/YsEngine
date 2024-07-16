@@ -24,7 +24,7 @@ public:
 
 	void GetVariableLocations();
 
-	void UseDirectionalLight(DirectionalLight* light, GLfloat ambient, GLfloat diffuse);
+	void UseDirectionalLight(DirectionalLight* light);
 	void UseMaterial(Material* material);
 
 	GLuint GetModelMatLoc() { return modelMatLoc; }

@@ -23,6 +23,8 @@
 #include "Texture.h"
 #include "Material.h"
 #include "FrameBuffer.h"
+#include "ScenePanel.h"
+#include "InspectorPanel.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -47,12 +49,9 @@ static const char* fShaderPath = "Shaders/fragment.glsl";
 std::vector<Shader*> shaderList;
 
 Model* model_2B;
+Model* currModel;
 
 DirectionalLight* directionalLight;
-
-// DirectionalLight Intensity
-GLfloat dLight_ambient;
-GLfloat dLight_diffuse;
 
 // 쉐이더 변수 핸들
 GLuint loc_modelMat = 0;
@@ -99,40 +98,6 @@ void MoveCamera()
 	camera->mouseControl(mainWindow->getXChange(), mainWindow->getYChange());
 }
 
-void compose_imgui_frame(Model* currModel, FrameBuffer* sceneBuffer)
-{
-	// control window
-	{
-		// Model
-		ImGui::Begin("Model");
-
-		ImGui::InputFloat3("Translate", currModel->GetTranslate());
-		ImGui::InputFloat3("Rotate", currModel->GetRotate());
-		ImGui::InputFloat3("Scale", currModel->GetScale());
-
-
-		ImGui::End();
-
-		// Directional Light
-		ImGui::Begin("DirectionalLight");
-
-		ImGui::SliderFloat("Ambient", &dLight_ambient, 0.f, 5.f);
-		ImGui::SliderFloat("Diffuse", &dLight_diffuse, 0.f, 5.f);
-
-		ImGui::End();
-
-
-		// Material
-		Material* currMaterial = currModel->GetMaterial();
-		ImGui::Begin("Material");
-
-		ImGui::SliderFloat("Specular", &currMaterial->specular, 0.f, 5.f);
-		ImGui::SliderFloat("Shininess", &currMaterial->shininess, 0.f, 512.f);
-
-		ImGui::End();
-	}
-}
-
 int main()
 {
     // GLFW 초기화
@@ -144,7 +109,7 @@ int main()
     }
 
     mainWindow = new Window(WIDTH, HEIGHT);
-    mainWindow->Initialise();
+    mainWindow->Initialize();
 
 	CreateShader();
 
@@ -154,10 +119,8 @@ int main()
 	camera = new Camera(glm::vec3(0.f, 0.f, 20.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
 	
 	// Directional Light
-	dLight_ambient = 0.5f;
-	dLight_diffuse = 0.5f;
 	directionalLight = new DirectionalLight
-		(dLight_ambient, dLight_diffuse,
+		(0.5f, 0.5f,
 		glm::vec4(1.f, 1.f, 1.f, 1.f), 
 		glm::vec3(1.f, 1.5f, -1.f));
 
@@ -165,6 +128,8 @@ int main()
 	model_2B = new Model();
 	std::string modelPath = "2b_nier_automata/scene.gltf";
 	model_2B->LoadModel(modelPath);
+
+	currModel = model_2B;
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -176,12 +141,18 @@ int main()
 	ImGui_ImplGlfw_InitForOpenGL(mainWindow->GetGLFWwindow(), true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones. 
 	ImGui_ImplOpenGL3_Init();
 
+	// Frame Buffer 생성
 	FrameBuffer sceneBuffer(mainWindow->getBufferWidth(), mainWindow->getBufferHeight());
-
 	mainWindow->SetSceneBuffer(&sceneBuffer);
-    /////////////////////////
-    /// while loop
-    ////////////////////////
+
+	// Panel 생성
+	ScenePanel scenePanel(&sceneBuffer, currModel, camera, mainWindow);
+	InspectorPanel inspectorPanel(currModel, directionalLight);
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// main loop
+    //////////////////////////////////////////////////////////////////////////
 	while (!mainWindow->GetShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -196,7 +167,6 @@ int main()
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
-
 		ImGui::NewFrame();
 
 		// Clear the window
@@ -222,7 +192,7 @@ int main()
 		glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
 		glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
 
-		shaderList[0]->UseDirectionalLight(directionalLight, dLight_ambient, dLight_diffuse);
+		shaderList[0]->UseDirectionalLight(directionalLight);
 
 		glm::vec4 camPos = glm::vec4(camera->GetPosition(), 1.f);
 		glm::vec3 camPos_wc = glm::vec3(modelMat * camPos);
@@ -237,49 +207,8 @@ int main()
 		sceneBuffer.Unbind();
 		// --------------------------------------------------------------------------------
 
-		// Render ImGui
-		ImGui::Begin("Scene", NULL, ImGuiWindowFlags_NoMove);
-
-		ImVec2 pos = ImGui::GetCursorScreenPos();
-		const float window_width = ImGui::GetContentRegionAvail().x;
-		const float window_height = ImGui::GetContentRegionAvail().y;
-
-		// 프레임버퍼 텍스처를 ImGui 윈도우에 렌더링
-		ImGui::GetWindowDrawList()->AddImage(
-			(void*)(intptr_t)sceneBuffer.getFrameTexture(),
-			ImVec2(pos.x, pos.y),
-			ImVec2(pos.x + window_width, pos.y + window_height),
-			ImVec2(0, 1),
-			ImVec2(1, 0)
-		);
-		{
-			// Gizmos
-			ImGuizmo::SetOrthographic(false);
-			ImGuizmo::SetDrawlist();
-			//ImGuizmo::SetDrawlist(ImGui::GetWindowDrawList());
-			ImGuizmo::SetRect(pos.x, pos.y, window_width, window_height);
-
-			glm::mat4 model = currModel->GetModelMat();
-			glm::mat4 view = camera->GetViewMatrix();
-			const glm::mat4& projection = camera->GetProjectionMatrix(mainWindow);
-
-			ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection),
-				ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(model));
-
-			if (ImGuizmo::IsUsing())
-			{
-				std::cout << "isusing" << std::endl;
-				glm::vec3 translation, rotation, scale;
-				ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(model), &translation[0], &rotation[0], &scale[0]);
-
-				currModel->SetTranslate(translation);
-				currModel->SetRotate(rotation);
-				currModel->SetScale(scale);
-			}
-		}
-		ImGui::End();
-
-		compose_imgui_frame(currModel, &sceneBuffer);
+		scenePanel.Render();
+		inspectorPanel.Render();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

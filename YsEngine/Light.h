@@ -13,6 +13,9 @@ public:
         color(color)
     {}
 
+    GLfloat* GetAmbient() { return &ambient; }
+    GLfloat* GetDiffuse() { return &diffuse; }
+
     glm::vec4 color;
     GLfloat   ambient;        // ambient light 
     GLfloat   diffuse;        // diffuse light 

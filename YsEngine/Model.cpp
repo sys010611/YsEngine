@@ -78,6 +78,8 @@ void Model::ClearModel()
 			textureList[i] = nullptr;
 		}
 	}
+
+	delete(material);
 }
 
 void Model::LoadNode(aiNode* node, const aiScene* scene)

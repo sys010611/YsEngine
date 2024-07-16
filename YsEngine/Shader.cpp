@@ -118,11 +118,8 @@ void Shader::GetVariableLocations()
 	eyePosLoc = glGetUniformLocation(shaderID, "eyePosition");
 }
 
-void Shader::UseDirectionalLight(DirectionalLight* light, GLfloat ambient, GLfloat diffuse)
+void Shader::UseDirectionalLight(DirectionalLight* light)
 {
-	light->ambient = ambient;
-	light->diffuse = diffuse;
-
 	glUniform1f(directionalLightLoc.ambientLoc, light->ambient);
 	glUniform1f(directionalLightLoc.diffuseLoc, light->diffuse);
 	glUniform4f(directionalLightLoc.colorLoc, 

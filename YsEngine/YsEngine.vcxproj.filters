@@ -22,6 +22,12 @@
     <Filter Include="헤더 파일\ImGui">
       <UniqueIdentifier>{450dedd9-e766-4120-94cc-26ef2aeb3e79}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\ImGuizmo">
+      <UniqueIdentifier>{5135974c-2d4d-4ea0-8e70-0f97603b852f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ImGuizmo">
+      <UniqueIdentifier>{72ed994a-fc0b-4132-a75c-dc02c2f70726}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -70,6 +76,30 @@
       <Filter>소스 파일\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="FrameBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImSequencer.cpp">
+      <Filter>소스 파일\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImGuizmo.cpp">
+      <Filter>소스 파일\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImGradient.cpp">
+      <Filter>소스 파일\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\ImCurveEdit.cpp">
+      <Filter>소스 파일\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUIZMO\include\GraphEditor.cpp">
+      <Filter>소스 파일\ImGuizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenePanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectorPanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -123,6 +153,33 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="FrameBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImZoomSlider.h">
+      <Filter>헤더 파일\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\GraphEditor.h">
+      <Filter>헤더 파일\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImCurveEdit.h">
+      <Filter>헤더 파일\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImGradient.h">
+      <Filter>헤더 파일\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImGuizmo.h">
+      <Filter>헤더 파일\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUIZMO\include\ImSequencer.h">
+      <Filter>헤더 파일\ImGuizmo</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenePanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectorPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
