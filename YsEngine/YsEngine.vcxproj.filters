@@ -51,30 +51,6 @@
     <ClCompile Include="Model.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui_draw.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui_impl_glfw.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui_impl_opengl3.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui_stdlib.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui_tables.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui_widgets.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\External Libs\IMGUI\imgui_demo.cpp">
-      <Filter>소스 파일\ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="FrameBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -102,6 +78,27 @@
     <ClCompile Include="Panel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUI\imgui_impl_glfw.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUI\imgui_impl_opengl3.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUI\imgui_tables.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUI\imgui_widgets.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUI\imgui.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUI\imgui_demo.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External Libs\IMGUI\imgui_draw.cpp">
+      <Filter>소스 파일\ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -127,24 +124,6 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\External Libs\IMGUI\imgui.h">
-      <Filter>헤더 파일\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\External Libs\IMGUI\imgui_impl_glfw.h">
-      <Filter>헤더 파일\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\External Libs\IMGUI\imgui_impl_opengl3.h">
-      <Filter>헤더 파일\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\External Libs\IMGUI\imgui_internal.h">
-      <Filter>헤더 파일\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\External Libs\IMGUI\imconfig.h">
-      <Filter>헤더 파일\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\External Libs\IMGUI\imgui_impl_opengl3_loader.h">
-      <Filter>헤더 파일\ImGui</Filter>
     </ClInclude>
     <ClInclude Include="PointLight.h">
       <Filter>헤더 파일</Filter>
@@ -181,6 +160,33 @@
     </ClInclude>
     <ClInclude Include="Panel.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imgui_internal.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imstb_rectpack.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imstb_textedit.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imstb_truetype.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imconfig.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imgui.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imgui_impl_glfw.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imgui_impl_opengl3.h">
+      <Filter>헤더 파일\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External Libs\IMGUI\imgui_impl_opengl3_loader.h">
+      <Filter>헤더 파일\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

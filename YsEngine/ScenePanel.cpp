@@ -25,7 +25,7 @@ ScenePanel::ScenePanel(FrameBuffer* fb, Model* md, Camera* cam, Window* win) :
 void ScenePanel::Update()
 {
 	// Render ImGui
-	ImGui::Begin("Scene", NULL, ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Scene", NULL);
 
 	ImVec2 pos = ImGui::GetCursorScreenPos();
 	const float window_width = ImGui::GetContentRegionAvail().x;
