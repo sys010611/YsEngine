@@ -99,6 +99,9 @@
     <ClCompile Include="..\External Libs\IMGUI\imgui_draw.cpp">
       <Filter>소스 파일\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -188,12 +191,24 @@
     <ClInclude Include="..\External Libs\IMGUI\imgui_impl_opengl3_loader.h">
       <Filter>헤더 파일\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="CommonValues.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragment.glsl">
       <Filter>Shader</Filter>
     </None>
     <None Include="Shaders\vertex.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\skyFragment.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\skyVertex.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

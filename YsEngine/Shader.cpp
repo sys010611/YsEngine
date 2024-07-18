@@ -166,6 +166,21 @@ void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderT
 	glAttachShader(theProgram, theShader);
 }
 
+void Shader::Validate()
+{
+	GLint result = 0;
+	GLchar eLog[1024] = { 0 };
+
+	glValidateProgram(shaderID);
+	glGetProgramiv(shaderID, GL_VALIDATE_STATUS, &result);
+	if (!result)
+	{
+		glGetProgramInfoLog(shaderID, sizeof(eLog), NULL, eLog);
+		printf("Error validating program: '%s'\n", eLog);
+		return;
+	}
+}
+
 Shader::~Shader()
 {
 	ClearShader();

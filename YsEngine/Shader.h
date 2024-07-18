@@ -33,6 +33,8 @@ public:
 	GLuint GetNormalMatLoc() { return normalMatLoc; }
 	GLuint GetEyePosLoc() { return eyePosLoc; }
 
+	void Validate();
+
 	~Shader();
 
 private:

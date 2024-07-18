@@ -12,6 +12,11 @@
 
 #include <assimp/Importer.hpp>
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include "ImGuizmo.h"
+
 #include "Camera.h"
 #include "Mesh.h"
 #include "Shader.h"
@@ -25,11 +30,8 @@
 #include "FrameBuffer.h"
 #include "ScenePanel.h"
 #include "InspectorPanel.h"
+#include "Skybox.h"
 
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "ImGuizmo.h"
 
 #define WIDTH 1600
 #define HEIGHT 900
@@ -52,6 +54,7 @@ Model* model_2B;
 Model* currModel;
 
 DirectionalLight* directionalLight;
+Skybox* skybox;
 
 ScenePanel* scenePanel;
 InspectorPanel* inspectorPanel;
@@ -78,16 +81,6 @@ void GetShaderHandles()
 	loc_PVM = shaderList[0]->GetPVMLoc();
 	loc_normalMat = shaderList[0]->GetNormalMatLoc();
 	loc_eyePos = shaderList[0]->GetEyePosLoc();
-}
-
-glm::mat4 GetPVM(glm :: mat4& modelMat)
-{
-	// PVM 구성
-	glm::mat4 view = camera->GetViewMatrix();
-	glm::mat4 projection = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
-	glm::mat4 PVM = projection * view * modelMat;
-
-	return PVM;
 }
 
 glm::mat3 GetNormalMat(glm::mat4& modelMat)
@@ -123,11 +116,21 @@ int main()
 	
 	// Directional Light
 	directionalLight = new DirectionalLight
-		(0.5f, 0.5f,
+		(1.f, 0.5f,
 		glm::vec4(1.f, 1.f, 1.f, 1.f), 
 		glm::vec3(1.f, 1.5f, -1.f));
 
-	// 모델
+	// Skybox
+	std::vector<std::string> skyboxFaces;
+	skyboxFaces.push_back("Textures/Skybox/px.png");
+	skyboxFaces.push_back("Textures/Skybox/nx.png");
+	skyboxFaces.push_back("Textures/Skybox/py.png");
+	skyboxFaces.push_back("Textures/Skybox/ny.png");
+	skyboxFaces.push_back("Textures/Skybox/pz.png");
+	skyboxFaces.push_back("Textures/Skybox/nz.png");
+	skybox = new Skybox(skyboxFaces);
+
+	// Model
 	model_2B = new Model();
 	std::string modelPath = "2b_nier_automata/scene.gltf";
 	model_2B->LoadModel(modelPath);
@@ -183,10 +186,17 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// --------------------------------------------------------------------------------
+		// Clear the framebuffer
 		sceneBuffer.Bind();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// --------------------------------------------------------------------------------
+
+		glm::mat4 viewMat = camera->GetViewMatrix();
+		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
+
+		glm::mat4 identityMat(1.f);
+		skybox->DrawSkybox(viewMat, projMat);
 
 		shaderList[0]->UseShader();
 		GetShaderHandles();
@@ -195,7 +205,7 @@ int main()
 		Model* currModel = model_2B;
 
 		glm::mat4 modelMat = currModel->GetModelMat();
-		glm::mat4 PVM = GetPVM(modelMat);
+		glm::mat4 PVM = projMat * viewMat * modelMat;
 		glm::mat4 normalMat = GetNormalMat(modelMat);
 		glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
 		glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));

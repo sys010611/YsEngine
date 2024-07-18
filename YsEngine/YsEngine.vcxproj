@@ -160,6 +160,7 @@
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="ScenePanel.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -180,6 +181,7 @@
     <ClInclude Include="..\External Libs\IMGUI\imstb_textedit.h" />
     <ClInclude Include="..\External Libs\IMGUI\imstb_truetype.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CommonValues.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="FrameBuffer.h" />
     <ClInclude Include="InspectorPanel.h" />
@@ -191,11 +193,14 @@
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ScenePanel.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Skybox.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragment.glsl" />
+    <None Include="Shaders\skyFragment.glsl" />
+    <None Include="Shaders\skyVertex.glsl" />
     <None Include="Shaders\vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
