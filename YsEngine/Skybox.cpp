@@ -61,16 +61,16 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 		3, 6, 7
 	};
 
-	std::vector<float> skyboxVertices = {
-		-1.0f, 1.0f, -1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		-1.0f, -1.0f, -1.0f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, -1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f, -1.0f, -1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
+	std::vector<Vertex> skyboxVertices = {
+		Vertex(-1.0f, 1.0f, -1.0f) ,	
+		Vertex(-1.0f, -1.0f, -1.0f),
+		Vertex(1.0f, 1.0f, -1.0f),		
+		Vertex(1.0f, -1.0f, -1.0f),	
 
-		-1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f, 1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		-1.0f, -1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		1.0f, -1.0f, 1.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f
+		Vertex(-1.0f, 1.0f, 1.0f),	
+		Vertex(1.0f, 1.0f, 1.0f),		
+		Vertex(-1.0f, -1.0f, 1.0f),		
+		Vertex(1.0f, -1.0f, 1.0f),	
 	};
 
 	skyMesh = new Mesh();

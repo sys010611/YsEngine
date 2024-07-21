@@ -11,7 +11,7 @@ Mesh::Mesh()
 	indexCount = 0;
 }
 
-void Mesh::CreateMesh(std::vector<GLfloat>& vertices, std::vector<unsigned int>& indices)
+void Mesh::CreateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 {
 	indexCount = indices.size();
 
@@ -24,19 +24,27 @@ void Mesh::CreateMesh(std::vector<GLfloat>& vertices, std::vector<unsigned int>&
 
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
-	// 0번 attribute : 3개를 연달아 읽고, 8칸 점프한다.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, 0);
+	// position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 	glEnableVertexAttribArray(0);
 
-	// 1번 attribute : 2개를 연달아 읽고, 8칸 점프한다.
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 3));
+	// texcoord
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, TexCoords)));
 	glEnableVertexAttribArray(1);
 
-	// 2번 attribute : 3개를 연달아 읽고, 8칸 점프한다.
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertices[0]) * 8, (void*)(sizeof(vertices[0]) * 5));
+	// normal
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Normal)));
 	glEnableVertexAttribArray(2);
+
+	// ids
+	glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
+	glEnableVertexAttribArray(3);
+
+	// weights
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
+	glEnableVertexAttribArray(4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

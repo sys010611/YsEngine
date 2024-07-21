@@ -32,6 +32,7 @@ public:
 	GLuint GetSamplerLoc() { return samplerLoc; }
 	GLuint GetNormalMatLoc() { return normalMatLoc; }
 	GLuint GetEyePosLoc() { return eyePosLoc; }
+	GLuint GetFinalBonesMatricesLoc() { return finalBonesMatricesLoc; }
 
 	void Validate();
 
@@ -41,7 +42,7 @@ private:
 	// handles
 	GLuint shaderID,
 		modelMatLoc, PVMLoc, samplerLoc, normalMatLoc,
-		eyePosLoc;
+		eyePosLoc, finalBonesMatricesLoc;
 
 	struct
 	{

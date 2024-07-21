@@ -31,7 +31,6 @@ void Model::LoadModel(const std::string& fileName)
 
 	Assimp::Importer importer;
 
-	// 2번째 인자는 타입이 unsigned int인데, 비트 or 연산을 사용한다. 자세한 내용은 후술
 	const aiScene* scene = importer.ReadFile("Models/" + fileName,
 		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
 
@@ -98,35 +97,40 @@ void Model::LoadNode(aiNode* node, const aiScene* scene)
 	}
 }
 
-// 실제로 VBO, IBO로 쏴줄 정보들을 구성한다.
+// VBO, IBO에 담을 정보들을 구성한 뒤 쏴준다.
 void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 {
-	std::vector<GLfloat> vertices;
+	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
+		Vertex vertex;
+		InitVertexBoneData(vertex);
+
 		// position
-		vertices.push_back(mesh->mVertices[i].x);
-		vertices.push_back(mesh->mVertices[i].y);
-		vertices.push_back(mesh->mVertices[i].z);
+		vertex.Position.x = (mesh->mVertices[i].x);
+		vertex.Position.y = (mesh->mVertices[i].y);
+		vertex.Position.z = (mesh->mVertices[i].z);
 
 		// texture
 		if (mesh->mTextureCoords[0])
 		{
-			vertices.push_back(mesh->mTextureCoords[0][i].x);
-			vertices.push_back(mesh->mTextureCoords[0][i].y);
+			vertex.TexCoords.s = (mesh->mTextureCoords[0][i].x);
+			vertex.TexCoords.t = (mesh->mTextureCoords[0][i].y);
 		}
 		else // 존재하지 않을 경우 그냥 0을 넣어주기
 		{
-			vertices.push_back(0.f);
-			vertices.push_back(0.f);
+			vertex.TexCoords.s = (0.f);
+			vertex.TexCoords.t = (0.f);
 		}
 
 		// normal (aiProcess_GenSmoothNormals를 적용했기 때문에 없을 수가 없다.)
-		vertices.push_back(mesh->mNormals[i].x);
-		vertices.push_back(mesh->mNormals[i].y);
-		vertices.push_back(mesh->mNormals[i].z);
+		vertex.Normal.x = (mesh->mNormals[i].x);
+		vertex.Normal.y = (mesh->mNormals[i].y);
+		vertex.Normal.z = (mesh->mNormals[i].z);
+
+		vertices.push_back(vertex);
 	}
 
 	// indices 채워주기
@@ -146,6 +150,8 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	// meshList에 mesh를 채워줌과 동시에, meshToTex에는 그 mesh의 materialIndex를 채워준다.
 	// 이렇게 meshList와 meshToTex를 나란히 채워줌으로써 mesh와 맞는 material을 손쉽게 찾을 수 있다.
 	meshToTex.push_back(mesh->mMaterialIndex);
+
+	ExtractBoneWeightForVertices(vertices, mesh, scene);
 }
 
 void Model::LoadMaterials(const aiScene* scene)
@@ -191,6 +197,65 @@ void Model::LoadMaterials(const aiScene* scene)
 
 	// specularMap이 존재하지 않을 경우
 	material = new Material(4.f, 64.f);
+}
+
+void Model::InitVertexBoneData(Vertex& vertex)
+{
+	for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+	{
+		vertex.m_BoneIDs[i] = -1;
+		vertex.m_Weights[i] = 0.f;
+	}
+}
+
+void Model::SetVertexBoneData(Vertex& vertex, int boneID, float weight)
+{
+	for (int i = 0; i < MAX_BONE_INFLUENCE; i++)
+	{
+		if (vertex.m_BoneIDs[i] < 0)
+		{
+			// 하나만 채우고 도망가기
+			vertex.m_Weights[i] = weight;
+			vertex.m_BoneIDs[i] = boneID;
+			break;
+		}
+	}
+}
+
+void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
+{
+	for (int boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++)
+	{
+		int boneID = -1;
+		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+		if (boneInfoMap.find(boneName) == boneInfoMap.end())
+		{
+			BoneInfo boneInfo;
+			boneInfo.id = boneCounter;
+			aiMatrix4x4& offsetMat = mesh->mBones[boneIndex]->mOffsetMatrix;
+			std::memcpy(glm::value_ptr(boneInfo.offset), &offsetMat, sizeof(offsetMat));
+
+			boneInfoMap[boneName] = boneInfo;
+
+			boneID = boneCounter;
+			boneCounter++;
+		}
+		else
+		{
+			boneID = boneInfoMap[boneName].id;
+		}
+		assert(boneID != -1);
+		aiVertexWeight* weights = mesh->mBones[boneIndex]->mWeights;
+		int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+		for (int weightIndex = 0; weightIndex < numWeights; weightIndex++)
+		{
+			int vertexId = weights[weightIndex].mVertexId;
+			float weight = weights[weightIndex].mWeight;
+			assert(vertexId <= vertices.size());
+			SetVertexBoneData(vertices[vertexId], boneID, weight);
+		}
+	}
 }
 
 glm::mat4 Model::GetModelMat()

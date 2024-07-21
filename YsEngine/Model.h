@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -10,6 +11,10 @@
 #include <GL/glew.h>
 
 #include <glm/glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+
+#include "CommonValues.h"
 
 class Mesh;
 class Texture;
@@ -39,12 +44,19 @@ public:
 
 	Material* GetMaterial() { return material; }
 
+	std::map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
+	int& GetBoneCount() { return boneCounter; }
+
 	~Model();
 
 private:
 	void LoadNode(aiNode* node, const aiScene* scene);
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
 	void LoadMaterials(const aiScene* scene);
+
+	void InitVertexBoneData(Vertex& vertex);
+	void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
+	void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Mesh*> meshList;
 	std::vector<Texture*> textureList;
@@ -60,5 +72,8 @@ private:
 	glm::mat4	modelMat;
 
 	Material* material;
+
+	std::map<std::string, BoneInfo> boneInfoMap;
+	int boneCounter = 0;
 };
 

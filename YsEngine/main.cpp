@@ -31,7 +31,8 @@
 #include "ScenePanel.h"
 #include "InspectorPanel.h"
 #include "Skybox.h"
-
+#include "Animation.h"
+#include "Animator.h"
 
 #define WIDTH 1600
 #define HEIGHT 900
@@ -53,6 +54,9 @@ std::vector<Shader*> shaderList;
 Model* model_2B;
 Model* currModel;
 
+Animator* animator;
+Animation* danceAnimation;
+
 DirectionalLight* directionalLight;
 Skybox* skybox;
 
@@ -65,6 +69,7 @@ GLuint loc_PVM = 0;
 GLuint loc_sampler = 0;
 GLuint loc_normalMat = 0;
 GLuint loc_eyePos = 0;
+GLuint loc_finalBoneMatrices = 0;
 
 // 쉐이더 컴파일
 void CreateShader()
@@ -81,6 +86,7 @@ void GetShaderHandles()
 	loc_PVM = shaderList[0]->GetPVMLoc();
 	loc_normalMat = shaderList[0]->GetNormalMatLoc();
 	loc_eyePos = shaderList[0]->GetEyePosLoc();
+	loc_finalBoneMatrices = shaderList[0]->GetFinalBonesMatricesLoc();
 }
 
 glm::mat3 GetNormalMat(glm::mat4& modelMat)
@@ -137,6 +143,10 @@ int main()
 
 	currModel = model_2B;
 
+	// Animation
+	//danceAnimation = new Animation("dancing.dae", currModel);
+	//animator = new Animator(danceAnimation);
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -167,13 +177,14 @@ int main()
 		deltaTime = now - lastTime;
 		lastTime = now;
 
-		// Get + Handle User Input
+		// ---------------------------------------
 		glfwPollEvents();
 
 		if (camera->CanMove())
 		{
 			MoveCamera();
 		}
+		// ----------------------------------------
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -218,6 +229,13 @@ int main()
 		glUniform3f(loc_eyePos, camPos_wc.x, camPos_wc.y, camPos_wc.z);
 
 		shaderList[0]->UseMaterial(model_2B->GetMaterial());
+
+		//auto transforms = animator->GetFinalBoneMatrices();
+		//for (int i = 0; i < transforms.size(); i++)
+		//{
+		//	glUniformMatrix4fv(loc_finalBoneMatrices + i, 1, GL_FALSE, glm::value_ptr(transforms[i]));
+		//}
+
 		model_2B->RenderModel();
 
 		glUseProgram(0);
