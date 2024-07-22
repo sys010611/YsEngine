@@ -1,3 +1,6 @@
-﻿  Skybox.cpp
-E:\YsEngine\YsEngine\Skybox.cpp(32,114): warning C4267: '인수': 'size_t'에서 'GLenum'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  Model.cpp
+E:\YsEngine\YsEngine\Model.cpp(29,43): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\Model.cpp(174,55): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\Model.cpp(176,52): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\Model.cpp(234,36): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   YsEngine.vcxproj -> E:\YsEngine\YsEngine\x64\Debug\YsEngine.exe

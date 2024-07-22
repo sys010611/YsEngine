@@ -164,19 +164,22 @@ void Model::LoadMaterials(const aiScene* scene)
 		textureList[i] = nullptr;
 
 		// 텍스쳐가 존재하는 지 먼저 확인
-		if (material->GetTextureCount(aiTextureType_BASE_COLOR))
+		if (material->GetTextureCount(aiTextureType_DIFFUSE))
 		{
 			aiString texturePath;
 			// 텍스쳐 경로를 가져오는 데 성공했다면
-			if (material->GetTexture(aiTextureType_BASE_COLOR, 0, &texturePath) == aiReturn_SUCCESS)
+			if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == aiReturn_SUCCESS)
 			{
 				// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
 				int idx = std::string(texturePath.data).rfind("/");
 				std::string textureName = std::string(texturePath.data).substr(idx + 1);
+				idx = std::string(texturePath.data).rfind("\\");
+				textureName = std::string(texturePath.data).substr(idx + 1);
 
 				std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 
 				textureList[i] = new Texture(texPath.c_str());
+				std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
 
 				// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
 				if (!textureList[i]->LoadTexture())
@@ -191,7 +194,11 @@ void Model::LoadMaterials(const aiScene* scene)
 		// textureList에 텍스쳐를 담는데 실패했다면
 		if (!textureList[i])
 		{
-			textureList[i] = new Texture("plain.png"); // 흰색 텍스쳐로 대체
+			std::cout << "텍스쳐 없음" << std::endl;
+		}
+		else
+		{
+			std::cout << "텍스쳐 로드 성공" << std::endl;
 		}
 	}
 

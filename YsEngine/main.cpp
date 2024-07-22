@@ -138,7 +138,7 @@ int main()
 
 	// Model
 	model_2B = new Model();
-	std::string modelPath = "2b_nier_automata/scene.gltf";
+	std::string modelPath = "2b_nier_automata/2B.fbx";
 	model_2B->LoadModel(modelPath);
 
 	currModel = model_2B;
