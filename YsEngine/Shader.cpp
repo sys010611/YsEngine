@@ -9,7 +9,8 @@ Shader::Shader()
 
 	modelMatLoc=0;
 	PVMLoc = 0;
-	samplerLoc = 0;
+	colorSamplerLoc = 0;
+	normalSamplerLoc = 0;
 	normalMatLoc = 0;
 }
 
@@ -104,7 +105,8 @@ void Shader::GetVariableLocations()
 {
 	modelMatLoc = glGetUniformLocation(shaderID, "modelMat");
 	PVMLoc = glGetUniformLocation(shaderID, "PVM");
-	samplerLoc = glGetUniformLocation(shaderID, "sampler");
+	colorSamplerLoc = glGetUniformLocation(shaderID, "colorSampler");
+	normalSamplerLoc = glGetUniformLocation(shaderID, "normalSampler");
 	normalMatLoc = glGetUniformLocation(shaderID, "normalMat");
 
 	directionalLightLoc.ambientLoc = glGetUniformLocation(shaderID, "directionalLight.base.ambient");

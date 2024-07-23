@@ -12,7 +12,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	skyShader->CreateFromFiles("Shaders/skyVertex.glsl", "Shaders/skyFragment.glsl");
 
 	loc_PVM = skyShader->GetPVMLoc();
-	loc_sampler = skyShader->GetSamplerLoc();
+	loc_sampler = skyShader->GetColorSamplerLoc();
 
 	// texture setup
 	glGenTextures(1, &textureID);

@@ -69,6 +69,8 @@ void Model::RenderModel()
 
 		if (materialIndex < textureList.size() && textureList[materialIndex])
 			textureList[materialIndex]->UseTexture();
+		if(normalMapList[materialIndex])
+			normalMapList[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
@@ -83,6 +85,8 @@ void Model::RenderModel()
 
 		if (materialIndex < textureList.size() && textureList[materialIndex])
 			textureList[materialIndex]->UseTexture();
+		if (normalMapList[materialIndex])
+			normalMapList[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
@@ -96,6 +100,8 @@ void Model::RenderModel()
 
 		if (materialIndex < textureList.size() && textureList[materialIndex])
 			textureList[materialIndex]->UseTexture();
+		if (normalMapList[materialIndex])
+			normalMapList[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
@@ -200,53 +206,80 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 void Model::LoadMaterials(const aiScene* scene)
 {
 	textureList.resize(scene->mNumMaterials);
+	normalMapList.resize(scene->mNumMaterials);
 	for (size_t i = 0; i < scene->mNumMaterials; i++)
 	{
 		aiMaterial* material = scene->mMaterials[i];
 
 		textureList[i] = nullptr;
 
-		// Diffuse 텍스쳐가 존재하는 지 먼저 확인
-		if (material->GetTextureCount(aiTextureType_DIFFUSE))
-		{
-			aiString texturePath;
-			// 텍스쳐 경로를 가져오는 데 성공했다면
-			if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == aiReturn_SUCCESS)
-			{
-				// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
-				int idx = std::string(texturePath.data).rfind("/");
-				std::string textureName = std::string(texturePath.data).substr(idx + 1);
-				idx = std::string(textureName).rfind("\\");
-				textureName = std::string(textureName).substr(idx + 1);
-
-				std::string texPath = "Models/" + modelName + "/textures/" + textureName;
-
-				textureList[i] = new Texture(texPath.c_str());
-				std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
-
-				// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
-				if (!textureList[i]->LoadTexture())
-				{ // 실패 시
-					std::cout << "텍스쳐 로드 실패 : " << texPath << std::endl;
-					delete textureList[i];
-					textureList[i] = nullptr;
-				}
-			}
-		}
-
-		// textureList에 텍스쳐를 담는데 실패했다면
-		if (!textureList[i])
-		{
-			std::cout << "텍스쳐 없음" << std::endl;
-		}
-		else
-		{
-			std::cout << "텍스쳐 로드 성공" << std::endl;
-		}
+		LoadDiffuseTexture(material, i);
+		LoadNormalMap(material, i);
 	}
 
-	// specularMap이 존재하지 않을 경우
-	material = new Material(4.f, 64.f);
+	material = new Material(0.3f, 64.f);
+}
+
+void Model::LoadDiffuseTexture(aiMaterial* material, const size_t& i)
+{
+	// Diffuse 텍스쳐가 존재하는 지 먼저 확인
+	if (material->GetTextureCount(aiTextureType_DIFFUSE))
+	{
+		aiString texturePath;
+		// 텍스쳐 경로를 가져오는 데 성공했다면
+		if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == aiReturn_SUCCESS)
+		{
+			// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
+			int idx = std::string(texturePath.data).rfind("/");
+			std::string textureName = std::string(texturePath.data).substr(idx + 1);
+			idx = std::string(textureName).rfind("\\");
+			textureName = std::string(textureName).substr(idx + 1);
+
+			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+
+			textureList[i] = new Texture(texPath.c_str());
+			std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
+
+			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
+			if (!textureList[i]->LoadTexture())
+			{ // 실패 시
+				std::cout << "텍스쳐 로드 실패 : " << texPath << std::endl;
+				delete textureList[i];
+				textureList[i] = nullptr;
+			}
+		}
+	}
+}
+
+void Model::LoadNormalMap(aiMaterial* material, const size_t& i)
+{
+	// normal map이
+	if (material->GetTextureCount(aiTextureType_NORMALS))
+	{
+		aiString texturePath;
+		// 텍스쳐 경로를 가져오는 데 성공했다면
+		if (material->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == aiReturn_SUCCESS)
+		{
+			// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
+			int idx = std::string(texturePath.data).rfind("/");
+			std::string textureName = std::string(texturePath.data).substr(idx + 1);
+			idx = std::string(textureName).rfind("\\");
+			textureName = std::string(textureName).substr(idx + 1);
+
+			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
+
+			normalMapList[i] = new Texture(texPath.c_str());
+			std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
+
+			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
+			if (!normalMapList[i]->LoadTexture())
+			{ // 실패 시
+				std::cout << "텍스쳐 로드 실패 : " << texPath << std::endl;
+				delete normalMapList[i];
+				normalMapList[i] = nullptr;
+			}
+		}
+	}
 }
 
 void Model::InitVertexBoneData(Vertex& vertex)

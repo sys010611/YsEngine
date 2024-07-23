@@ -54,12 +54,16 @@ private:
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
 	void LoadMaterials(const aiScene* scene);
 
+	void LoadDiffuseTexture(aiMaterial* material, const size_t& i);
+	void LoadNormalMap(aiMaterial* material, const size_t& i);
+
 	void InitVertexBoneData(Vertex& vertex);
 	void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
 	void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Mesh*> meshList;
 	std::vector<Texture*> textureList;
+	std::vector<Texture*> normalMapList;
 	std::vector<unsigned int> meshToTex;
 
 	std::string modelName;

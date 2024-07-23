@@ -25,21 +25,24 @@ struct Material
 	float shininess;
 };
 
-uniform sampler2D sampler;
+uniform sampler2D colorSampler;
+uniform sampler2D normalSampler;
 uniform DirectionalLight directionalLight;
 uniform vec3 eyePosition;
 uniform Material material;
 
-vec4 CalcLightByDirection(Light light, vec3 direction)
+vec3 normalFromTex;
+
+vec4 CalcLightByDirection(Light light, vec3 direction, vec3 normal)
 {
 	direction = normalize(direction);
 
 	vec4 ambientColor = (light.ambient * light.color);
 	
-	float diffuseFactor = max(dot(normalize(FragNormal), direction), 0);
+	float diffuseFactor = max(dot(normalize(normal), direction), 0);
 	vec4 diffuseColor = (light.diffuse * light.color) * diffuseFactor;
 
-	vec3 reflectVec = normalize(reflect(-direction, normalize(FragNormal)));
+	vec3 reflectVec = normalize(reflect(-direction, normalize(normal)));
 	vec3 fragToEye = normalize(eyePosition - FragPos);
 
 	float specularFactor = max(dot(reflectVec, fragToEye), 0);
@@ -48,15 +51,17 @@ vec4 CalcLightByDirection(Light light, vec3 direction)
 	return ambientColor + diffuseColor + specularColor;
 }
 
-vec4 CalcDirectionalLight()
+vec4 CalcDirectionalLight(vec3 normal)
 {
-	return CalcLightByDirection(directionalLight.base, directionalLight.direction);
+	return CalcLightByDirection(directionalLight.base, directionalLight.direction, normal);
 }
 
 void main()
 {	
-	vec4 texColor = texture(sampler, TexCoord);
-	vec4 dirLightColor = CalcDirectionalLight();
+	normalFromTex = texture(normalSampler, TexCoord).xyz;
+
+	vec4 texColor = texture(colorSampler, TexCoord);
+	vec4 dirLightColor = CalcDirectionalLight(normalFromTex);
 
 	FragColor = texColor * dirLightColor;
 }

@@ -138,7 +138,7 @@ int main()
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "devola_-_nier_automata/scene.gltf";
+	std::string modelPath = "devola_-_nier_automata/untitled.obj";
 	mainModel->LoadModel(modelPath);
 
 	currModel = mainModel;
