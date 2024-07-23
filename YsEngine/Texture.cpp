@@ -15,7 +15,7 @@ Texture::Texture(const char* fileLoc)
 
 bool Texture::LoadTexture()
 {
-	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
+	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 4);
 	if (!texData)
 	{
 		printf("Failed to find: %s\n", fileLocation);
@@ -31,26 +31,11 @@ bool Texture::LoadTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
-	// 1채널 텍스처인 경우 3채널로 다시 로드
-	if (bitDepth == 1)
-	{
-		stbi_image_free(texData);  // 기존 데이터 해제
-		texData = stbi_load(fileLocation, &width, &height, &bitDepth, STBI_rgb);
-		if (!texData)
-		{
-			std::cerr << "Failed to reload texture as 3-channel: " << fileLocation << std::endl;
-			return false;
-		}
-		bitDepth = 3;  // 채널 수를 3로 설정
-	}
-
-	// 텍스쳐의 채널 수에 따라 맞는 포맷으로 쏴주기
-	GLenum const textureFormat[] = { GL_RED, GL_RG, GL_RGB, GL_RGBA };
 	glTexImage2D(
-		GL_TEXTURE_2D, 0, textureFormat[bitDepth - 1],
+		GL_TEXTURE_2D, 0, GL_RGBA,
 		width, height, 0,
-		textureFormat[bitDepth - 1], GL_UNSIGNED_BYTE, texData);
-	
+		GL_RGBA, GL_UNSIGNED_BYTE, texData);
+
 
 	//glGenerateMipmap(GL_TEXTURE_2D);
 

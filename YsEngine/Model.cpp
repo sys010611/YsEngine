@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 #include "Model.h"
 
@@ -46,15 +47,57 @@ void Model::LoadModel(const std::string& fileName)
 
 void Model::RenderModel()
 {
+	std::vector<std::pair<Mesh*, unsigned int>> solidMeshList;
+	std::vector<std::pair<Mesh*, unsigned int>> hairMeshList;
+
 	// LoadMesh 함수에서 채워놓은 meshList를 순회하며 메시들을 렌더링한다.
 	for (size_t i = 0; i < meshList.size(); i++)
 	{
-		// 메시에 해당하는 머티리얼을 통해 텍스쳐를 가져와 사용한다.
 		unsigned int materialIndex = meshToTex[i];
+		
+		// 메시 분류
+		if (meshList[i]->GetName().find("Hair") != std::string::npos)
+			hairMeshList.push_back({meshList[i], materialIndex});
+		else
+			solidMeshList.push_back({meshList[i], materialIndex});
+	}
+
+	for (auto& item : solidMeshList)
+	{
+		int materialIndex = item.second;
+		Mesh* mesh = item.first;
+
 		if (materialIndex < textureList.size() && textureList[materialIndex])
 			textureList[materialIndex]->UseTexture();
 
-		meshList[i]->RenderMesh();
+		mesh->RenderMesh();
+	}
+
+	glDepthMask(GL_FALSE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	for (auto& item : hairMeshList)
+	{
+		int materialIndex = item.second;
+		Mesh* mesh = item.first;
+
+		if (materialIndex < textureList.size() && textureList[materialIndex])
+			textureList[materialIndex]->UseTexture();
+
+		mesh->RenderMesh();
+	}
+
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+	for (auto& item : solidMeshList)
+	{
+		int materialIndex = item.second;
+		Mesh* mesh = item.first;
+
+		if (materialIndex < textureList.size() && textureList[materialIndex])
+			textureList[materialIndex]->UseTexture();
+
+		mesh->RenderMesh();
 	}
 }
 
@@ -144,7 +187,7 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	Mesh* newMesh = new Mesh();
-	newMesh->CreateMesh(vertices, indices); // GPU의 VBO, IBO로 버텍스 정보를 쏴준다.
+	newMesh->CreateMesh(vertices, indices, mesh->mName.C_Str()); // GPU의 VBO, IBO로 버텍스 정보를 쏴준다.
 	meshList.push_back(newMesh);
 
 	// meshList에 mesh를 채워줌과 동시에, meshToTex에는 그 mesh의 materialIndex를 채워준다.
@@ -163,7 +206,7 @@ void Model::LoadMaterials(const aiScene* scene)
 
 		textureList[i] = nullptr;
 
-		// 텍스쳐가 존재하는 지 먼저 확인
+		// Diffuse 텍스쳐가 존재하는 지 먼저 확인
 		if (material->GetTextureCount(aiTextureType_DIFFUSE))
 		{
 			aiString texturePath;
@@ -173,8 +216,8 @@ void Model::LoadMaterials(const aiScene* scene)
 				// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
 				int idx = std::string(texturePath.data).rfind("/");
 				std::string textureName = std::string(texturePath.data).substr(idx + 1);
-				idx = std::string(texturePath.data).rfind("\\");
-				textureName = std::string(texturePath.data).substr(idx + 1);
+				idx = std::string(textureName).rfind("\\");
+				textureName = std::string(textureName).substr(idx + 1);
 
 				std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 

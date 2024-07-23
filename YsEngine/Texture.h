@@ -12,7 +12,7 @@ public:
 	/// <summary>
 	/// 텍스쳐 메모리로 로드, GPU로 쏴주기
 	/// </summary>
-	bool LoadTexture();  
+	bool LoadTexture();
 
 	/// <summary>
 	/// 0번 텍스쳐 유닛에 텍스쳐 물려주기

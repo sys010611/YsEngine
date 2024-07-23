@@ -1,11 +1,11 @@
 Model Information:
-* title:	2b Nier automata
-* source:	https://sketchfab.com/3d-models/2b-nier-automata-8b00fabb9d364c2da3c0c49ed79217ef
-* author:	kain (https://sketchfab.com/kainhsp)
+* title:	2B nier automata
+* source:	https://sketchfab.com/3d-models/2b-nier-automata-d3e553bc325f4e0bb211f37a16f5ee12
+* author:	Cyber (https://sketchfab.com/calibreefe20)
 
 Model License:
 * license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
 * requirements:	Author must be credited. Commercial use is allowed.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "2b Nier automata" (https://sketchfab.com/3d-models/2b-nier-automata-8b00fabb9d364c2da3c0c49ed79217ef) by kain (https://sketchfab.com/kainhsp) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+This work is based on "2B nier automata" (https://sketchfab.com/3d-models/2b-nier-automata-d3e553bc325f4e0bb211f37a16f5ee12) by Cyber (https://sketchfab.com/calibreefe20) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

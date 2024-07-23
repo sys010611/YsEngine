@@ -1,7 +1,7 @@
 #include <vector>
 
 #include "Mesh.h"
-
+#include <iostream>
 
 Mesh::Mesh()
 {
@@ -9,10 +9,13 @@ Mesh::Mesh()
 	VBO = 0;
 	IBO = 0;
 	indexCount = 0;
+	name = "";
 }
 
-void Mesh::CreateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+void Mesh::CreateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::string name)
 {
+	this->name = name;
+
 	indexCount = indices.size();
 
 	glGenVertexArrays(1, &VAO);

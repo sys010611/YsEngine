@@ -51,7 +51,7 @@ static const char* fShaderPath = "Shaders/fragment.glsl";
 
 std::vector<Shader*> shaderList;
 
-Model* model_2B;
+Model* mainModel;
 Model* currModel;
 
 Animator* animator;
@@ -137,11 +137,11 @@ int main()
 	skybox = new Skybox(skyboxFaces);
 
 	// Model
-	model_2B = new Model();
-	std::string modelPath = "2b_nier_automata/2B.fbx";
-	model_2B->LoadModel(modelPath);
+	mainModel = new Model();
+	std::string modelPath = "devola_-_nier_automata/scene.gltf";
+	mainModel->LoadModel(modelPath);
 
-	currModel = model_2B;
+	currModel = mainModel;
 
 	// Animation
 	//danceAnimation = new Animation("dancing.dae", currModel);
@@ -181,9 +181,7 @@ int main()
 		glfwPollEvents();
 
 		if (camera->CanMove())
-		{
 			MoveCamera();
-		}
 		// ----------------------------------------
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -213,7 +211,7 @@ int main()
 		GetShaderHandles();
 
 		glUniform1i(loc_sampler, 0);
-		Model* currModel = model_2B;
+		Model* currModel = mainModel;
 
 		glm::mat4 modelMat = currModel->GetModelMat();
 		glm::mat4 PVM = projMat * viewMat * modelMat;
@@ -228,7 +226,7 @@ int main()
 		glm::vec3 camPos_wc = glm::vec3(modelMat * camPos);
 		glUniform3f(loc_eyePos, camPos_wc.x, camPos_wc.y, camPos_wc.z);
 
-		shaderList[0]->UseMaterial(model_2B->GetMaterial());
+		shaderList[0]->UseMaterial(mainModel->GetMaterial());
 
 		//auto transforms = animator->GetFinalBoneMatrices();
 		//for (int i = 0; i < transforms.size(); i++)
@@ -236,7 +234,7 @@ int main()
 		//	glUniformMatrix4fv(loc_finalBoneMatrices + i, 1, GL_FALSE, glm::value_ptr(transforms[i]));
 		//}
 
-		model_2B->RenderModel();
+		mainModel->RenderModel();
 
 		glUseProgram(0);
 
