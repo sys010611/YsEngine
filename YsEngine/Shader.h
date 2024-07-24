@@ -7,6 +7,8 @@
 
 #include <GL\glew.h>
 
+#include "CommonValues.h"
+
 class DirectionalLight;
 class Material;
 
@@ -26,6 +28,8 @@ public:
 
 	void UseDirectionalLight(DirectionalLight* light);
 	void UseMaterial(Material* material);
+
+	GLuint GetID() { return shaderID; }
 
 	GLuint GetModelMatLoc() { return modelMatLoc; }
 	GLuint GetPVMLoc() { return PVMLoc; }

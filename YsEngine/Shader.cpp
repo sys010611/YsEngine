@@ -118,7 +118,6 @@ void Shader::GetVariableLocations()
 	materialLoc.shininessLoc = glGetUniformLocation(shaderID, "material.shininess");
 
 	eyePosLoc = glGetUniformLocation(shaderID, "eyePosition");
-
 	finalBonesMatricesLoc = glGetUniformLocation(shaderID, "finalBonesMatrices");
 }
 

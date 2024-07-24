@@ -9,6 +9,7 @@
 #include <glm\gtc\type_ptr.hpp>
 
 #include "CommonValues.h"
+#include "Bone.h"
 
 class Model;
 class Bone;
@@ -32,12 +33,12 @@ public:
 	const std::map<std::string, BoneInfo>& GetBoneIDMap() { return boneInfoMap; }
 
 private:
-	void ReadMissingBones(const aiAnimation* animation, Model* model);
+	void ReadMissingBones(const aiAnimation* animation, Model& model);
 	void ReadHierarchyData(AssimpNodeData& dest, const aiNode* src);
 
 	float duration;
 	int ticksPerSecond;
-	std::vector<Bone*> bones;
+	std::vector<Bone> bones;
 	AssimpNodeData rootNode;
 	std::map<std::string, BoneInfo> boneInfoMap;
 };

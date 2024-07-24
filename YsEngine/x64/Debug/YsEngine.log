@@ -1,8 +1,13 @@
-﻿  Model.cpp
-E:\YsEngine\YsEngine\Model.cpp(30,43): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(233,54): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(235,46): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(264,54): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(266,46): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(310,36): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+﻿  Shader.cpp
+E:\YsEngine\YsEngine\Shader.cpp(153,36): warning C4267: '=': 'size_t'에서 'GLint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  main.cpp
+E:\YsEngine\YsEngine\Animation.h(16,18): warning C4099: 'aiAnimation': 처음에는 'struct'을(를) 사용하여 형식 이름을 표시했는데 이제는 'class'을(를) 사용하여 표시합니다.
+E:\YsEngine\External Libs\ASSIMP\include\assimp\anim.h(405,8): message : 'aiAnimation' 선언을 참조하십시오.
+E:\YsEngine\YsEngine\Animation.h(17,13): warning C4099: 'aiNode': 처음에는 'struct'을(를) 사용하여 형식 이름을 표시했는데 이제는 'class'을(를) 사용하여 표시합니다.
+E:\YsEngine\External Libs\ASSIMP\include\assimp\scene.h(82,19): message : 'aiNode' 선언을 참조하십시오.
+E:\YsEngine\YsEngine\Animation.h(30,37): warning C4244: 'return': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(164,83): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(164,52): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(177,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
   YsEngine.vcxproj -> E:\YsEngine\YsEngine\x64\Debug\YsEngine.exe

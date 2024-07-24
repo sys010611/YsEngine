@@ -8,6 +8,7 @@ layout (location = 4) in vec4 weights;
 
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
+uniform mat4 finalBonesMatrices[MAX_BONES];
 
 out vec3 FragPos; // 월드 좌표계
 out vec2 TexCoord;
@@ -17,11 +18,8 @@ uniform mat4 modelMat;
 uniform mat4 PVM;
 uniform mat3 normalMat;
 
-uniform mat4 finalBonesMatrices[MAX_BONES];
-
 void main()
 {
-	// 애니메이션
 	vec4 totalPosition = vec4(0.f);
 	for(int i = 0; i < MAX_BONE_INFLUENCE; i++)
 	{
@@ -36,10 +34,9 @@ void main()
 		totalPosition += localPosition * weights[i];
 		vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normal;
 	}
+	gl_Position = PVM * totalPosition;
 
-	gl_Position = PVM * vec4(pos, 1.0);
-
-	FragPos = (modelMat * vec4(pos, 1.0)).xyz; 
+	FragPos = (modelMat * totalPosition).xyz; 
 	TexCoord = tex;
 	FragNormal = normalMat * normal;
 }

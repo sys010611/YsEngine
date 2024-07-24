@@ -1,16 +1,19 @@
 #include "Animator.h"
 
+#include <iostream>
+
 #include "Animation.h"
 #include "Bone.h"
+#include "CommonValues.h"
 
 Animator::Animator(Animation* animation)
 {
 	currentTime = 0.f;
 	currentAnimation = animation;
 
-	finalBoneMatrices.reserve(100);
+	finalBoneMatrices.reserve(MAX_BONE_COUNT);
 
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < MAX_BONE_COUNT; i++)
 	{
 		finalBoneMatrices.push_back(glm::mat4(1.f));
 	}
@@ -22,7 +25,7 @@ void Animator::UpdateAnimation(float deltaTime)
 	if (currentAnimation)
 	{
 		currentTime += currentAnimation->GetTicksPerSecond() * deltaTime;
-		currentTime += fmod(currentTime, currentAnimation->GetDuration());
+		currentTime = fmod(currentTime, currentAnimation->GetDuration());
 		CalculateBoneTransform(&currentAnimation->GetRootNode(), glm::mat4(1.f));
 	}
 }
@@ -53,6 +56,7 @@ void Animator::CalculateBoneTransform(const AssimpNodeData* node, glm::mat4 pare
 	{
 		int index = boneInfoMap[nodeName].id;
 		glm::mat4 offset = boneInfoMap[nodeName].offset;
+		assert(!std::isnan(offset[0][0]));
 		finalBoneMatrices[index] = globalTransformation * offset;
 	}
 

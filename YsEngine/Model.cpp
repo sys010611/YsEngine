@@ -13,6 +13,8 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
 
+#include "AssimpGLMHelpers.h"
+
 Model::Model()
 {
 	translate = glm::vec3(0.f, 0.f, 0.f);
@@ -48,7 +50,7 @@ void Model::LoadModel(const std::string& fileName)
 void Model::RenderModel()
 {
 	std::vector<std::pair<Mesh*, unsigned int>> solidMeshList;
-	std::vector<std::pair<Mesh*, unsigned int>> hairMeshList;
+	std::vector<std::pair<Mesh*, unsigned int>> transparentMeshList;
 
 	// LoadMesh 함수에서 채워놓은 meshList를 순회하며 메시들을 렌더링한다.
 	for (size_t i = 0; i < meshList.size(); i++)
@@ -56,8 +58,10 @@ void Model::RenderModel()
 		unsigned int materialIndex = meshToTex[i];
 		
 		// 메시 분류
-		if (meshList[i]->GetName().find("Hair") != std::string::npos)
-			hairMeshList.push_back({meshList[i], materialIndex});
+		if (meshList[i]->GetName().find("Hair") != std::string::npos || 
+			meshList[i]->GetName().find("facial_serious10") != std::string::npos || 
+			meshList[i]->GetName().find("facial_normal9") != std::string::npos)
+			transparentMeshList.push_back({meshList[i], materialIndex});
 		else
 			solidMeshList.push_back({meshList[i], materialIndex});
 	}
@@ -78,7 +82,7 @@ void Model::RenderModel()
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	for (auto& item : hairMeshList)
+	for (auto& item : transparentMeshList)
 	{
 		int materialIndex = item.second;
 		Mesh* mesh = item.first;
@@ -158,26 +162,23 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 		InitVertexBoneData(vertex);
 
 		// position
-		vertex.Position.x = (mesh->mVertices[i].x);
-		vertex.Position.y = (mesh->mVertices[i].y);
-		vertex.Position.z = (mesh->mVertices[i].z);
+		vertex.Position = AssimpGLMHelpers::GetGLMVec(mesh->mVertices[i]);
 
 		// texture
 		if (mesh->mTextureCoords[0])
 		{
-			vertex.TexCoords.s = (mesh->mTextureCoords[0][i].x);
-			vertex.TexCoords.t = (mesh->mTextureCoords[0][i].y);
+			glm::vec2 vec;
+			vec.x = (mesh->mTextureCoords[0][i].x);
+			vec.y = (mesh->mTextureCoords[0][i].y);
+			vertex.TexCoords = vec;
 		}
 		else // 존재하지 않을 경우 그냥 0을 넣어주기
 		{
-			vertex.TexCoords.s = (0.f);
-			vertex.TexCoords.t = (0.f);
+			vertex.TexCoords = glm::vec2(0.f,0.f);
 		}
 
 		// normal (aiProcess_GenSmoothNormals를 적용했기 때문에 없을 수가 없다.)
-		vertex.Normal.x = (mesh->mNormals[i].x);
-		vertex.Normal.y = (mesh->mNormals[i].y);
-		vertex.Normal.z = (mesh->mNormals[i].z);
+		vertex.Normal = AssimpGLMHelpers::GetGLMVec(mesh->mNormals[i]);
 
 		vertices.push_back(vertex);
 	}
@@ -192,6 +193,8 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 		}
 	}
 
+	ExtractBoneWeightForVertices(vertices, mesh, scene);
+
 	Mesh* newMesh = new Mesh();
 	newMesh->CreateMesh(vertices, indices, mesh->mName.C_Str()); // GPU의 VBO, IBO로 버텍스 정보를 쏴준다.
 	meshList.push_back(newMesh);
@@ -199,8 +202,6 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	// meshList에 mesh를 채워줌과 동시에, meshToTex에는 그 mesh의 materialIndex를 채워준다.
 	// 이렇게 meshList와 meshToTex를 나란히 채워줌으로써 mesh와 맞는 material을 손쉽게 찾을 수 있다.
 	meshToTex.push_back(mesh->mMaterialIndex);
-
-	ExtractBoneWeightForVertices(vertices, mesh, scene);
 }
 
 void Model::LoadMaterials(const aiScene* scene)
@@ -310,16 +311,22 @@ void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* 
 	for (int boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++)
 	{
 		int boneID = -1;
+
 		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+		//size_t pos = boneName.find(':');
+		//if (pos != std::string::npos)
+		//	boneName = boneName.substr(pos + 1);
+		
 		if (boneInfoMap.find(boneName) == boneInfoMap.end())
 		{
 			BoneInfo boneInfo;
 			boneInfo.id = boneCounter;
-			aiMatrix4x4& offsetMat = mesh->mBones[boneIndex]->mOffsetMatrix;
-			std::memcpy(glm::value_ptr(boneInfo.offset), &offsetMat, sizeof(offsetMat));
+			auto offsetMat = mesh->mBones[boneIndex]->mOffsetMatrix;
+			boneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(
+					mesh->mBones[boneIndex]->mOffsetMatrix
+			);
 
 			boneInfoMap[boneName] = boneInfo;
-
 			boneID = boneCounter;
 			boneCounter++;
 		}
@@ -328,7 +335,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* 
 			boneID = boneInfoMap[boneName].id;
 		}
 		assert(boneID != -1);
-		aiVertexWeight* weights = mesh->mBones[boneIndex]->mWeights;
+		auto weights = mesh->mBones[boneIndex]->mWeights;
 		int numWeights = mesh->mBones[boneIndex]->mNumWeights;
 
 		for (int weightIndex = 0; weightIndex < numWeights; weightIndex++)

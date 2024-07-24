@@ -58,7 +58,7 @@ Animator* animator;
 Animation* danceAnimation;
 
 DirectionalLight* directionalLight;
-Skybox* skybox;
+//Skybox* skybox;
 
 ScenePanel* scenePanel;
 InspectorPanel* inspectorPanel;
@@ -69,7 +69,7 @@ GLuint loc_PVM = 0;
 GLuint loc_sampler = 0;
 GLuint loc_normalMat = 0;
 GLuint loc_eyePos = 0;
-GLuint loc_finalBoneMatrices = 0;
+GLuint loc_finalBonesMatrices = 0;
 
 // 쉐이더 컴파일
 void CreateShader()
@@ -86,7 +86,7 @@ void GetShaderHandles()
 	loc_PVM = shaderList[0]->GetPVMLoc();
 	loc_normalMat = shaderList[0]->GetNormalMatLoc();
 	loc_eyePos = shaderList[0]->GetEyePosLoc();
-	loc_finalBoneMatrices = shaderList[0]->GetFinalBonesMatricesLoc();
+	loc_finalBonesMatrices = shaderList[0]->GetFinalBonesMatricesLoc();
 }
 
 glm::mat3 GetNormalMat(glm::mat4& modelMat)
@@ -116,9 +116,9 @@ int main()
 	CreateShader();
 
 	// 카메라
-	GLfloat initialPitch = 0.f;
+	GLfloat initialPitch = -30.f;
 	GLfloat initialYaw = -90.f; // 카메라가 -z축을 보고 있도록
-	camera = new Camera(glm::vec3(0.f, 0.f, 20.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
+	camera = new Camera(glm::vec3(0.f, 5.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
 	
 	// Directional Light
 	directionalLight = new DirectionalLight
@@ -127,25 +127,25 @@ int main()
 		glm::vec3(1.f, 1.5f, -1.f));
 
 	// Skybox
-	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/px.png");
-	skyboxFaces.push_back("Textures/Skybox/nx.png");
-	skyboxFaces.push_back("Textures/Skybox/py.png");
-	skyboxFaces.push_back("Textures/Skybox/ny.png");
-	skyboxFaces.push_back("Textures/Skybox/pz.png");
-	skyboxFaces.push_back("Textures/Skybox/nz.png");
-	skybox = new Skybox(skyboxFaces);
+	//std::vector<std::string> skyboxFaces;
+	//skyboxFaces.push_back("Textures/Skybox/px.png");
+	//skyboxFaces.push_back("Textures/Skybox/nx.png");
+	//skyboxFaces.push_back("Textures/Skybox/py.png");
+	//skyboxFaces.push_back("Textures/Skybox/ny.png");
+	//skyboxFaces.push_back("Textures/Skybox/pz.png");
+	//skyboxFaces.push_back("Textures/Skybox/nz.png");
+	//skybox = new Skybox(skyboxFaces);
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "devola_-_nier_automata/untitled.obj";
+	std::string modelPath = "dancing_vampire/dancing_vampire.dae";
 	mainModel->LoadModel(modelPath);
 
 	currModel = mainModel;
 
 	// Animation
-	//danceAnimation = new Animation("dancing.dae", currModel);
-	//animator = new Animator(danceAnimation);
+	danceAnimation = new Animation("Models/dancing_vampire/dancing_vampire.dae", currModel);
+	animator = new Animator(danceAnimation);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -168,6 +168,7 @@ int main()
 	scenePanel = new ScenePanel(&sceneBuffer, currModel, camera, mainWindow);
 	inspectorPanel = new InspectorPanel(currModel, directionalLight);
 
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     ///////////////////////////////////////////////////////////////////////////
     /// main loop
     //////////////////////////////////////////////////////////////////////////
@@ -182,6 +183,8 @@ int main()
 
 		if (camera->CanMove())
 			MoveCamera();
+
+		animator->UpdateAnimation(deltaTime);
 		// ----------------------------------------
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -205,7 +208,7 @@ int main()
 		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 
 		glm::mat4 identityMat(1.f);
-		skybox->DrawSkybox(viewMat, projMat);
+		//skybox->DrawSkybox(viewMat, projMat);
 
 		shaderList[0]->UseShader();
 		GetShaderHandles();
@@ -228,11 +231,15 @@ int main()
 
 		shaderList[0]->UseMaterial(mainModel->GetMaterial());
 
-		//auto transforms = animator->GetFinalBoneMatrices();
-		//for (int i = 0; i < transforms.size(); i++)
-		//{
-		//	glUniformMatrix4fv(loc_finalBoneMatrices + i, 1, GL_FALSE, glm::value_ptr(transforms[i]));
-		//}
+		auto transforms = animator->GetFinalBoneMatrices();
+		for (int i = 0; i < transforms.size(); i++)
+		{
+			char locbuff[100]= {'\0'};
+			snprintf(locbuff, sizeof(locbuff), "finalBonesMatrices[%d]", i);
+
+			int loc = glGetUniformLocation(shaderList[0]->GetID(), locbuff);
+			glUniformMatrix4fv(loc, 1, false, glm::value_ptr(transforms[i]));
+		}
 
 		mainModel->RenderModel();
 
