@@ -9,12 +9,11 @@
 #include <glm\gtc\type_ptr.hpp>
 
 #include "CommonValues.h"
-#include "Bone.h"
 
 class Model;
 class Bone;
-class aiAnimation;
-class aiNode;
+struct aiAnimation;
+struct aiNode;
 
 class Animation
 {
@@ -38,7 +37,7 @@ private:
 
 	float duration;
 	int ticksPerSecond;
-	std::vector<Bone> bones;
+	std::vector<Bone*> bones;
 	AssimpNodeData rootNode;
 	std::map<std::string, BoneInfo> boneInfoMap;
 };

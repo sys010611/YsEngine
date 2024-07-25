@@ -58,7 +58,7 @@ Animator* animator;
 Animation* danceAnimation;
 
 DirectionalLight* directionalLight;
-//Skybox* skybox;
+Skybox* skybox;
 
 ScenePanel* scenePanel;
 InspectorPanel* inspectorPanel;
@@ -66,7 +66,8 @@ InspectorPanel* inspectorPanel;
 // 쉐이더 변수 핸들
 GLuint loc_modelMat = 0;
 GLuint loc_PVM = 0;
-GLuint loc_sampler = 0;
+GLuint loc_diffuseSampler = 0;
+GLuint loc_normalSampler = 0;
 GLuint loc_normalMat = 0;
 GLuint loc_eyePos = 0;
 GLuint loc_finalBonesMatrices = 0;
@@ -116,9 +117,9 @@ int main()
 	CreateShader();
 
 	// 카메라
-	GLfloat initialPitch = -30.f;
+	GLfloat initialPitch = 0.f;
 	GLfloat initialYaw = -90.f; // 카메라가 -z축을 보고 있도록
-	camera = new Camera(glm::vec3(0.f, 5.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
+	camera = new Camera(glm::vec3(0.f, 1.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
 	
 	// Directional Light
 	directionalLight = new DirectionalLight
@@ -127,24 +128,24 @@ int main()
 		glm::vec3(1.f, 1.5f, -1.f));
 
 	// Skybox
-	//std::vector<std::string> skyboxFaces;
-	//skyboxFaces.push_back("Textures/Skybox/px.png");
-	//skyboxFaces.push_back("Textures/Skybox/nx.png");
-	//skyboxFaces.push_back("Textures/Skybox/py.png");
-	//skyboxFaces.push_back("Textures/Skybox/ny.png");
-	//skyboxFaces.push_back("Textures/Skybox/pz.png");
-	//skyboxFaces.push_back("Textures/Skybox/nz.png");
-	//skybox = new Skybox(skyboxFaces);
+	std::vector<std::string> skyboxFaces;
+	skyboxFaces.push_back("Textures/Skybox/px.png");
+	skyboxFaces.push_back("Textures/Skybox/nx.png");
+	skyboxFaces.push_back("Textures/Skybox/py.png");
+	skyboxFaces.push_back("Textures/Skybox/ny.png");
+	skyboxFaces.push_back("Textures/Skybox/pz.png");
+	skyboxFaces.push_back("Textures/Skybox/nz.png");
+	skybox = new Skybox(skyboxFaces);
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "dancing_vampire/dancing_vampire.dae";
+	std::string modelPath = "devola_-_nier_automata/Slow_Run.fbx";
 	mainModel->LoadModel(modelPath);
 
 	currModel = mainModel;
 
 	// Animation
-	danceAnimation = new Animation("Models/dancing_vampire/dancing_vampire.dae", currModel);
+	danceAnimation = new Animation("Models/devola_-_nier_automata/Slow_Run.fbx", currModel);
 	animator = new Animator(danceAnimation);
 
 	// Setup Dear ImGui context
@@ -208,12 +209,13 @@ int main()
 		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 
 		glm::mat4 identityMat(1.f);
-		//skybox->DrawSkybox(viewMat, projMat);
+		skybox->DrawSkybox(viewMat, projMat);
 
 		shaderList[0]->UseShader();
 		GetShaderHandles();
 
-		glUniform1i(loc_sampler, 0);
+		glUniform1i(loc_diffuseSampler, 0);
+		glUniform1i(loc_normalSampler, 0);
 		Model* currModel = mainModel;
 
 		glm::mat4 modelMat = currModel->GetModelMat();

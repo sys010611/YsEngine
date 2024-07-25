@@ -58,10 +58,10 @@ vec4 CalcDirectionalLight(vec3 normal)
 
 void main()
 {	
-	normalFromTex = texture(normalSampler, TexCoord).xyz;
+	//normalFromTex = texture(normalSampler, TexCoord).xyz;
 
 	vec4 texColor = texture(colorSampler, TexCoord);
-	vec4 dirLightColor = CalcDirectionalLight(normalFromTex);
+	vec4 dirLightColor = CalcDirectionalLight(FragNormal);
 
 	FragColor = texColor * dirLightColor;
 }

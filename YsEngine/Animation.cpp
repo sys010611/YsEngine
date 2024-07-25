@@ -1,5 +1,7 @@
 #include "Animation.h"
 
+#include <iostream>
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -12,6 +14,13 @@ Animation::Animation(const std::string& animationPath, Model* model)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
+
+	if (!scene)
+	{
+		std::cout << animationPath << " Animation 로드 실패 : " << importer.GetErrorString() << std::endl;
+		return;
+	}
+
 	assert(scene && scene->mRootNode);
 	aiAnimation* animation = scene->mAnimations[0];
 	duration = animation->mDuration;
@@ -23,15 +32,15 @@ Animation::Animation(const std::string& animationPath, Model* model)
 Bone* Animation::FindBone(const std::string& name)
 {
 	auto iter = std::find_if(bones.begin(), bones.end(),
-		[&](const Bone& bone) 
+		[&](const Bone* bone) 
 		{
-			return bone.GetBoneName() == name;
+			return bone->GetBoneName() == name;
 		}
 	);
 	if(iter == bones.end()) 
 		return nullptr;
 	else
-		return &(*iter);
+		return (*iter);
 }
 
 void Animation::ReadMissingBones(const aiAnimation* animation, Model& model)
@@ -54,7 +63,7 @@ void Animation::ReadMissingBones(const aiAnimation* animation, Model& model)
 			boneInfoMap[boneName].id = boneCount;
 			boneCount++;
 		}
-		this->bones.push_back(Bone(channel->mNodeName.data, boneInfoMap[boneName].id, channel));
+		this->bones.push_back(new Bone(channel->mNodeName.data, boneInfoMap[boneName].id, channel));
 	}
 
 	this->boneInfoMap = boneInfoMap;

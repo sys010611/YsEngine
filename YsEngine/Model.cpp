@@ -71,10 +71,10 @@ void Model::RenderModel()
 		int materialIndex = item.second;
 		Mesh* mesh = item.first;
 
-		if (materialIndex < textureList.size() && textureList[materialIndex])
-			textureList[materialIndex]->UseTexture();
-		if(normalMapList[materialIndex])
-			normalMapList[materialIndex]->UseNormal();
+		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
+			diffuseMaps[materialIndex]->UseTexture();
+		//if(normalMaps[materialIndex])
+		//	normalMaps[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
@@ -87,10 +87,10 @@ void Model::RenderModel()
 		int materialIndex = item.second;
 		Mesh* mesh = item.first;
 
-		if (materialIndex < textureList.size() && textureList[materialIndex])
-			textureList[materialIndex]->UseTexture();
-		if (normalMapList[materialIndex])
-			normalMapList[materialIndex]->UseNormal();
+		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
+			diffuseMaps[materialIndex]->UseTexture();
+		//if (normalMaps[materialIndex])
+		//	normalMaps[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
@@ -102,10 +102,10 @@ void Model::RenderModel()
 		int materialIndex = item.second;
 		Mesh* mesh = item.first;
 
-		if (materialIndex < textureList.size() && textureList[materialIndex])
-			textureList[materialIndex]->UseTexture();
-		if (normalMapList[materialIndex])
-			normalMapList[materialIndex]->UseNormal();
+		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
+			diffuseMaps[materialIndex]->UseTexture();
+		//if (normalMaps[materialIndex])
+		//	normalMaps[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
@@ -122,12 +122,12 @@ void Model::ClearModel()
 		}
 	}
 
-	for (size_t i = 0; i < textureList.size(); i++)
+	for (size_t i = 0; i < diffuseMaps.size(); i++)
 	{
-		if (textureList[i])
+		if (diffuseMaps[i])
 		{
-			delete textureList[i];
-			textureList[i] = nullptr;
+			delete diffuseMaps[i];
+			diffuseMaps[i] = nullptr;
 		}
 	}
 
@@ -206,13 +206,13 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 
 void Model::LoadMaterials(const aiScene* scene)
 {
-	textureList.resize(scene->mNumMaterials);
-	normalMapList.resize(scene->mNumMaterials);
+	diffuseMaps.resize(scene->mNumMaterials);
+	normalMaps.resize(scene->mNumMaterials);
 	for (size_t i = 0; i < scene->mNumMaterials; i++)
 	{
 		aiMaterial* material = scene->mMaterials[i];
 
-		textureList[i] = nullptr;
+		diffuseMaps[i] = nullptr;
 
 		LoadDiffuseTexture(material, i);
 		LoadNormalMap(material, i);
@@ -238,15 +238,15 @@ void Model::LoadDiffuseTexture(aiMaterial* material, const size_t& i)
 
 			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 
-			textureList[i] = new Texture(texPath.c_str());
+			diffuseMaps[i] = new Texture(texPath.c_str());
 			std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
-			if (!textureList[i]->LoadTexture())
+			if (!diffuseMaps[i]->LoadTexture())
 			{ // 실패 시
 				std::cout << "텍스쳐 로드 실패 : " << texPath << std::endl;
-				delete textureList[i];
-				textureList[i] = nullptr;
+				delete diffuseMaps[i];
+				diffuseMaps[i] = nullptr;
 			}
 		}
 	}
@@ -269,15 +269,15 @@ void Model::LoadNormalMap(aiMaterial* material, const size_t& i)
 
 			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 
-			normalMapList[i] = new Texture(texPath.c_str());
+			normalMaps[i] = new Texture(texPath.c_str());
 			std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
-			if (!normalMapList[i]->LoadTexture())
+			if (!normalMaps[i]->LoadTexture())
 			{ // 실패 시
 				std::cout << "텍스쳐 로드 실패 : " << texPath << std::endl;
-				delete normalMapList[i];
-				normalMapList[i] = nullptr;
+				delete normalMaps[i];
+				normalMaps[i] = nullptr;
 			}
 		}
 	}

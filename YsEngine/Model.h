@@ -62,8 +62,8 @@ private:
 	void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
 
 	std::vector<Mesh*> meshList;
-	std::vector<Texture*> textureList;
-	std::vector<Texture*> normalMapList;
+	std::vector<Texture*> diffuseMaps;
+	std::vector<Texture*> normalMaps;
 	std::vector<unsigned int> meshToTex;
 
 	std::string modelName;
