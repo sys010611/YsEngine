@@ -55,7 +55,10 @@ Model* mainModel;
 Model* currModel;
 
 Animator* animator;
-Animation* danceAnimation;
+
+Animation* idleAnim;
+Animation* runAnim;
+Animation* danceAnim;
 
 DirectionalLight* directionalLight;
 Skybox* skybox;
@@ -139,14 +142,19 @@ int main()
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "devola_-_nier_automata/Slow_Run.fbx";
+	std::string modelPath = "devola_-_nier_automata/devola.fbx";
 	mainModel->LoadModel(modelPath);
 
 	currModel = mainModel;
 
+
 	// Animation
-	danceAnimation = new Animation("Models/devola_-_nier_automata/Slow_Run.fbx", currModel);
-	animator = new Animator(danceAnimation);
+	idleAnim = new Animation("Models/devola_-_nier_automata/Idle.fbx", currModel);
+	runAnim = new Animation("Models/devola_-_nier_automata/Slow_Run.fbx", currModel);
+	danceAnim = new Animation("Models/devola_-_nier_automata/dance.fbx", currModel);
+
+	// Animator
+	animator = new Animator(runAnim);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();

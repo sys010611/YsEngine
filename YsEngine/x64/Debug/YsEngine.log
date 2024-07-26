@@ -1,6 +1,6 @@
 ﻿  main.cpp
 E:\YsEngine\YsEngine\Animation.h(29,37): warning C4244: 'return': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\main.cpp(165,83): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\main.cpp(165,52): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\main.cpp(178,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(173,83): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(173,52): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+E:\YsEngine\YsEngine\main.cpp(186,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   YsEngine.vcxproj -> E:\YsEngine\YsEngine\x64\Debug\YsEngine.exe
