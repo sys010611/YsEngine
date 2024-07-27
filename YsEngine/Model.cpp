@@ -39,7 +39,7 @@ void Model::LoadModel(const std::string& fileName)
 
 	if (!scene)
 	{
-		std::cout << fileName << " Model 로드 실패 : " << importer.GetErrorString() << std::endl;
+		std::cout << fileName << " Failed to load model : " << importer.GetErrorString() << std::endl;
 		return;
 	}
 
@@ -239,12 +239,12 @@ void Model::LoadDiffuseTexture(aiMaterial* material, const size_t& i)
 			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 
 			diffuseMaps[i] = new Texture(texPath.c_str());
-			std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
+			std::cout << "Loading Texture : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
 			if (!diffuseMaps[i]->LoadTexture())
 			{ // 실패 시
-				std::cout << "텍스쳐 로드 실패 : " << texPath << std::endl;
+				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete diffuseMaps[i];
 				diffuseMaps[i] = nullptr;
 			}
@@ -270,12 +270,12 @@ void Model::LoadNormalMap(aiMaterial* material, const size_t& i)
 			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 
 			normalMaps[i] = new Texture(texPath.c_str());
-			std::cout << "텍스쳐 로딩 : " << texPath << std::endl;
+			std::cout << "Loading Texture : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
 			if (!normalMaps[i]->LoadTexture())
 			{ // 실패 시
-				std::cout << "텍스쳐 로드 실패 : " << texPath << std::endl;
+				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete normalMaps[i];
 				normalMaps[i] = nullptr;
 			}

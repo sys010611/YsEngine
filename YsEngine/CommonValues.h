@@ -10,6 +10,7 @@
 #include <glm\gtc\type_ptr.hpp>
 
 const int MAX_POINT_LIGHTS = 3;
+
 const int MAX_BONE_INFLUENCE = 4;
 const int MAX_BONE_COUNT = 100;
 

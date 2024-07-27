@@ -8,15 +8,15 @@ class Light
 {
 public:
     Light(GLfloat ambient, GLfloat diffuse, glm::vec4 color) :
-        ambient(ambient),
-        diffuse(diffuse),
+        ambientIntensity(ambient),
+        diffuseIntensity(diffuse),
         color(color)
     {}
 
-    GLfloat* GetAmbient() { return &ambient; }
-    GLfloat* GetDiffuse() { return &diffuse; }
+    GLfloat* GetAmbientIntensity() { return &ambientIntensity; }
+    GLfloat* GetDiffuseIntensity() { return &diffuseIntensity; }
 
     glm::vec4 color;
-    GLfloat   ambient;        // ambient light 
-    GLfloat   diffuse;        // diffuse light 
+    GLfloat   ambientIntensity;        // ambient light 
+    GLfloat   diffuseIntensity;        // diffuse light 
 };

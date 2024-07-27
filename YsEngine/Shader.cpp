@@ -2,6 +2,7 @@
 
 #include "DirectionalLight.h"
 #include "Material.h"
+#include "PointLight.h"
 
 Shader::Shader()
 {
@@ -109,22 +110,49 @@ void Shader::GetVariableLocations()
 	normalSamplerLoc = glGetUniformLocation(shaderID, "normalSampler");
 	normalMatLoc = glGetUniformLocation(shaderID, "normalMat");
 
-	directionalLightLoc.ambientLoc = glGetUniformLocation(shaderID, "directionalLight.base.ambient");
-	directionalLightLoc.diffuseLoc = glGetUniformLocation(shaderID, "directionalLight.base.diffuse");
+	directionalLightLoc.ambientIntensityLoc = glGetUniformLocation(shaderID, "directionalLight.base.ambientIntensity");
+	directionalLightLoc.diffuseIntensityLoc = glGetUniformLocation(shaderID, "directionalLight.base.diffuseIntensity");
 	directionalLightLoc.colorLoc = glGetUniformLocation(shaderID, "directionalLight.base.color");
 	directionalLightLoc.directionLoc = glGetUniformLocation(shaderID, "directionalLight.direction");
 
-	materialLoc.specularLoc = glGetUniformLocation(shaderID, "material.specular");
+	materialLoc.specularIntensityLoc = glGetUniformLocation(shaderID, "material.specularIntensity");
 	materialLoc.shininessLoc = glGetUniformLocation(shaderID, "material.shininess");
 
 	eyePosLoc = glGetUniformLocation(shaderID, "eyePosition");
 	finalBonesMatricesLoc = glGetUniformLocation(shaderID, "finalBonesMatrices");
+
+	for (int i = 0; i < MAX_POINT_LIGHTS; i++)
+	{
+		char locbuff[100] = {'\0'};
+
+		snprintf(locbuff, sizeof(locbuff), "pointLights[%d].base.ambientIntensity", i);
+		pointLightLoc[i].ambientIntensityLoc = glGetUniformLocation(shaderID, locbuff);
+
+		snprintf(locbuff, sizeof(locbuff), "pointLights[%d].base.diffuseIntensity", i);
+		pointLightLoc[i].diffuseIntensityLoc = glGetUniformLocation(shaderID, locbuff);
+
+		snprintf(locbuff, sizeof(locbuff), "pointLights[%d].base.color", i);
+		pointLightLoc[i].colorLoc = glGetUniformLocation(shaderID, locbuff);
+
+		snprintf(locbuff, sizeof(locbuff), "pointLights[%d].position", i);
+		pointLightLoc[i].positionLoc = glGetUniformLocation(shaderID, locbuff);
+
+		snprintf(locbuff, sizeof(locbuff), "pointLights[%d].constant", i);
+		pointLightLoc[i].constantLoc = glGetUniformLocation(shaderID, locbuff);
+
+		snprintf(locbuff, sizeof(locbuff), "pointLights[%d].linear", i);
+		pointLightLoc[i].linearLoc = glGetUniformLocation(shaderID, locbuff);
+
+		snprintf(locbuff, sizeof(locbuff), "pointLights[%d].exponent", i);
+		pointLightLoc[i].exponentLoc = glGetUniformLocation(shaderID, locbuff);
+	}
+	pointLightCountLoc = glGetUniformLocation(shaderID, "pointLightCount");
 }
 
 void Shader::UseDirectionalLight(DirectionalLight* light)
 {
-	glUniform1f(directionalLightLoc.ambientLoc, light->ambient);
-	glUniform1f(directionalLightLoc.diffuseLoc, light->diffuse);
+	glUniform1f(directionalLightLoc.ambientIntensityLoc, light->ambientIntensity);
+	glUniform1f(directionalLightLoc.diffuseIntensityLoc, light->diffuseIntensity);
 	glUniform4f(directionalLightLoc.colorLoc, 
 		light->color.r,
 		light->color.g,
@@ -136,10 +164,38 @@ void Shader::UseDirectionalLight(DirectionalLight* light)
 		light->direction.z);
 }
 
+void Shader::UsePointLights(PointLight** pointLights, unsigned int count)
+{
+	glUniform1i(pointLightCountLoc, count);
+	for (int i = 0; i < count; i++)
+	{
+		glUniform1f(pointLightLoc[i].ambientIntensityLoc, pointLights[i]->ambientIntensity);
+		glUniform1f(pointLightLoc[i].diffuseIntensityLoc, pointLights[i]->diffuseIntensity);
+		glUniform4f(pointLightLoc[i].colorLoc, 
+			pointLights[i]->color.r,
+			pointLights[i]->color.g, 
+			pointLights[i]->color.b, 
+			pointLights[i]->color.a);
+		glUniform3f(pointLightLoc[i].positionLoc,
+			pointLights[i]->position.x,
+			pointLights[i]->position.y, 
+			pointLights[i]->position.z);
+		glUniform1f(pointLightLoc[i].constantLoc, pointLights[i]->constant);
+		glUniform1f(pointLightLoc[i].linearLoc, pointLights[i]->linear);
+		glUniform1f(pointLightLoc[i].exponentLoc, pointLights[i]->exponent);
+	}
+}
+
 void Shader::UseMaterial(Material* material)
 {
-	glUniform1f(materialLoc.specularLoc, material->specular);
+	glUniform1f(materialLoc.specularIntensityLoc, material->specular);
 	glUniform1f(materialLoc.shininessLoc, material->shininess);
+}
+
+void Shader::UseFinalBoneMatrices(const std::vector<glm::mat4>& transforms)
+{
+	for (int i = 0; i < transforms.size(); i++)
+		glUniformMatrix4fv(finalBonesMatricesLoc + i, 1, false, glm::value_ptr(transforms[i]));
 }
 
 void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType)

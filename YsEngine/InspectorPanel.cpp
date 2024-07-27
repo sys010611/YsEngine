@@ -20,8 +20,8 @@ void InspectorPanel::Update()
 	// Directional Light
 	ImGui::Text("DirectionalLight");
 
-	ImGui::SliderFloat("Ambient", dirLight->GetAmbient(), 0.f, 5.f);
-	ImGui::SliderFloat("Diffuse", dirLight->GetDiffuse(), 0.f, 5.f);
+	ImGui::SliderFloat("Ambient", dirLight->GetAmbientIntensity(), 0.f, 5.f);
+	ImGui::SliderFloat("Diffuse", dirLight->GetDiffuseIntensity(), 0.f, 5.f);
 
 	// Material
 	Material* currMaterial = currModel->GetMaterial();

@@ -10,6 +10,7 @@
 #include "CommonValues.h"
 
 class DirectionalLight;
+class PointLight;
 class Material;
 
 class Shader
@@ -27,7 +28,9 @@ public:
 	void GetVariableLocations();
 
 	void UseDirectionalLight(DirectionalLight* light);
+	void UsePointLights(PointLight** pointLights, unsigned int count);
 	void UseMaterial(Material* material);
+	void UseFinalBoneMatrices(const std::vector<glm::mat4>& transforms);
 
 	GLuint GetID() { return shaderID; }
 
@@ -49,19 +52,33 @@ private:
 		modelMatLoc, PVMLoc, 
 		colorSamplerLoc, normalSamplerLoc,
 		normalMatLoc,
-		eyePosLoc, finalBonesMatricesLoc;
+		eyePosLoc, finalBonesMatricesLoc,
+		pointLightCountLoc;
 
 	struct
 	{
-		GLuint ambientLoc;
-		GLuint diffuseLoc;
+		GLuint ambientIntensityLoc;
+		GLuint diffuseIntensityLoc;
 		GLuint colorLoc;
+
 		GLuint directionLoc;
 	} directionalLightLoc;
 
 	struct
 	{
-		GLuint specularLoc;
+		GLuint ambientIntensityLoc;
+		GLuint diffuseIntensityLoc;
+		GLuint colorLoc;
+
+		GLuint positionLoc;
+		GLuint constantLoc;
+		GLuint linearLoc;
+		GLuint exponentLoc;
+	} pointLightLoc[MAX_POINT_LIGHTS];
+
+	struct
+	{
+		GLuint specularIntensityLoc;
 		GLuint shininessLoc;
 	} materialLoc;
 

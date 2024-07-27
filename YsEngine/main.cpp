@@ -61,6 +61,10 @@ Animation* runAnim;
 Animation* danceAnim;
 
 DirectionalLight* directionalLight;
+
+PointLight* pointLights[MAX_POINT_LIGHTS];
+unsigned int pointLightCount = 0;
+
 Skybox* skybox;
 
 ScenePanel* scenePanel;
@@ -130,6 +134,20 @@ int main()
 		glm::vec4(1.f, 1.f, 1.f, 1.f), 
 		glm::vec3(1.f, 1.5f, -1.f));
 
+	// Point Light
+	pointLights[0] = new PointLight
+		(0.0f, 1.0f,
+		glm::vec4(1.f, 0.f, 0.f, 1.f),
+		glm::vec3(0.3f, 0.2f, 0.1f),
+		1.0f, 0.22f, 0.20f);
+	pointLightCount++;
+	pointLights[1] = new PointLight
+		(0.0f, 1.0f,
+		glm::vec4(0.f, 1.f, 0.f, 1.f),
+		glm::vec3(-4.0f, 2.0f, 0.0f),
+		1.0, 0.045f, 0.0075f);
+	pointLightCount++;
+
 	// Skybox
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/px.png");
@@ -138,7 +156,7 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/ny.png");
 	skyboxFaces.push_back("Textures/Skybox/pz.png");
 	skyboxFaces.push_back("Textures/Skybox/nz.png");
-	skybox = new Skybox(skyboxFaces);
+	//skybox = new Skybox(skyboxFaces);
 
 	// Model
 	mainModel = new Model();
@@ -154,7 +172,7 @@ int main()
 	danceAnim = new Animation("Models/devola_-_nier_automata/dance.fbx", currModel);
 
 	// Animator
-	animator = new Animator(runAnim);
+	animator = new Animator(danceAnim);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -217,7 +235,7 @@ int main()
 		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 
 		glm::mat4 identityMat(1.f);
-		skybox->DrawSkybox(viewMat, projMat);
+		//skybox->DrawSkybox(viewMat, projMat);
 
 		shaderList[0]->UseShader();
 		GetShaderHandles();
@@ -234,6 +252,7 @@ int main()
 		glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
 
 		shaderList[0]->UseDirectionalLight(directionalLight);
+		shaderList[0]->UsePointLights(pointLights, pointLightCount);
 
 		glm::vec4 camPos = glm::vec4(camera->GetPosition(), 1.f);
 		glm::vec3 camPos_wc = glm::vec3(modelMat * camPos);
@@ -241,16 +260,9 @@ int main()
 
 		shaderList[0]->UseMaterial(mainModel->GetMaterial());
 
-		auto transforms = animator->GetFinalBoneMatrices();
-		for (int i = 0; i < transforms.size(); i++)
-		{
-			char locbuff[100]= {'\0'};
-			snprintf(locbuff, sizeof(locbuff), "finalBonesMatrices[%d]", i);
-
-			int loc = glGetUniformLocation(shaderList[0]->GetID(), locbuff);
-			glUniformMatrix4fv(loc, 1, false, glm::value_ptr(transforms[i]));
-		}
-
+		const auto& transforms = animator->GetFinalBoneMatrices();
+		shaderList[0]->UseFinalBoneMatrices(transforms);
+		
 		mainModel->RenderModel();
 
 		glUseProgram(0);
