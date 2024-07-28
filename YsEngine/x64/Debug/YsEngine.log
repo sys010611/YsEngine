@@ -1,14 +1,9 @@
-﻿  Shader.cpp
-C:\Users\a9796\Desktop\YsEngine\YsEngine\Shader.cpp(170,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-C:\Users\a9796\Desktop\YsEngine\YsEngine\Shader.cpp(209,36): warning C4267: '=': 'size_t'에서 'GLint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Skybox.cpp
-C:\Users\a9796\Desktop\YsEngine\YsEngine\Skybox.cpp(32,114): warning C4267: '인수': 'size_t'에서 'GLenum'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  main.cpp
+﻿  main.cpp
 C:\Users\a9796\Desktop\YsEngine\YsEngine\Animation.h(29,37): warning C4244: 'return': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(116,41): warning C4819: 현재 코드 페이지(0)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
-C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(191,83): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(191,52): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(204,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
+C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(120,41): warning C4819: 현재 코드 페이지(0)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(156,15): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(200,83): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(200,52): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\a9796\Desktop\YsEngine\YsEngine\main.cpp(214,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 LINK : warning LNK4098: 'MSVCRT' defaultlib가 다른 라이브러리와 충돌합니다. /NODEFAULTLIB:library를 사용하십시오.
   YsEngine.vcxproj -> C:\Users\a9796\Desktop\YsEngine\YsEngine\x64\Debug\YsEngine.exe

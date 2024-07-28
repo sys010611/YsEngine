@@ -7,9 +7,11 @@
 
 #include <GLFW\glfw3.h>
 
+#include "Entity.h"
+
 class Window;
 
-class Camera
+class Camera : public Entity
 {
 public:
 	Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat moveSpeed, GLfloat turnSpeed);

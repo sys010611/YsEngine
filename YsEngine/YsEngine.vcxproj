@@ -157,7 +157,9 @@
     <ClCompile Include="AssimpGLMHelpers.cpp" />
     <ClCompile Include="Bone.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
+    <ClCompile Include="HierarchyPanel.cpp" />
     <ClCompile Include="InspectorPanel.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -192,7 +194,9 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CommonValues.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="FrameBuffer.h" />
+    <ClInclude Include="HierarchyPanel.h" />
     <ClInclude Include="InspectorPanel.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Material.h" />

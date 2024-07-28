@@ -4,7 +4,9 @@
 
 #include <glm/glm.hpp>
 
-class Light
+#include "Entity.h"
+
+class Light : public Entity
 {
 public:
     Light(GLfloat ambient, GLfloat diffuse, glm::vec4 color) :

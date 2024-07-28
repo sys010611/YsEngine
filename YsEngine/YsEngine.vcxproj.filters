@@ -114,6 +114,12 @@
     <ClCompile Include="AssimpGLMHelpers.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="HierarchyPanel.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -219,6 +225,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="AssimpGLMHelpers.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="HierarchyPanel.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

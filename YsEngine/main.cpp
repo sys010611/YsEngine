@@ -33,6 +33,7 @@
 #include "Skybox.h"
 #include "Animation.h"
 #include "Animator.h"
+#include "HierarchyPanel.h"
 
 #define WIDTH 1600
 #define HEIGHT 900
@@ -50,6 +51,8 @@ static const char* vShaderPath = "Shaders/vertex.glsl";
 static const char* fShaderPath = "Shaders/fragment.glsl";
 
 std::vector<Shader*> shaderList;
+
+std::vector<Entity*> entityList;
 
 Model* mainModel;
 Model* currModel;
@@ -69,6 +72,7 @@ Skybox* skybox;
 
 ScenePanel* scenePanel;
 InspectorPanel* inspectorPanel;
+HierarchyPanel* hierarchyPanel;
 
 // 쉐이더 변수 핸들
 GLuint loc_modelMat = 0;
@@ -127,12 +131,14 @@ int main()
 	GLfloat initialPitch = 0.f;
 	GLfloat initialYaw = -90.f; // 카메라가 -z축을 보고 있도록
 	camera = new Camera(glm::vec3(0.f, 1.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
-	
+	entityList.push_back(camera);
+
 	// Directional Light
 	directionalLight = new DirectionalLight
 		(1.f, 0.5f,
 		glm::vec4(1.f, 1.f, 1.f, 1.f), 
 		glm::vec3(1.f, 1.5f, -1.f));
+	entityList.push_back(directionalLight);
 
 	// Point Light
 	pointLights[0] = new PointLight
@@ -147,6 +153,8 @@ int main()
 		glm::vec3(-4.0f, 2.0f, 0.0f),
 		1.0, 0.045f, 0.0075f);
 	pointLightCount++;
+	for(int i=0;i<pointLightCount;i++)
+		entityList.push_back(pointLights[i]);
 
 	// Skybox
 	std::vector<std::string> skyboxFaces;
@@ -162,6 +170,7 @@ int main()
 	mainModel = new Model();
 	std::string modelPath = "devola_-_nier_automata/devola.fbx";
 	mainModel->LoadModel(modelPath);
+	entityList.push_back(mainModel);
 
 	currModel = mainModel;
 
@@ -194,6 +203,7 @@ int main()
 	// Panel 생성
 	scenePanel = new ScenePanel(&sceneBuffer, currModel, camera, mainWindow);
 	inspectorPanel = new InspectorPanel(currModel, directionalLight);
+	hierarchyPanel = new HierarchyPanel(entityList);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     ///////////////////////////////////////////////////////////////////////////
@@ -273,6 +283,8 @@ int main()
 
 		scenePanel->Update();
 		inspectorPanel->Update();
+		hierarchyPanel->UpdateEntityList(entityList);
+		hierarchyPanel->Update();
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

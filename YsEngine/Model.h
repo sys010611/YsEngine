@@ -15,12 +15,13 @@
 #include <glm\gtc\type_ptr.hpp>
 
 #include "CommonValues.h"
+#include "Entity.h"
 
 class Mesh;
 class Texture;
 class Material;
 
-class Model
+class Model : public Entity
 {
 public:
 	Model();
