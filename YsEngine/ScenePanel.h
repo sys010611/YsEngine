@@ -7,14 +7,17 @@ class FrameBuffer;
 class Model;
 class Window;
 class Camera;
+class Entity;
+struct ImVec2;
 
 class ScenePanel : Panel
 {
 public:
-	ScenePanel(FrameBuffer* fb, Model* md, Camera* cam, Window* win);
+	ScenePanel(FrameBuffer* fb, Camera* cam, Window* win);
 
 	virtual void Update() override;
 	void HandleInput();
+	void SetEntity(Entity* e);
 
 	GLfloat GetWidth() { return width; }
 	GLfloat GetHeight() { return height; }
@@ -22,8 +25,10 @@ public:
 	~ScenePanel();
 
 private:
+	void DrawGizmo(ImVec2 pos);
+
 	FrameBuffer* sceneBuffer;
-	Model* currModel;
+	Entity* selectedEntity;
 	Camera* camera;
 	Window* mainWindow;
 

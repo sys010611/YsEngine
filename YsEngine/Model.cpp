@@ -13,7 +13,9 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <glm\gtc\type_ptr.hpp>
 
+#include "imgui.h"
 #include "AssimpGLMHelpers.h"
+#include "ImGuizmo.h"
 
 Model::Model()
 {
@@ -24,6 +26,28 @@ Model::Model()
 	modelMat = GetModelMat();
 
 	material = nullptr;
+}
+
+std::string Model::GetName()
+{
+	return "Model";
+}
+
+void Model::ShowProperties()
+{
+	// Transform
+	ImGui::Text("Transform");
+
+	ImGui::InputFloat3("Translate", GetTranslate());
+	ImGui::InputFloat3("Rotate", GetRotate());
+	ImGui::InputFloat3("Scale", GetScale());
+
+	// Material
+	Material* currMaterial = GetMaterial();
+	ImGui::Text("Material");
+
+	ImGui::SliderFloat("Specular", &currMaterial->specular, 0.f, 5.f);
+	ImGui::SliderFloat("Shininess", &currMaterial->shininess, 0.f, 512.f);
 }
 
 void Model::LoadModel(const std::string& fileName)
@@ -354,9 +378,17 @@ glm::mat4 Model::GetModelMat()
 	glm::mat4 T = glm::translate(glm::mat4(1.f), glm::vec3(translate[0], translate[1], translate[2]));
 	glm::mat4 R = glm::mat4_cast(glm::quat(glm::vec3(glm::radians(rotate[0]), glm::radians(rotate[1]), glm::radians(rotate[2]))));
 	glm::mat4 S = glm::scale(glm::mat4(1.f), glm::vec3(scale[0], scale[1], scale[2]));
-	glm::mat4 modelMat = T * R * S;
+	return modelMat = T * R * S;
+}
 
-	return modelMat;
+void Model::UpdateTransform(glm::mat4 newModelMat)
+{
+	glm::vec3 translation, rotation, scale;
+	ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(newModelMat), &translation[0], &rotation[0], &scale[0]);
+
+	SetTranslate(translation);
+	SetRotate(rotation);
+	SetScale(scale);
 }
 
 Model::~Model()

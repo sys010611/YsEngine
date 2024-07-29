@@ -11,7 +11,7 @@
 
 class Window;
 
-class Camera : public Entity
+class Camera
 {
 public:
 	Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat moveSpeed, GLfloat turnSpeed);

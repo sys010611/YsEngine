@@ -8,6 +8,11 @@ public:
 		direction(direction)
 	{}
 
+	virtual std::string GetName() override { return "DirectionalLight"; }
+	virtual void ShowProperties() override;
+	virtual glm::mat4 GetModelMat() override;
+	virtual void UpdateTransform(glm::mat4 newModelMat) override;
+
 	glm::vec3 direction;
 };
 

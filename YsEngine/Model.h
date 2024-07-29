@@ -38,15 +38,15 @@ public:
 	void SetRotate(glm::vec3 rotate) { this->rotate = rotate; }
 	void SetScale(glm::vec3 scale) { this->scale = scale; }
 
-	/// <summary>
-	/// model matrix를 계산 후 리턴
-	/// </summary>
-	glm::mat4 GetModelMat();
-
 	Material* GetMaterial() { return material; }
 
 	std::map<std::string, BoneInfo>& GetBoneInfoMap() { return boneInfoMap; }
 	int& GetBoneCount() { return boneCounter; }
+
+	virtual std::string GetName() override;
+	virtual void ShowProperties() override;
+	virtual glm::mat4 GetModelMat() override;
+	virtual void UpdateTransform(glm::mat4 newModelMat) override;
 
 	~Model();
 
@@ -73,8 +73,6 @@ private:
 	glm::vec3   translate;  // T
 	glm::vec3   rotate;	 // R
 	glm::vec3   scale;      // S
-
-	glm::mat4	modelMat;
 
 	Material* material;
 

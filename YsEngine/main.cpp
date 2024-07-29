@@ -34,6 +34,7 @@
 #include "Animation.h"
 #include "Animator.h"
 #include "HierarchyPanel.h"
+#include "Entity.h"
 
 #define WIDTH 1600
 #define HEIGHT 900
@@ -71,7 +72,6 @@ unsigned int pointLightCount = 0;
 Skybox* skybox;
 
 ScenePanel* scenePanel;
-InspectorPanel* inspectorPanel;
 HierarchyPanel* hierarchyPanel;
 
 // 쉐이더 변수 핸들
@@ -131,7 +131,6 @@ int main()
 	GLfloat initialPitch = 0.f;
 	GLfloat initialYaw = -90.f; // 카메라가 -z축을 보고 있도록
 	camera = new Camera(glm::vec3(0.f, 1.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
-	entityList.push_back(camera);
 
 	// Directional Light
 	directionalLight = new DirectionalLight
@@ -164,7 +163,7 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/ny.png");
 	skyboxFaces.push_back("Textures/Skybox/pz.png");
 	skyboxFaces.push_back("Textures/Skybox/nz.png");
-	//skybox = new Skybox(skyboxFaces);
+	skybox = new Skybox(skyboxFaces);
 
 	// Model
 	mainModel = new Model();
@@ -201,9 +200,8 @@ int main()
 	mainWindow->SetSceneBuffer(&sceneBuffer);
 
 	// Panel 생성
-	scenePanel = new ScenePanel(&sceneBuffer, currModel, camera, mainWindow);
-	inspectorPanel = new InspectorPanel(currModel, directionalLight);
-	hierarchyPanel = new HierarchyPanel(entityList);
+	scenePanel = new ScenePanel(&sceneBuffer, camera, mainWindow);
+	hierarchyPanel = new HierarchyPanel(entityList, scenePanel);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     ///////////////////////////////////////////////////////////////////////////
@@ -245,7 +243,7 @@ int main()
 		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 
 		glm::mat4 identityMat(1.f);
-		//skybox->DrawSkybox(viewMat, projMat);
+		skybox->DrawSkybox(viewMat, projMat);
 
 		shaderList[0]->UseShader();
 		GetShaderHandles();
@@ -282,7 +280,6 @@ int main()
 		// --------------------------------------------------------------------------------
 
 		scenePanel->Update();
-		inspectorPanel->Update();
 		hierarchyPanel->UpdateEntityList(entityList);
 		hierarchyPanel->Update();
 

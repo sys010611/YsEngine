@@ -13,8 +13,8 @@
 #include "Camera.h"
 #include "Window.h"
 
-ScenePanel::ScenePanel(FrameBuffer* fb, Model* md, Camera* cam, Window* win) :
-	sceneBuffer(fb), currModel(md), camera(cam), mainWindow(win)
+ScenePanel::ScenePanel(FrameBuffer* fb, Camera* cam, Window* win) :
+	sceneBuffer(fb), camera(cam), mainWindow(win), selectedEntity(nullptr)
 {
 	currOperation = ImGuizmo::OPERATION::TRANSLATE;
 
@@ -42,29 +42,9 @@ void ScenePanel::Update()
 		ImVec2(0, 1),
 		ImVec2(1, 0)
 	);
-	{
-		// Gizmos
-		ImGuizmo::SetOrthographic(false);
-		ImGuizmo::SetDrawlist();
-		ImGuizmo::SetRect(pos.x, pos.y, window_width, window_height);
 
-		glm::mat4 model = currModel->GetModelMat();
-		glm::mat4 view = camera->GetViewMatrix();
-		const glm::mat4& projection = camera->GetProjectionMatrix(window_width, window_height);
-
-		ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection),
-			(ImGuizmo::OPERATION)currOperation, ImGuizmo::LOCAL, glm::value_ptr(model));
-
-		if (ImGuizmo::IsUsing())
-		{
-			glm::vec3 translation, rotation, scale;
-			ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(model), &translation[0], &rotation[0], &scale[0]);
-
-			currModel->SetTranslate(translation);
-			currModel->SetRotate(rotation);
-			currModel->SetScale(scale);
-		}
-	}
+	if(selectedEntity)
+		DrawGizmo(pos);
 
 	HandleInput();
 	ImGui::End();
@@ -94,7 +74,31 @@ void ScenePanel::HandleInput()
 	}
 }
 
+void ScenePanel::SetEntity(Entity* e)
+{
+	selectedEntity = e;
+}
+
+void ScenePanel::DrawGizmo(ImVec2 pos)
+{
+	// Gizmos
+	ImGuizmo::SetOrthographic(false);
+	ImGuizmo::SetDrawlist();
+	ImGuizmo::SetRect(pos.x, pos.y, width, height);
+
+	glm::mat4 model = selectedEntity->GetModelMat();
+	glm::mat4 view = camera->GetViewMatrix();
+	const glm::mat4& projection = camera->GetProjectionMatrix(width, height);
+
+	ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection),
+		(ImGuizmo::OPERATION)currOperation, ImGuizmo::LOCAL, glm::value_ptr(model));
+
+	if (ImGuizmo::IsUsing())
+	{
+		selectedEntity->UpdateTransform(model);
+	}
+}
+
 ScenePanel::~ScenePanel()
 {
-
 }

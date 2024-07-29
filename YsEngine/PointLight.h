@@ -12,6 +12,11 @@ public:
 		exponent(exponent)
 	{}
 
+	virtual std::string GetName() override { return "PointLight"; }
+	virtual void ShowProperties() override;
+	virtual glm::mat4 GetModelMat() override;
+	virtual void UpdateTransform(glm::mat4 newModelMat) override;
+
 	glm::vec3 position;
 
 	// attenuation

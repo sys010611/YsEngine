@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "Entity.h"
+#include "GL/glew.h"
 
 class Light : public Entity
 {

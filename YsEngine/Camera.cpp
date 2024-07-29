@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include "glm/glm.hpp"
+#include "imgui.h"
 
 Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat moveSpeed, GLfloat turnSpeed)
 {
@@ -92,7 +93,6 @@ void Camera::update()
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 }
-
 
 Camera::~Camera()
 {

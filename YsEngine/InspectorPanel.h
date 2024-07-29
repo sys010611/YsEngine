@@ -3,20 +3,20 @@
 
 class Model;
 class DirectionalLight;
+class Entity;
 
 class InspectorPanel: public Panel
 {
 public:
-	InspectorPanel(Model* md, DirectionalLight* dl) : 
-		currModel(md), dirLight(dl)
-	{}
+	InspectorPanel() : currEntity(nullptr) {}
 
 	virtual void Update() override;
+
+	void SetEntity(Entity* e);
 
 	~InspectorPanel();
 
 private:
-	Model* currModel;
-	DirectionalLight* dirLight;
+	Entity* currEntity;
 };
 
