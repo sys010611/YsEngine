@@ -13,7 +13,7 @@ Texture::Texture(const char* fileLoc)
 	fileLocation = fileLoc;
 }
 
-bool Texture::LoadTexture()
+bool Texture::LoadDiffuse()
 {
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 4);
 	if (!texData)
@@ -45,7 +45,7 @@ bool Texture::LoadTexture()
 	return true;
 }
 
-bool Texture::LoadNormalMap()
+bool Texture::LoadNormal()
 {
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 3);
 	if (!texData)

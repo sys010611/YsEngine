@@ -20,6 +20,8 @@ uniform mat3 normalMat;
 
 void main()
 {
+	vec4 totalPosition = vec4(pos, 1.f);
+/*
 	vec4 totalPosition = vec4(0.f);
 	for(int i = 0; i < MAX_BONE_INFLUENCE; i++)
 	{
@@ -34,6 +36,7 @@ void main()
 		totalPosition += localPosition * weights[i];
 		vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normal;
 	}
+*/
 	gl_Position = PVM * totalPosition;
 
 	FragPos = (modelMat * totalPosition).xyz; 

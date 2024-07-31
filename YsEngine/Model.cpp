@@ -20,7 +20,7 @@
 Model::Model()
 {
 	translate = glm::vec3(0.f, 0.f, 0.f);
-	rotate = glm::vec3(0.f, 0.f, 0.f);
+	rotate = glm::vec3(-90.f, 0.f, 0.f);
 	scale = glm::vec3(1.f, 1.f, 1.f);
 
 	modelMat = GetModelMat();
@@ -76,20 +76,21 @@ void Model::RenderModel()
 	std::vector<std::pair<Mesh*, unsigned int>> solidMeshList;
 	std::vector<std::pair<Mesh*, unsigned int>> transparentMeshList;
 
-	// LoadMesh 함수에서 채워놓은 meshList를 순회하며 메시들을 렌더링한다.
+	// LoadMesh 함수에서 채워놓은 meshList를 순회하며 메시들을 분류한다.
 	for (size_t i = 0; i < meshList.size(); i++)
 	{
 		unsigned int materialIndex = meshToTex[i];
-		
+
 		// 메시 분류
-		if (meshList[i]->GetName().find("Hair") != std::string::npos || 
-			meshList[i]->GetName().find("facial_serious10") != std::string::npos || 
+		if (meshList[i]->GetName().find("Hair") != std::string::npos ||
+			meshList[i]->GetName().find("facial_serious10") != std::string::npos ||
 			meshList[i]->GetName().find("facial_normal9") != std::string::npos)
-			transparentMeshList.push_back({meshList[i], materialIndex});
+			transparentMeshList.push_back({ meshList[i], materialIndex });
 		else
-			solidMeshList.push_back({meshList[i], materialIndex});
+			solidMeshList.push_back({ meshList[i], materialIndex });
 	}
 
+	// 불투명 메시 렌더링
 	for (auto& item : solidMeshList)
 	{
 		int materialIndex = item.second;
@@ -97,12 +98,13 @@ void Model::RenderModel()
 
 		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
 			diffuseMaps[materialIndex]->UseTexture();
-		//if(normalMaps[materialIndex])
-		//	normalMaps[materialIndex]->UseNormal();
+		 if(normalMaps[materialIndex])
+		    normalMaps[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
 
+	// 투명 메시 렌더링
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -113,27 +115,15 @@ void Model::RenderModel()
 
 		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
 			diffuseMaps[materialIndex]->UseTexture();
-		//if (normalMaps[materialIndex])
-		//	normalMaps[materialIndex]->UseNormal();
+		 if (normalMaps[materialIndex])
+		    normalMaps[materialIndex]->UseNormal();
 
 		mesh->RenderMesh();
 	}
-
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
-	for (auto& item : solidMeshList)
-	{
-		int materialIndex = item.second;
-		Mesh* mesh = item.first;
-
-		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
-			diffuseMaps[materialIndex]->UseTexture();
-		//if (normalMaps[materialIndex])
-		//	normalMaps[materialIndex]->UseNormal();
-
-		mesh->RenderMesh();
-	}
 }
+
 
 void Model::ClearModel()
 {
@@ -238,14 +228,14 @@ void Model::LoadMaterials(const aiScene* scene)
 
 		diffuseMaps[i] = nullptr;
 
-		LoadDiffuseTexture(material, i);
-		LoadNormalMap(material, i);
+		LoadDiffuseMaps(material, i);
+		LoadNormalMaps(material, i);
 	}
 
 	material = new Material(0.3f, 64.f);
 }
 
-void Model::LoadDiffuseTexture(aiMaterial* material, const size_t& i)
+void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 {
 	// Diffuse 텍스쳐가 존재하는 지 먼저 확인
 	if (material->GetTextureCount(aiTextureType_DIFFUSE))
@@ -266,7 +256,7 @@ void Model::LoadDiffuseTexture(aiMaterial* material, const size_t& i)
 			std::cout << "Loading Texture : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
-			if (!diffuseMaps[i]->LoadTexture())
+			if (!diffuseMaps[i]->LoadDiffuse())
 			{ // 실패 시
 				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete diffuseMaps[i];
@@ -276,7 +266,7 @@ void Model::LoadDiffuseTexture(aiMaterial* material, const size_t& i)
 	}
 }
 
-void Model::LoadNormalMap(aiMaterial* material, const size_t& i)
+void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 {
 	// normal map이
 	if (material->GetTextureCount(aiTextureType_NORMALS))
@@ -297,7 +287,7 @@ void Model::LoadNormalMap(aiMaterial* material, const size_t& i)
 			std::cout << "Loading Texture : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
-			if (!normalMaps[i]->LoadTexture())
+			if (!normalMaps[i]->LoadNormal())
 			{ // 실패 시
 				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete normalMaps[i];

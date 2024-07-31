@@ -55,8 +55,8 @@ private:
 	void LoadMesh(aiMesh* mesh, const aiScene* scene);
 	void LoadMaterials(const aiScene* scene);
 
-	void LoadDiffuseTexture(aiMaterial* material, const size_t& i);
-	void LoadNormalMap(aiMaterial* material, const size_t& i);
+	void LoadDiffuseMaps(aiMaterial* material, const size_t& i);
+	void LoadNormalMaps(aiMaterial* material, const size_t& i);
 
 	void InitVertexBoneData(Vertex& vertex);
 	void SetVertexBoneData(Vertex& vertex, int boneID, float weight);

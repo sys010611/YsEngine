@@ -134,7 +134,7 @@ int main()
 
 	// Directional Light
 	directionalLight = new DirectionalLight
-		(1.f, 0.5f,
+		(0.f, 0.f,
 		glm::vec4(1.f, 1.f, 1.f, 1.f), 
 		glm::vec3(1.f, 1.5f, -1.f));
 	entityList.push_back(directionalLight);
@@ -142,16 +142,16 @@ int main()
 	// Point Light
 	pointLights[0] = new PointLight
 		(0.0f, 1.0f,
-		glm::vec4(1.f, 0.f, 0.f, 1.f),
-		glm::vec3(0.3f, 0.2f, 0.1f),
+		glm::vec4(1.f, 1.f, 1.f, 1.f),
+		glm::vec3(0.f, 1.5f, 0.2f),
 		1.0f, 0.22f, 0.20f);
 	pointLightCount++;
-	pointLights[1] = new PointLight
+	/*pointLights[1] = new PointLight
 		(0.0f, 1.0f,
 		glm::vec4(0.f, 1.f, 0.f, 1.f),
 		glm::vec3(-4.0f, 2.0f, 0.0f),
 		1.0, 0.045f, 0.0075f);
-	pointLightCount++;
+	pointLightCount++;*/
 	for(int i=0;i<pointLightCount;i++)
 		entityList.push_back(pointLights[i]);
 
@@ -167,7 +167,7 @@ int main()
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "devola_-_nier_automata/devola.fbx";
+	std::string modelPath = "devola_-_nier_automata/untitled.fbx";
 	mainModel->LoadModel(modelPath);
 	entityList.push_back(mainModel);
 
@@ -175,12 +175,10 @@ int main()
 
 
 	// Animation
-	idleAnim = new Animation("Models/devola_-_nier_automata/Idle.fbx", currModel);
-	runAnim = new Animation("Models/devola_-_nier_automata/Slow_Run.fbx", currModel);
-	danceAnim = new Animation("Models/devola_-_nier_automata/dance.fbx", currModel);
+	//idleAnim = new Animation("Models/devola_-_nier_automata/Idle.fbx", currModel);
 
 	// Animator
-	animator = new Animator(danceAnim);
+	//animator = new Animator(nullptr);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -219,7 +217,7 @@ int main()
 		if (camera->CanMove())
 			MoveCamera();
 
-		animator->UpdateAnimation(deltaTime);
+		//animator->UpdateAnimation(deltaTime);
 		// ----------------------------------------
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -254,7 +252,7 @@ int main()
 
 		glm::mat4 modelMat = currModel->GetModelMat();
 		glm::mat4 PVM = projMat * viewMat * modelMat;
-		glm::mat4 normalMat = GetNormalMat(modelMat);
+		glm::mat3 normalMat = GetNormalMat(modelMat);
 		glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
 		glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
 		glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
@@ -268,8 +266,8 @@ int main()
 
 		shaderList[0]->UseMaterial(mainModel->GetMaterial());
 
-		const auto& transforms = animator->GetFinalBoneMatrices();
-		shaderList[0]->UseFinalBoneMatrices(transforms);
+		//const auto& transforms = animator->GetFinalBoneMatrices();
+		//shaderList[0]->UseFinalBoneMatrices(transforms);
 		
 		mainModel->RenderModel();
 

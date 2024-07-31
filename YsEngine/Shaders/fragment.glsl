@@ -91,6 +91,7 @@ vec4 CalcPointLights(vec3 normal)
 void main()
 {	
 	vec4 texColor = texture(colorSampler, TexCoord);
+	vec4 texNormal = texture(normalSampler, TexCoord);
 	
 	vec4 finalColor = vec4(0,0,0,0);
 	finalColor += CalcDirectionalLight(FragNormal);
