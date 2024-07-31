@@ -13,6 +13,7 @@ public:
 	HierarchyPanel(std::vector<Entity*>& entityList, ScenePanel* sp);
 	virtual void Update() override;
 	void UpdateEntityList(std::vector<Entity*>& entityList);
+	~HierarchyPanel();
 
 private:
 	void DrawEntityNode(Entity* entity);

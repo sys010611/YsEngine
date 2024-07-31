@@ -50,3 +50,9 @@ void HierarchyPanel::DrawEntityNode(Entity* entity)
 		ImGui::TreePop();
 	}
 }
+
+HierarchyPanel::~HierarchyPanel()
+{
+	delete inspectorPanel;
+}
+

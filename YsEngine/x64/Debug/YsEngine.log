@@ -1,32 +1,4 @@
-﻿  Animation.cpp
-E:\YsEngine\YsEngine\Animation.h(29,37): warning C4244: 'return': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Animation.cpp(26,22): warning C4244: '=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Animation.cpp(27,28): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Animation.cpp(85,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-  Camera.cpp
-  DirectionalLight.cpp
-  Entity.cpp
-  HierarchyPanel.cpp
-E:\YsEngine\YsEngine\HierarchyPanel.cpp(39,56): warning C4312: '형식 캐스트': 'uint32_t'에서 더 큰 'void *'(으)로의 변환입니다.
-  InspectorPanel.cpp
-  Model.cpp
-E:\YsEngine\YsEngine\Model.cpp(56,43): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(258,54): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(260,46): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(289,54): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(291,46): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\Model.cpp(335,36): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+﻿  DirectionalLight.cpp
   PointLight.cpp
-  ScenePanel.cpp
-  Shader.cpp
-E:\YsEngine\YsEngine\Shader.cpp(170,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\YsEngine\YsEngine\Shader.cpp(209,36): warning C4267: '=': 'size_t'에서 'GLint'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  main.cpp
-E:\YsEngine\YsEngine\Animation.h(29,37): warning C4244: 'return': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\main.cpp(155,15): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-E:\YsEngine\YsEngine\main.cpp(199,83): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\main.cpp(199,52): warning C4244: '인수': 'GLint'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-E:\YsEngine\YsEngine\main.cpp(212,15): warning C4244: '초기화 중': 'double'에서 'GLfloat'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다...
-LINK : warning LNK4098: 'MSVCRT' defaultlib가 다른 라이브러리와 충돌합니다. /NODEFAULTLIB:library를 사용하십시오.
   YsEngine.vcxproj -> E:\YsEngine\YsEngine\x64\Debug\YsEngine.exe

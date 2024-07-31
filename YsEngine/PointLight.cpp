@@ -9,6 +9,9 @@ void PointLight::ShowProperties()
 	ImGui::Text("Transform");
 
 	ImGui::InputFloat3("Position", &position[0]);
+	ImGui::InputFloat3("Color", &color[0]);
+	ImGui::SliderFloat("Ambient", GetAmbientIntensity(), 0.f, 5.f);
+	ImGui::SliderFloat("Diffuse", GetDiffuseIntensity(), 0.f, 5.f);
 }
 
 glm::mat4 PointLight::GetModelMat()
