@@ -3,8 +3,10 @@
 layout (location = 0) in vec3 pos;
 layout (location = 1) in vec2 tex;
 layout (location = 2) in vec3 normal;
-layout (location = 3) in ivec4 boneIds;
-layout (location = 4) in vec4 weights;
+layout (location = 3) in vec3 tangent;
+layout (location = 4) in vec3 bitangent;
+layout (location = 5) in ivec4 boneIds;
+layout (location = 6) in vec4 weights;
 
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
@@ -13,6 +15,7 @@ uniform mat4 finalBonesMatrices[MAX_BONES];
 out vec3 FragPos; // 월드 좌표계
 out vec2 TexCoord;
 out vec3 FragNormal;
+out mat3 TBN;
 
 uniform mat4 modelMat;
 uniform mat4 PVM;
@@ -42,4 +45,14 @@ void main()
 	FragPos = (modelMat * totalPosition).xyz; 
 	TexCoord = tex;
 	FragNormal = normalMat * normal;
+
+
+	vec3 T = normalize(vec3(modelMat * vec4(tangent, 0.0)));
+	vec3 N = normalize(vec3(modelMat * vec4(normal, 0.0)));
+	// re-orthogonalize T with respect to N
+	T = normalize(T - dot(T, N) * N);
+	// then retrieve perpendicular vector B with the cross product of T and N
+	vec3 B = cross(N, T);
+
+	TBN = mat3(T, B, N);
 }

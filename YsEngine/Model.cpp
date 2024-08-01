@@ -59,7 +59,8 @@ void Model::LoadModel(const std::string& fileName)
 	Assimp::Importer importer;
 
 	const aiScene* scene = importer.ReadFile("Models/" + fileName,
-		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices);
+		aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals | aiProcess_JoinIdenticalVertices |
+		aiProcess_CalcTangentSpace);
 
 	if (!scene)
 	{
@@ -170,6 +171,7 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
+	// vertices 채워주기
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
@@ -191,8 +193,13 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 			vertex.TexCoords = glm::vec2(0.f,0.f);
 		}
 
-		// normal (aiProcess_GenSmoothNormals를 적용했기 때문에 없을 수가 없다.)
+		// normal 
 		vertex.Normal = AssimpGLMHelpers::GetGLMVec(mesh->mNormals[i]);
+
+		// tangent, bitangent
+		vertex.Tangent = AssimpGLMHelpers::GetGLMVec(mesh->mTangents[i]);
+		vertex.Bitangent = AssimpGLMHelpers::GetGLMVec(mesh->mBitangents[i]);
+
 
 		vertices.push_back(vertex);
 	}

@@ -141,7 +141,7 @@ int main()
 
 	// Point Light
 	pointLights[0] = new PointLight
-		(0.0f, 1.0f,
+		(0.5f, 1.0f,
 		glm::vec4(1.f, 1.f, 1.f, 1.f),
 		glm::vec3(0.f, 1.5f, 0.2f),
 		1.0f, 0.22f, 0.20f);
@@ -247,7 +247,7 @@ int main()
 		GetShaderHandles();
 
 		glUniform1i(loc_diffuseSampler, 0);
-		glUniform1i(loc_normalSampler, 0);
+		glUniform1i(loc_normalSampler, 1);
 		Model* currModel = mainModel;
 
 		glm::mat4 modelMat = currModel->GetModelMat();

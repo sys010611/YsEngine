@@ -22,6 +22,6 @@
 *.out
 *.app
 
-*.ipch
+YsEngine/x64/
 
 .vs/
