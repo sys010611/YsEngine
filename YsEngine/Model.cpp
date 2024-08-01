@@ -98,9 +98,9 @@ void Model::RenderModel()
 		Mesh* mesh = item.first;
 
 		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
-			diffuseMaps[materialIndex]->UseTexture();
-		 if(normalMaps[materialIndex])
-		    normalMaps[materialIndex]->UseNormal();
+			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
+		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
+		    normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
 
 		mesh->RenderMesh();
 	}
@@ -115,9 +115,9 @@ void Model::RenderModel()
 		Mesh* mesh = item.first;
 
 		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
-			diffuseMaps[materialIndex]->UseTexture();
-		 if (normalMaps[materialIndex])
-		    normalMaps[materialIndex]->UseNormal();
+			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
+		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
+		    normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
 
 		mesh->RenderMesh();
 	}
@@ -200,7 +200,6 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 		vertex.Tangent = AssimpGLMHelpers::GetGLMVec(mesh->mTangents[i]);
 		vertex.Bitangent = AssimpGLMHelpers::GetGLMVec(mesh->mBitangents[i]);
 
-
 		vertices.push_back(vertex);
 	}
 
@@ -234,6 +233,7 @@ void Model::LoadMaterials(const aiScene* scene)
 		aiMaterial* material = scene->mMaterials[i];
 
 		diffuseMaps[i] = nullptr;
+		normalMaps[i] = nullptr;
 
 		LoadDiffuseMaps(material, i);
 		LoadNormalMaps(material, i);
@@ -260,7 +260,7 @@ void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 
 			diffuseMaps[i] = new Texture(texPath.c_str());
-			std::cout << "Loading Texture : " << texPath << std::endl;
+			std::cout << "Loading Diffuse : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
 			if (!diffuseMaps[i]->LoadDiffuse())
@@ -291,7 +291,7 @@ void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 			std::string texPath = "Models/" + modelName + "/textures/" + textureName;
 
 			normalMaps[i] = new Texture(texPath.c_str());
-			std::cout << "Loading Texture : " << texPath << std::endl;
+			std::cout << "Loading Normal : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
 			if (!normalMaps[i]->LoadNormal())

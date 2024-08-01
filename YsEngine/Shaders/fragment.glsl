@@ -93,8 +93,8 @@ vec4 CalcPointLights(vec3 normal)
 void main()
 {	
 	vec4 texColor = texture(colorSampler, TexCoord);
-	vec3 texNormal = texture(normalSampler, TexCoord).rgb;
-	texNormal = texNormal * 2.0 - 1.0;
+	vec3 texNormal = texture(normalSampler, TexCoord).rgb; // normal map에서 떼어오기
+	texNormal = texNormal * 2.0 - 1.0; // 값의 범위를 [0,1]에서 [-1,1]로 remap
 	texNormal = normalize(TBN * texNormal);
 	
 	vec4 finalColor = vec4(0,0,0,0);

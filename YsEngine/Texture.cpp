@@ -36,9 +36,6 @@ bool Texture::LoadDiffuse()
 		width, height, 0,
 		GL_RGBA, GL_UNSIGNED_BYTE, texData);
 
-
-	//glGenerateMipmap(GL_TEXTURE_2D);
-
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	stbi_image_free(texData);
@@ -62,30 +59,20 @@ bool Texture::LoadNormal()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
 	glTexImage2D(
 		GL_TEXTURE_2D, 0, GL_RGB,
 		width, height, 0,
 		GL_RGB, GL_UNSIGNED_BYTE, texData);
 
-
-	//glGenerateMipmap(GL_TEXTURE_2D);
-
-	glBindTexture(GL_TEXTURE_2D, 1);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	stbi_image_free(texData);
 	return true;
 }
 
-void Texture::UseTexture()
+void Texture::UseTexture(GLenum textureUnit)
 {
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-}
-
-void Texture::UseNormal()
-{
-	glActiveTexture(GL_TEXTURE1);
+	glActiveTexture(textureUnit);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 }
 

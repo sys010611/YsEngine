@@ -43,7 +43,7 @@ int Window::Initialize()
 
 
 	// Create the window
-	mainWindow = glfwCreateWindow(width, height, "Test Window", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "YS Engine", NULL, NULL);
 	if (!mainWindow)
 	{
 		printf("Error creating GLFW window!");

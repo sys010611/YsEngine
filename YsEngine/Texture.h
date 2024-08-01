@@ -14,14 +14,7 @@ public:
 	/// </summary>
 	bool LoadDiffuse();
 	bool LoadNormal();
-
-	/// <summary>
-	/// 0번 텍스쳐 유닛에 텍스쳐 물려주기
-	/// </summary>
-	void UseTexture();
-	void UseNormal();
-
-
+	void UseTexture(GLenum textureUnit);
 	void ClearTexture(); // 메모리에서 텍스쳐 내리기
 
 	~Texture();

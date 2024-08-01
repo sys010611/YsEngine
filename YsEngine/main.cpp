@@ -99,6 +99,8 @@ void GetShaderHandles()
 	loc_normalMat = shaderList[0]->GetNormalMatLoc();
 	loc_eyePos = shaderList[0]->GetEyePosLoc();
 	loc_finalBonesMatrices = shaderList[0]->GetFinalBonesMatricesLoc();
+	loc_diffuseSampler = shaderList[0]->GetColorSamplerLoc();
+	loc_normalSampler = shaderList[0]->GetNormalSamplerLoc();
 }
 
 glm::mat3 GetNormalMat(glm::mat4& modelMat)
@@ -134,24 +136,24 @@ int main()
 
 	// Directional Light
 	directionalLight = new DirectionalLight
-		(0.f, 0.f,
+		(0.5f, 1.f,
 		glm::vec4(1.f, 1.f, 1.f, 1.f), 
-		glm::vec3(1.f, 1.5f, -1.f));
+		glm::vec3(0.f, 1.f, 1.f));
 	entityList.push_back(directionalLight);
 
 	// Point Light
 	pointLights[0] = new PointLight
-		(0.5f, 1.0f,
+		(0.f, 0.5f,
 		glm::vec4(1.f, 1.f, 1.f, 1.f),
 		glm::vec3(0.f, 1.5f, 0.2f),
 		1.0f, 0.22f, 0.20f);
 	pointLightCount++;
-	/*pointLights[1] = new PointLight
-		(0.0f, 1.0f,
-		glm::vec4(0.f, 1.f, 0.f, 1.f),
-		glm::vec3(-4.0f, 2.0f, 0.0f),
+	pointLights[1] = new PointLight
+		(0.0f, 0.5f,
+		glm::vec4(1.f, 1.f, 1.f, 1.f),
+		glm::vec3(-2.0f, 2.0f, -1.f),
 		1.0, 0.045f, 0.0075f);
-	pointLightCount++;*/
+	pointLightCount++;
 	for(int i=0;i<pointLightCount;i++)
 		entityList.push_back(pointLights[i]);
 
@@ -245,9 +247,7 @@ int main()
 
 		shaderList[0]->UseShader();
 		GetShaderHandles();
-
-		glUniform1i(loc_diffuseSampler, 0);
-		glUniform1i(loc_normalSampler, 1);
+		
 		Model* currModel = mainModel;
 
 		glm::mat4 modelMat = currModel->GetModelMat();
@@ -268,7 +268,10 @@ int main()
 
 		//const auto& transforms = animator->GetFinalBoneMatrices();
 		//shaderList[0]->UseFinalBoneMatrices(transforms);
-		
+
+		glUniform1i(loc_diffuseSampler, 0);
+		glUniform1i(loc_normalSampler, 1);
+
 		mainModel->RenderModel();
 
 		glUseProgram(0);
