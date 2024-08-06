@@ -35,6 +35,7 @@
 #include "Animator.h"
 #include "HierarchyPanel.h"
 #include "Entity.h"
+#include "Terrain.h"
 
 #define WIDTH 1600
 #define HEIGHT 900
@@ -70,6 +71,7 @@ PointLight* pointLights[MAX_POINT_LIGHTS];
 unsigned int pointLightCount = 0;
 
 Skybox* skybox;
+Terrain* terrain;
 
 ScenePanel* scenePanel;
 HierarchyPanel* hierarchyPanel;
@@ -167,14 +169,16 @@ int main()
 	skyboxFaces.push_back("Textures/Skybox/nz.png");
 	skybox = new Skybox(skyboxFaces);
 
+	// Terrain
+	terrain = new Terrain();
+	terrain->LoadTerrain("Heightmaps/iceland_heightmap.png");
+
 	// Model
 	mainModel = new Model();
 	std::string modelPath = "devola_-_nier_automata/untitled.fbx";
 	mainModel->LoadModel(modelPath);
 	entityList.push_back(mainModel);
-
 	currModel = mainModel;
-
 
 	// Animation
 	//idleAnim = new Animation("Models/devola_-_nier_automata/Idle.fbx", currModel);
@@ -242,12 +246,12 @@ int main()
 		glm::mat4 viewMat = camera->GetViewMatrix();
 		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 
-		glm::mat4 identityMat(1.f);
 		skybox->DrawSkybox(viewMat, projMat);
+		terrain->DrawTerrain(viewMat, projMat);
 
 		shaderList[0]->UseShader();
 		GetShaderHandles();
-		
+
 		Model* currModel = mainModel;
 
 		glm::mat4 modelMat = currModel->GetModelMat();

@@ -170,6 +170,7 @@
     <ClCompile Include="ScenePanel.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -209,6 +210,7 @@
     <ClInclude Include="ScenePanel.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -216,6 +218,8 @@
     <None Include="Shaders\fragment.glsl" />
     <None Include="Shaders\skyFragment.glsl" />
     <None Include="Shaders\skyVertex.glsl" />
+    <None Include="Shaders\terrainFragment.glsl" />
+    <None Include="Shaders\terrainVertex.glsl" />
     <None Include="Shaders\vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

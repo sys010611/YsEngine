@@ -46,7 +46,6 @@ void main()
 	TexCoord = tex;
 	FragNormal = normalMat * normal;
 
-
 	vec3 T = normalize(normalMat * tangent);
 	vec3 B = normalize(normalMat * bitangent);
 	vec3 N = normalize(normalMat * normal);

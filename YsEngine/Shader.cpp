@@ -57,6 +57,7 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
 	if (!shaderID)
 	{
 		printf("Error creating shader program!\n");
+		assert(0);
 		return;
 	}
 

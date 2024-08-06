@@ -4,6 +4,8 @@
 #include <stdexcept>
 #include <iostream>
 
+#include "stb_image.h"
+
 Texture::Texture(const char* fileLoc)
 {
 	textureID = 0;

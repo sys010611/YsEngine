@@ -126,6 +126,9 @@
     <ClCompile Include="PointLight.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Mesh.h">
@@ -239,6 +242,9 @@
     <ClInclude Include="Entity.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragment.glsl">
@@ -251,6 +257,12 @@
       <Filter>Shader</Filter>
     </None>
     <None Include="Shaders\skyVertex.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\terrainVertex.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\terrainFragment.glsl">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>
