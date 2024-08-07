@@ -67,6 +67,12 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 	update();
 }
 
+void Camera::SetSpeed(GLfloat scrollY)
+{
+	moveSpeed += scrollY * 10.f;
+	moveSpeed = std::max(0.1f, moveSpeed);
+}
+
 glm::mat4 Camera::GetViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);

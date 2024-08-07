@@ -113,7 +113,8 @@ glm::mat3 GetNormalMat(glm::mat4& modelMat)
 void MoveCamera()
 {
 	camera->keyControl(mainWindow->GetKeys(), deltaTime);
-	camera->mouseControl(mainWindow->getXChange(), mainWindow->getYChange());
+	camera->mouseControl(mainWindow->getXChange(), mainWindow->getYChange());	
+	camera->SetSpeed(mainWindow->GetScrollYChange());
 }
 
 int main()
@@ -207,7 +208,7 @@ int main()
 	scenePanel = new ScenePanel(&sceneBuffer, camera, mainWindow);
 	hierarchyPanel = new HierarchyPanel(entityList, scenePanel);
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     ///////////////////////////////////////////////////////////////////////////
     /// main loop
     //////////////////////////////////////////////////////////////////////////

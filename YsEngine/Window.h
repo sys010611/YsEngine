@@ -25,6 +25,8 @@ public:
 	GLfloat getXChange();
 	GLfloat getYChange();
 
+	GLfloat GetScrollYChange();
+
 	GLFWwindow* GetGLFWwindow() { return mainWindow; }
 
 	void swapBuffers() { glfwSwapBuffers(mainWindow); }
@@ -48,10 +50,13 @@ private:
 	bool mouseButton[8];
 	bool mouseRightButtonClicked; // 마우스 오른쪽 버튼이 클릭되었는지
 
-	void createCallbacks();
+	GLfloat scrollY;
+
+	void CreateCallbacks();
 	static void handleKeys(GLFWwindow* window, int key, int code, int action, int mode);
 	static void handleMouseButton(GLFWwindow* window, int button, int action, int mods);
 	static void handleMousePos(GLFWwindow* window, double xPos, double yPos);
+	static void handleScroll(GLFWwindow* window, double xoffset, double yoffset);
 
 	FrameBuffer* sceneBuffer;
 };

@@ -18,6 +18,7 @@ public:
 
 	void keyControl(bool* keys, GLfloat deltaTime);
 	void mouseControl(GLfloat xChange, GLfloat yChange);
+	void SetSpeed(GLfloat scrollY);
 
 	glm::vec3 GetPosition();
 

@@ -115,14 +115,15 @@ void Terrain::DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat)
 {
     terrainShader->UseShader();
 
-    loc_PVM = terrainShader->GetPVMLoc();
-    terrainShader->setInt("heightSampler", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureID);
     
     glm::mat4 PVM = projMat * viewMat;
+    loc_PVM = terrainShader->GetPVMLoc();
     glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
+    terrainShader->setInt("heightSampler", 0);
+    terrainShader->setMat4("modelViewMat", viewMat);
 
     glBindVertexArray(VAO);
     glDrawArrays(GL_PATCHES, 0, 4*rez*rez);

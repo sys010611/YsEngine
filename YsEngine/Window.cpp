@@ -58,7 +58,7 @@ int Window::Initialize()
 	glfwMakeContextCurrent(mainWindow);
 
 	// Handle Key + Mouse Input
-	createCallbacks();
+	CreateCallbacks();
 	glfwSetInputMode(mainWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 	// Allow modern extension access
@@ -81,11 +81,12 @@ int Window::Initialize()
 	glfwSetWindowUserPointer(mainWindow, this);
 }
 
-void Window::createCallbacks()
+void Window::CreateCallbacks()
 {
 	glfwSetKeyCallback(mainWindow, handleKeys);
 	glfwSetMouseButtonCallback(mainWindow, handleMouseButton);
 	glfwSetCursorPosCallback(mainWindow, handleMousePos);
+	glfwSetScrollCallback(mainWindow, handleScroll);
 }
 
 GLfloat Window::getXChange()
@@ -102,14 +103,16 @@ GLfloat Window::getYChange()
 	return theChange;
 }
 
+GLfloat Window::GetScrollYChange()
+{
+	GLfloat theChange = scrollY;
+	scrollY = 0.0f;
+	return theChange;
+}
+
 void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int mode)
 {
 	Window* myWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
-
-	//if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	//{
-	//	glfwSetWindowShouldClose(window, GL_TRUE);
-	//}
 
 	if (key >= 0 && key < 1024)
 	{
@@ -158,6 +161,13 @@ void Window::handleMousePos(GLFWwindow* window, double xPos, double yPos)
 	{
 		myWindow->mouseRightButtonClicked = false;
 	}
+}
+
+void Window::handleScroll(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Window* myWindow = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+	myWindow->scrollY = yoffset;
 }
 
 void Window::SetSceneBuffer(FrameBuffer* sceneBuffer)
