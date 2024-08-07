@@ -19,6 +19,8 @@ public:
 	Shader();
 
 	void CreateFromFiles(const char* vertexLocation, const char* fragmentLocation);
+    void CreateFromFiles(const char* vertexLocation, const char* tessControlLocation,
+                        const char* tessEvalLocation, const char* fragmentLocation);
 
 	std::string ReadFile(const char* fileLocation);
 
@@ -41,8 +43,6 @@ public:
 	GLuint GetNormalMatLoc() { return normalMatLoc; }
 	GLuint GetEyePosLoc() { return eyePosLoc; }
 	GLuint GetFinalBonesMatricesLoc() { return finalBonesMatricesLoc; }
-
-	void Validate();
 
     // utility uniform functions
 // ------------------------------------------------------------------------
@@ -142,6 +142,7 @@ private:
 	} materialLoc;
 
 	void CompileShader(const char* vertexCode, const char* fragmentCode);
+    void CompileShader(const char* vertexCode, const char* tessControlCode, const char* tessEvalCode, const char* fragmentCode);
 	void AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
 };
 

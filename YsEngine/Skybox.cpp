@@ -95,7 +95,6 @@ void Skybox::DrawSkybox(glm::mat4 viewMat, glm::mat4 projMat)
 
 	glUniform1i(loc_sampler, 0);
 
-	skyShader->Validate();
 	skyMesh->RenderMesh();
 
 	glDepthMask(GL_TRUE);

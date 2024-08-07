@@ -219,6 +219,8 @@
     <None Include="Shaders\skyFragment.glsl" />
     <None Include="Shaders\skyVertex.glsl" />
     <None Include="Shaders\terrainFragment.glsl" />
+    <None Include="Shaders\terrainTC.glsl" />
+    <None Include="Shaders\terrainTE.glsl" />
     <None Include="Shaders\terrainVertex.glsl" />
     <None Include="Shaders\vertex.glsl" />
   </ItemGroup>

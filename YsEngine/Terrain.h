@@ -3,16 +3,14 @@
 #include "GL/glew.h"
 #include "CommonValues.h"
 
-class Mesh;
 class Shader;
 
 class Terrain
 {
 public:	
-	Terrain();
+	Terrain() = default;
 
 	void LoadTerrain(const char* fileName);
-	void CreateTerrain();
 	void DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat);
 
 	~Terrain();
@@ -24,12 +22,9 @@ private:
 	int width, height, nChannels;
 
 	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
 
-	GLuint VAO, VBO, IBO;
-
-	unsigned int NUM_STRIPS;
-	unsigned int NUM_VERTS_PER_STRIP;
+	GLuint VAO, VBO;
 	unsigned int rez;
+	unsigned int textureID;
 };
 

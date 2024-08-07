@@ -15,7 +15,7 @@ Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLf
 	this->turnSpeed = turnSpeed;
 
 	nearClippingPlane = 0.1f;
-	farClippingPlane = 10000.f;
+	farClippingPlane = 100000.0f;
 
 	canMove = false;
 

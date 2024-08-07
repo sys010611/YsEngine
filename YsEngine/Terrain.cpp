@@ -9,70 +9,44 @@
 #include "Mesh.h"
 #include "Shader.h"
 
-Terrain::Terrain()
-{
-    glPatchParameteri(GL_PATCH_VERTICES, 4);
-
-    terrainShader = nullptr;
-    loc_PVM = 0;
-    width = 0;
-    height = 0;
-    nChannels = 0;
-    VAO = 0;
-    VBO = 0;
-    IBO = 0;
-    NUM_STRIPS = 0;
-    NUM_VERTS_PER_STRIP = 0;
-    rez = 0;
-}
-
 void Terrain::LoadTerrain(const char* fileName)
 {
     // shader setup
     terrainShader = new Shader();
-    terrainShader->CreateFromFiles("Shaders/terrainVertex.glsl", "Shaders/terrainFragment.glsl");
-    loc_PVM = terrainShader->GetPVMLoc();
+    terrainShader->CreateFromFiles("Shaders/terrainVertex.glsl",  "Shaders/terrainTC.glsl",
+                                "Shaders/terrainTE.glsl", "Shaders/terrainFragment.glsl");
 
-    unsigned char* data = stbi_load(fileName, &width, &height, &nChannels, 0);
-
-    if (!data)
+    // -------------------------------------------------------------------------
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(fileName, &width, &height, &nrChannels, 0);
+    if(!data)
     {
-        std::cerr << "Failed to load image!" << std::endl;
+        std::cout << "Failed to load texture" << std::endl;
         return;
     }
 
-    std::cout << "width : " << width << std::endl;
-    std::cout << "height : " << height << std::endl;
-    std::cout << "nChannels : " << nChannels << std::endl;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
-    /*
-    // vertex generation
-    float yScale = 64.0f / 256.0f, yShift = 16.0f;  // apply a scale+shift to the height data
-    for (unsigned int i = 0; i < height; i++)
-    {
-        for (unsigned int j = 0; j < width; j++)
-        {
-            // retrieve texel for (i,j) tex coord
-            unsigned char* texel = data + (j + width * i) * nChannels;
-            // raw height at coordinate
-            unsigned char y = texel[0];
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-            // vertex
-            float px = (-height / 2.0f + i);        // v.x
-            float py = (y * yScale - yShift); // v.y
-            float pz = (-width / 2.0f + j);        // v.z
-            Vertex vertex(px, py, pz);
-
-            vertices.push_back(vertex);
-        }
-    }*/
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    std::cout << "Loaded heightmap of size " << height << " x " << width << std::endl;
     
+    glBindTexture(GL_TEXTURE_2D, 0);
+    stbi_image_free(data);
+
+    // -------------------------------------------------------------------------
+
     // vertex generation
-    std::vector<Vertex> vertices;
     rez = 20;
-    for (unsigned i = 0; i <= rez - 1; i++)
+    for (unsigned i = 0; i < rez; i++)
     {
-        for (unsigned j = 0; j <= rez - 1; j++)
+        for (unsigned j = 0; j < rez; j++)
         {
             Vertex vertexA;
             vertexA.Position.x = -width / 2.0f + width * i / (float)rez;
@@ -108,34 +82,15 @@ void Terrain::LoadTerrain(const char* fileName)
         }
     }
 
-    // index generation
-    for (unsigned int i = 0; i < height - 1; i++)       // for each row a.k.a. each strip
+    std::cout << "Loaded " << rez * rez << " patches of 4 control points each" << std::endl;
+    std::cout << "Processing " << rez * rez * 4 << " vertices in vertex shader" << std::endl;
+
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR)
     {
-        for (unsigned int j = 0; j < width; j++)      // for each column
-        {
-            for (unsigned int k = 0; k < 2; k++)      // for each side of the strip
-            {
-                indices.push_back(j + width * (i + k));
-            }
-        }
+        std::cerr << "OpenGL error after generating vertices: " << error << std::endl;
     }
 
-    std::cout << "Loaded " << vertices.size() << " vertices" << std::endl;
-    std::cout << "Loaded " << indices.size() << " indices" << std::endl;
-
-    stbi_image_free(data);
-
-    NUM_STRIPS = height - 1;
-    NUM_VERTS_PER_STRIP = width * 2;
-
-    std::cout << "NUM_STRIPS : " << NUM_STRIPS << std::endl;
-    std::cout << "NUM_VERTS_PER_STRIP : " << NUM_VERTS_PER_STRIP << std::endl;
-
-    CreateTerrain();
-}
-
-void Terrain::CreateTerrain()
-{
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
@@ -143,60 +98,47 @@ void Terrain::CreateTerrain()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
-    glGenBuffers(1, &IBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0], GL_STATIC_DRAW);
-
     // position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
     glEnableVertexAttribArray(0);
 
+    // texture
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+    glEnableVertexAttribArray(1);
+
     glBindVertexArray(0);
 
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR)
-    {
-        std::cerr << "OpenGL error after creating terrain: " << error << std::endl;
-    }
+    glPatchParameteri(GL_PATCH_VERTICES, 4);
 }
 
 void Terrain::DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat)
 {
-    GLenum error;
-
     terrainShader->UseShader();
 
     loc_PVM = terrainShader->GetPVMLoc();
+    terrainShader->setInt("heightSampler", 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureID);
     
     glm::mat4 PVM = projMat * viewMat;
     glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
 
-
     glBindVertexArray(VAO);
-    /*
-    for (unsigned int strip = 0; strip < NUM_STRIPS; ++strip)
-    {
-        glDrawElements(GL_TRIANGLE_STRIP,   // primitive type
-            NUM_VERTS_PER_STRIP,            // number of indices to render
-            GL_UNSIGNED_INT,                // index data type
-            (void*)(sizeof(unsigned int) * NUM_VERTS_PER_STRIP * strip)); // offset to starting index
-    }*/
     glDrawArrays(GL_PATCHES, 0, 4*rez*rez);
 
-    error = glGetError();
+    GLenum error = glGetError();
     if (error != GL_NO_ERROR)
     {
-        std::cerr << "OpenGL error after drawing elements: " << error << std::endl;
+        std::cerr << "OpenGL error after drawing terrain: " << error << std::endl;
         return;
     }
 
     glBindVertexArray(0);
 }
 
-
 Terrain::~Terrain()
 {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &IBO);
 }

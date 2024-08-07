@@ -34,8 +34,8 @@ int Window::Initialize()
 
 	// GLFW 윈도우 속성 셋업
 	// OpenGL 버전
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // 버전 3.3
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6); // 버전 4.6
 	// Core profile = 이전 버전 호환성 없음
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	// 앞으로의 호환성을 허용
