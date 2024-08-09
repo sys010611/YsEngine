@@ -265,5 +265,14 @@
     <None Include="Shaders\terrainFragment.glsl">
       <Filter>Shader</Filter>
     </None>
+    <None Include="Shaders\terrainTC.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\terrainTE.glsl">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\normalGeo.glsl">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

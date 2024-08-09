@@ -6,14 +6,12 @@ class Texture
 {
 public:
 	Texture(const char* fileLoc);
-
-	/// <summary>
-	/// 텍스쳐 메모리로 로드, GPU로 쏴주기
-	/// </summary>
-	bool LoadDiffuse();
-	bool LoadNormal();
+	bool LoadTexture(int nChannels = 0);
 	void UseTexture(GLenum textureUnit);
 	void ClearTexture(); // 메모리에서 텍스쳐 내리기
+
+	int GetWidth() { return width; }
+	int GetHeight() { return height; }
 
 	~Texture();
 

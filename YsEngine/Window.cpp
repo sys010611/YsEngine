@@ -21,6 +21,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	yChange = 0.0f;
 
 	mouseRightButtonClicked = false;
+	isWireframe = false;
 }
 
 int Window::Initialize()
@@ -125,6 +126,11 @@ void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int m
 			myWindow->keys[key] = false;
 		}
 	}
+
+	if (key == GLFW_KEY_F10 && action == GLFW_PRESS)
+	{
+		myWindow->ToggleWireframeMode();
+	}
 }
 
 void Window::handleMouseButton(GLFWwindow* window, int button, int action, int mods)
@@ -173,6 +179,15 @@ void Window::handleScroll(GLFWwindow* window, double xoffset, double yoffset)
 void Window::SetSceneBuffer(FrameBuffer* sceneBuffer)
 {
 	this->sceneBuffer = sceneBuffer;
+}
+
+void Window::ToggleWireframeMode()
+{	
+	isWireframe = !isWireframe;
+	if(isWireframe)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 Window::~Window()

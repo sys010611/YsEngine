@@ -8,42 +8,28 @@
 
 #include "Mesh.h"
 #include "Shader.h"
+#include "Texture.h"
 
 void Terrain::LoadTerrain(const char* fileName)
 {
     // shader setup
     terrainShader = new Shader();
-    terrainShader->CreateFromFiles("Shaders/terrainVertex.glsl",  "Shaders/terrainTC.glsl",
-                                "Shaders/terrainTE.glsl", "Shaders/terrainFragment.glsl");
-
+    terrainShader->CreateFromFiles("Shaders/terrainVertex.glsl", "Shaders/terrainFragment.glsl", nullptr,
+                                "Shaders/terrainTC.glsl", "Shaders/terrainTE.glsl");
     // -------------------------------------------------------------------------
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load(fileName, &width, &height, &nrChannels, 0);
-    if(!data)
-    {
-        std::cout << "Failed to load texture" << std::endl;
-        return;
-    }
-
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_2D, textureID);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    std::cout << "Loaded heightmap of size " << height << " x " << width << std::endl;
-    
-    glBindTexture(GL_TEXTURE_2D, 0);
-    stbi_image_free(data);
-
+    // height map 로드
+    heightMap = new Texture(fileName);
+    heightMap->LoadTexture(4);
+    // -------------------------------------------------------------------------
+    // diffuse map 로드    
+    diffuseMap = new Texture("Textures/aerial_grass_rock_4k.blend/aerial_grass_rock_diff_4k.jpg");
+    diffuseMap->LoadTexture(4);
     // -------------------------------------------------------------------------
 
     // vertex generation
     rez = 20;
+    width = heightMap->GetWidth();
+    height = heightMap->GetHeight();
     for (unsigned i = 0; i < rez; i++)
     {
         for (unsigned j = 0; j < rez; j++)
@@ -115,27 +101,31 @@ void Terrain::DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat)
 {
     terrainShader->UseShader();
 
+    heightMap->UseTexture(GL_TEXTURE0);
+    terrainShader->setInt("heightSampler", 0);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    diffuseMap->UseTexture(GL_TEXTURE1);
+    terrainShader->setInt("diffuseSampler", 1);
     
     glm::mat4 PVM = projMat * viewMat;
     loc_PVM = terrainShader->GetPVMLoc();
     glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
-    terrainShader->setInt("heightSampler", 0);
     terrainShader->setMat4("modelViewMat", viewMat);
+
+    glm::vec2 texelSize(1.f/width, 1.f/height);
+    terrainShader->setVec2("texelSize", texelSize);
+
+    terrainShader->setFloat("HEIGHT_SCALE", 64.f);
 
     glBindVertexArray(VAO);
     glDrawArrays(GL_PATCHES, 0, 4*rez*rez);
 
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR)
-    {
-        std::cerr << "OpenGL error after drawing terrain: " << error << std::endl;
-        return;
-    }
-
     glBindVertexArray(0);
+}
+
+void Terrain::UseShader()
+{
+    terrainShader->UseShader();
 }
 
 Terrain::~Terrain()

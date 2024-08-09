@@ -15,28 +15,41 @@ Shader::Shader()
 	normalMatLoc = 0;
 }
 
-void Shader::CreateFromFiles(const char* vertexLocation, const char* fragmentLocation)
-{
-	std::string vertexString = ReadFile(vertexLocation);
-	std::string fragmentString = ReadFile(fragmentLocation);
-	const char* vertexCode = vertexString.c_str();
-	const char* fragmentCode = fragmentString.c_str();
+void Shader::CreateFromFiles(const char* vertexLocation, const char* fragmentLocation,
+							const char* geometryLocation, const char* tessControlLocation,
+							const char* tessEvalLocation)
+{	
+	std::string vertexStr = ReadFile(vertexLocation).c_str();
+	const char* vertexCode = vertexStr.c_str();
 
-	CompileShader(vertexCode, fragmentCode);
-}
+	std::string fragmentStr = ReadFile(fragmentLocation).c_str();
+	const char* fragmentCode = fragmentStr.c_str();
 
-void Shader::CreateFromFiles(const char* vertexLocation, const char* tessControlLocation, const char* tessEvalLocation, const char* fragmentLocation)
-{
-	std::string vertexString = ReadFile(vertexLocation);
-	std::string tessControlString = ReadFile(tessControlLocation);
-	std::string tessEvalString = ReadFile(tessEvalLocation);
-	std::string fragmentString = ReadFile(fragmentLocation);
-	const char* vertexCode = vertexString.c_str();
-	const char* tessControlCode = tessControlString.c_str();
-	const char* tessEvalCode = tessEvalString.c_str();
-	const char* fragmentCode = fragmentString.c_str();
+	const char* geometryCode = nullptr;
+	std::string geometryStr = "";
+	if (geometryLocation)
+	{
+		geometryStr = ReadFile(geometryLocation).c_str();
+		geometryCode = geometryStr.c_str();
+	}
+		
+	const char* tessControlCode = nullptr;
+	std::string tessControlStr = "";
+	if (tessControlLocation)
+	{
+		tessControlStr = ReadFile(tessControlLocation).c_str();
+		tessControlCode = tessControlStr.c_str();
+	}
 
-	CompileShader(vertexCode, tessControlCode, tessEvalCode, fragmentCode);
+	const char* tessEvalCode = nullptr;
+	std::string tessEvalStr = "";
+	if (tessEvalLocation)
+	{
+		tessEvalStr = ReadFile(tessEvalLocation).c_str();
+		tessEvalCode = tessEvalStr.c_str();
+	}
+
+	CompileShader(vertexCode, fragmentCode, geometryCode ,tessControlCode, tessEvalCode);
 }
 
 std::string Shader::ReadFile(const char* fileLocation)
@@ -61,7 +74,9 @@ std::string Shader::ReadFile(const char* fileLocation)
 	return content;
 }
 
-void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
+void Shader::CompileShader(const char* vertexCode, const char* fragmentCode,
+						const char* geometryCode, const char* tessControlCode,
+						const char* tessEvalCode)
 {
 	shaderID = glCreateProgram();
 
@@ -74,47 +89,12 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
 
 	AddShader(shaderID, vertexCode, GL_VERTEX_SHADER);
 	AddShader(shaderID, fragmentCode, GL_FRAGMENT_SHADER);
-
-	GLint result = 0;
-	GLchar eLog[1024] = { 0 };
-
-	glLinkProgram(shaderID);
-	glGetProgramiv(shaderID, GL_LINK_STATUS, &result);
-	if (!result)
-	{
-		glGetProgramInfoLog(shaderID, sizeof(eLog), NULL, eLog);
-		printf("Error linking program: '%s'\n", eLog);
-		return;
-	}
-
-	glValidateProgram(shaderID);
-	glGetProgramiv(shaderID, GL_VALIDATE_STATUS, &result);
-	if (!result)
-	{
-		glGetProgramInfoLog(shaderID, sizeof(eLog), NULL, eLog);
-		printf("Error validating program: '%s'\n", eLog);
-		return;
-	}
-
-	// 쉐이더 컴파일 성공, 쉐이더 내부 변수들 위치 가져오기
-	GetVariableLocations();
-}
-
-void Shader::CompileShader(const char* vertexCode, const char* tessControlCode, const char* tessEvalCode, const char* fragmentCode)
-{
-	shaderID = glCreateProgram();
-
-	if (!shaderID)
-	{
-		printf("Error creating shader program!\n");
-		assert(0);
-		return;
-	}
-
-	AddShader(shaderID, vertexCode, GL_VERTEX_SHADER);
-	AddShader(shaderID, tessControlCode, GL_TESS_CONTROL_SHADER);
-	AddShader(shaderID, tessEvalCode, GL_TESS_EVALUATION_SHADER);
-	AddShader(shaderID, fragmentCode, GL_FRAGMENT_SHADER);
+	if (geometryCode)
+		AddShader(shaderID, geometryCode, GL_GEOMETRY_SHADER);
+	if (tessControlCode)
+		AddShader(shaderID, tessControlCode, GL_TESS_CONTROL_SHADER);
+	if (tessEvalCode)
+		AddShader(shaderID, tessEvalCode, GL_TESS_EVALUATION_SHADER);
 
 	GLint result = 0;
 	GLchar eLog[1024] = { 0 };
@@ -249,6 +229,11 @@ void Shader::UseFinalBoneMatrices(const std::vector<glm::mat4>& transforms)
 {
 	for (int i = 0; i < transforms.size(); i++)
 		glUniformMatrix4fv(finalBonesMatricesLoc + i, 1, false, glm::value_ptr(transforms[i]));
+}
+
+void Shader::UseEyePos(glm::vec3 pos)
+{
+	glUniform3f(eyePosLoc, pos.x, pos.y, pos.z);
 }
 
 void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType)

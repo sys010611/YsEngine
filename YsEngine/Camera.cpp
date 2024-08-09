@@ -69,7 +69,7 @@ void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 
 void Camera::SetSpeed(GLfloat scrollY)
 {
-	moveSpeed += scrollY * 10.f;
+	moveSpeed += scrollY * 5.f;
 	moveSpeed = std::max(0.1f, moveSpeed);
 }
 

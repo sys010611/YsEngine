@@ -135,7 +135,7 @@ int main()
 	// 카메라
 	GLfloat initialPitch = 0.f;
 	GLfloat initialYaw = -90.f; // 카메라가 -z축을 보고 있도록
-	camera = new Camera(glm::vec3(0.f, 1.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
+	camera = new Camera(glm::vec3(0.f, 12.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
 
 	// Directional Light
 	directionalLight = new DirectionalLight
@@ -208,7 +208,6 @@ int main()
 	scenePanel = new ScenePanel(&sceneBuffer, camera, mainWindow);
 	hierarchyPanel = new HierarchyPanel(entityList, scenePanel);
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     ///////////////////////////////////////////////////////////////////////////
     /// main loop
     //////////////////////////////////////////////////////////////////////////
@@ -247,38 +246,43 @@ int main()
 		glm::mat4 viewMat = camera->GetViewMatrix();
 		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 
+		glm::vec3 camPos = camera->GetPosition();
+
 		skybox->DrawSkybox(viewMat, projMat);
+
+		terrain->UseShader();
+		terrain->GetShader()->UseDirectionalLight(directionalLight);
+		terrain->GetShader()->UsePointLights(pointLights, pointLightCount);
+		terrain->GetShader()->UseEyePos(camPos);
 		terrain->DrawTerrain(viewMat, projMat);
 
 		shaderList[0]->UseShader();
-		GetShaderHandles();
+		{
+			GetShaderHandles();
 
-		Model* currModel = mainModel;
+			Model* currModel = mainModel;
 
-		glm::mat4 modelMat = currModel->GetModelMat();
-		glm::mat4 PVM = projMat * viewMat * modelMat;
-		glm::mat3 normalMat = GetNormalMat(modelMat);
-		glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-		glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
-		glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
+			glm::mat4 modelMat = currModel->GetModelMat();
+			glm::mat4 PVM = projMat * viewMat * modelMat;
+			glm::mat3 normalMat = GetNormalMat(modelMat);
+			glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
+			glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
+			glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
 
-		shaderList[0]->UseDirectionalLight(directionalLight);
-		shaderList[0]->UsePointLights(pointLights, pointLightCount);
+			shaderList[0]->UseEyePos(camPos);
+			shaderList[0]->UseDirectionalLight(directionalLight);
+			shaderList[0]->UsePointLights(pointLights, pointLightCount);
 
-		glm::vec4 camPos = glm::vec4(camera->GetPosition(), 1.f);
-		glm::vec3 camPos_wc = glm::vec3(modelMat * camPos);
-		glUniform3f(loc_eyePos, camPos_wc.x, camPos_wc.y, camPos_wc.z);
+			shaderList[0]->UseMaterial(mainModel->GetMaterial());
 
-		shaderList[0]->UseMaterial(mainModel->GetMaterial());
+			//const auto& transforms = animator->GetFinalBoneMatrices();
+			//shaderList[0]->UseFinalBoneMatrices(transforms);
 
-		//const auto& transforms = animator->GetFinalBoneMatrices();
-		//shaderList[0]->UseFinalBoneMatrices(transforms);
+			glUniform1i(loc_diffuseSampler, 0);
+			glUniform1i(loc_normalSampler, 1);
 
-		glUniform1i(loc_diffuseSampler, 0);
-		glUniform1i(loc_normalSampler, 1);
-
-		mainModel->RenderModel();
-
+			mainModel->RenderModel();
+		}
 		glUseProgram(0);
 
 		// --------------------------------------------------------------------------------

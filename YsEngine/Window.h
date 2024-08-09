@@ -30,8 +30,8 @@ public:
 	GLFWwindow* GetGLFWwindow() { return mainWindow; }
 
 	void swapBuffers() { glfwSwapBuffers(mainWindow); }
-
 	void SetSceneBuffer(FrameBuffer* sceneBuffer);
+	void ToggleWireframeMode();
 
 	~Window();
 
@@ -49,6 +49,8 @@ private:
 	GLfloat yChange;
 	bool mouseButton[8];
 	bool mouseRightButtonClicked; // 마우스 오른쪽 버튼이 클릭되었는지
+	
+	bool isWireframe;
 
 	GLfloat scrollY;
 

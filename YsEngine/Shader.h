@@ -18,9 +18,9 @@ class Shader
 public:
 	Shader();
 
-	void CreateFromFiles(const char* vertexLocation, const char* fragmentLocation);
-    void CreateFromFiles(const char* vertexLocation, const char* tessControlLocation,
-                        const char* tessEvalLocation, const char* fragmentLocation);
+	void CreateFromFiles(const char* vertexLocation, const char* fragmentLocation,
+                        const char* geometryLocation = nullptr, const char* tessControlLocation = nullptr,
+                        const char* tessEvalLocation = nullptr);
 
 	std::string ReadFile(const char* fileLocation);
 
@@ -33,6 +33,7 @@ public:
 	void UsePointLights(PointLight** pointLights, unsigned int count);
 	void UseMaterial(Material* material);
 	void UseFinalBoneMatrices(const std::vector<glm::mat4>& transforms);
+    void UseEyePos(glm::vec3 pos);
 
 	GLuint GetID() { return shaderID; }
 
@@ -141,8 +142,9 @@ private:
 		GLuint shininessLoc;
 	} materialLoc;
 
-	void CompileShader(const char* vertexCode, const char* fragmentCode);
-    void CompileShader(const char* vertexCode, const char* tessControlCode, const char* tessEvalCode, const char* fragmentCode);
+	void CompileShader(const char* vertexCode, const char* fragmentCode, 
+                    const char* geometryCode = nullptr, const char* tessControlCode = nullptr,
+                    const char* tessEvalCode = nullptr);
 	void AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
 };
 

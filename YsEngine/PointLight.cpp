@@ -12,6 +12,12 @@ void PointLight::ShowProperties()
 	ImGui::InputFloat3("Color", &color[0]);
 	ImGui::SliderFloat("Ambient", GetAmbientIntensity(), 0.f, 5.f);
 	ImGui::SliderFloat("Diffuse", GetDiffuseIntensity(), 0.f, 5.f);
+
+	// Range
+	ImGui::Text("Decreasement");
+	ImGui::SliderFloat("Constant", &constant, 0.f, 1.f);
+	ImGui::SliderFloat("Linear", &linear, 0.f, 1.f);
+	ImGui::SliderFloat("Exponent", &exponent, 0.f, 1.f);
 }
 
 glm::mat4 PointLight::GetModelMat()

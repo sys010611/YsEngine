@@ -15,9 +15,9 @@ Texture::Texture(const char* fileLoc)
 	fileLocation = fileLoc;
 }
 
-bool Texture::LoadDiffuse()
+bool Texture::LoadTexture(int nChannels)
 {
-	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 4);
+	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, nChannels);
 	if (!texData)
 	{
 		printf("Failed to find: %s\n", fileLocation);
@@ -32,39 +32,24 @@ bool Texture::LoadDiffuse()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-
-	glTexImage2D(
-		GL_TEXTURE_2D, 0, GL_RGBA,
-		width, height, 0,
-		GL_RGBA, GL_UNSIGNED_BYTE, texData);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	stbi_image_free(texData);
-	return true;
-}
-
-bool Texture::LoadNormal()
-{
-	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 3);
-	if (!texData)
+	int format = -1;
+	switch (nChannels)
 	{
-		printf("Failed to find: %s\n", fileLocation);
-		return false;
+		case 3:
+			format = GL_RGB;
+			break;
+		case 4:
+			format = GL_RGBA;
+			break;
+		default:
+			std::cout << "Invalid number of channels" << std::endl;
+			return false;
 	}
 
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 	glTexImage2D(
-		GL_TEXTURE_2D, 0, GL_RGB,
+		GL_TEXTURE_2D, 0, format,
 		width, height, 0,
-		GL_RGB, GL_UNSIGNED_BYTE, texData);
+		format, GL_UNSIGNED_BYTE, texData);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

@@ -4,6 +4,7 @@
 #include "CommonValues.h"
 
 class Shader;
+class Texture;
 
 class Terrain
 {
@@ -12,6 +13,8 @@ public:
 
 	void LoadTerrain(const char* fileName);
 	void DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat);
+	Shader* GetShader() { return terrainShader; }
+	void UseShader();
 
 	~Terrain();
 
@@ -25,6 +28,8 @@ private:
 
 	GLuint VAO, VBO;
 	unsigned int rez;
-	unsigned int textureID;
+
+	Texture* heightMap;
+	Texture* diffuseMap;
 };
 

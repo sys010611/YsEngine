@@ -19,7 +19,7 @@
 
 Model::Model()
 {
-	translate = glm::vec3(0.f, 0.f, 0.f);
+	translate = glm::vec3(0.f, 10.f, 0.f);
 	rotate = glm::vec3(-90.f, 0.f, 0.f);
 	scale = glm::vec3(1.f, 1.f, 1.f);
 
@@ -263,7 +263,7 @@ void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 			std::cout << "Loading Diffuse : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
-			if (!diffuseMaps[i]->LoadDiffuse())
+			if (!diffuseMaps[i]->LoadTexture(4))
 			{ // 실패 시
 				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete diffuseMaps[i];
@@ -294,7 +294,7 @@ void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 			std::cout << "Loading Normal : " << texPath << std::endl;
 
 			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
-			if (!normalMaps[i]->LoadNormal())
+			if (!normalMaps[i]->LoadTexture(3))
 			{ // 실패 시
 				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete normalMaps[i];
