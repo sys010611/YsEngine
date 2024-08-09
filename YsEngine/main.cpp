@@ -173,6 +173,7 @@ int main()
 	// Terrain
 	terrain = new Terrain();
 	terrain->LoadTerrain("Heightmaps/iceland_heightmap.png");
+	entityList.push_back(terrain);
 
 	// Model
 	mainModel = new Model();

@@ -5,6 +5,7 @@ layout (quads, fractional_odd_spacing, ccw) in;
 uniform sampler2D heightSampler;
 uniform mat4 PVM;
 uniform float HEIGHT_SCALE;
+uniform float HEIGHT_SHIFT;
 
 in vec2 TextureCoord[];
 
@@ -27,7 +28,7 @@ void main()
 	vec2 t1 = (t11 - t10) * u + t10;
 	vec2 texCoord = (t1 - t0) * v + t0;
 
-	Height = texture(heightSampler, texCoord).x * HEIGHT_SCALE - 16.0;
+	Height = texture(heightSampler, texCoord).x * HEIGHT_SCALE + HEIGHT_SHIFT;
 
 	vec4 p00 = gl_in[0].gl_Position;
 	vec4 p01 = gl_in[1].gl_Position;

@@ -2,19 +2,25 @@
 
 #include "GL/glew.h"
 #include "CommonValues.h"
+#include "Entity.h"
 
 class Shader;
 class Texture;
 
-class Terrain
+class Terrain : public Entity
 {
 public:	
-	Terrain() = default;
+	Terrain();
 
 	void LoadTerrain(const char* fileName);
 	void DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat);
 	Shader* GetShader() { return terrainShader; }
 	void UseShader();
+
+	virtual std::string GetName() override;
+	virtual void ShowProperties() override;
+	virtual glm::mat4 GetModelMat() override;
+	virtual void UpdateTransform(glm::mat4 newModelMat) override;
 
 	~Terrain();
 
@@ -31,5 +37,10 @@ private:
 
 	Texture* heightMap;
 	Texture* diffuseMap;
+
+	float heightScale;
+	float heightShift;
+
+	glm::vec3 position;
 };
 
