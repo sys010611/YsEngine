@@ -35,7 +35,7 @@ void Terrain::LoadTerrain(const char* fileName)
     // -------------------------------------------------------------------------
 
     // vertex generation
-    rez = 20;
+    rez = 100;
     width = heightMap->GetWidth();
     height = heightMap->GetHeight();
     for (unsigned i = 0; i < rez; i++)

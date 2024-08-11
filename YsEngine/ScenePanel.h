@@ -6,14 +6,14 @@
 class FrameBuffer;
 class Model;
 class Window;
-class Camera;
+class CameraBase;
 class Entity;
 struct ImVec2;
 
 class ScenePanel : Panel
 {
 public:
-	ScenePanel(FrameBuffer* fb, Camera* cam, Window* win);
+	ScenePanel(FrameBuffer* fb, CameraBase* cam, Window* win);
 
 	virtual void Update() override;
 	void HandleInput();
@@ -29,7 +29,7 @@ private:
 
 	FrameBuffer* sceneBuffer;
 	Entity* selectedEntity;
-	Camera* camera;
+	CameraBase* camera;
 	Window* mainWindow;
 
 	int currOperation;

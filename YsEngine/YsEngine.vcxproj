@@ -156,7 +156,8 @@
     <ClCompile Include="Animator.cpp" />
     <ClCompile Include="AssimpGLMHelpers.cpp" />
     <ClCompile Include="Bone.cpp" />
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="FreeCamera.cpp" />
+    <ClCompile Include="CameraBase.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="FrameBuffer.cpp" />
@@ -166,6 +167,8 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerCamera.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="ScenePanel.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -194,7 +197,8 @@
     <ClInclude Include="Animator.h" />
     <ClInclude Include="AssimpGLMHelpers.h" />
     <ClInclude Include="Bone.h" />
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="FreeCamera.h" />
+    <ClInclude Include="CameraBase.h" />
     <ClInclude Include="CommonValues.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Entity.h" />
@@ -206,6 +210,8 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Panel.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerCamera.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="ScenePanel.h" />
     <ClInclude Include="Shader.h" />

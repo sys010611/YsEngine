@@ -93,5 +93,6 @@ void main()
 	finalColor += CalcPointLights(normal);	
 
 	FragColor = texColor * finalColor;
+	FragColor +=  Height/128.f;
 	//FragColor = vec4(normal, 1.f);
 }

@@ -10,10 +10,12 @@
 
 #include "FrameBuffer.h"
 #include "Model.h"
-#include "Camera.h"
+#include "CameraBase.h"
+#include "PlayerCamera.h"
+#include "FreeCamera.h"
 #include "Window.h"
 
-ScenePanel::ScenePanel(FrameBuffer* fb, Camera* cam, Window* win) :
+ScenePanel::ScenePanel(FrameBuffer* fb, CameraBase* cam, Window* win) :
 	sceneBuffer(fb), camera(cam), mainWindow(win), selectedEntity(nullptr)
 {
 	currOperation = ImGuizmo::OPERATION::TRANSLATE;
@@ -25,7 +27,7 @@ ScenePanel::ScenePanel(FrameBuffer* fb, Camera* cam, Window* win) :
 void ScenePanel::Update()
 {
 	// Render ImGui
-	ImGui::Begin("Scene", NULL);
+	ImGui::Begin("Viewport", NULL);
 
 	ImVec2 pos = ImGui::GetCursorScreenPos();
 	const float window_width = ImGui::GetContentRegionAvail().x;
@@ -54,13 +56,21 @@ void ScenePanel::HandleInput()
 {
 	if (ImGui::IsWindowFocused())
 	{
+		PlayerCamera* pc = dynamic_cast<PlayerCamera*>(camera);
+		if (pc)
+			pc->SetCanMove(true);
+
 		if (ImGui::IsKeyDown(ImGuiKey_MouseRight))
 		{
-			camera->SetCanMove(true);
+			FreeCamera* fc = dynamic_cast<FreeCamera*>(camera);
+			if(fc)
+				fc->SetCanMove(true);
 		}
 		else
 		{
-			camera->SetCanMove(false);
+			FreeCamera* fc = dynamic_cast<FreeCamera*>(camera);
+			if (fc)
+				fc->SetCanMove(false);
 
 			if (ImGui::IsKeyPressed(ImGuiKey_W))
 				currOperation = ImGuizmo::TRANSLATE;
@@ -71,6 +81,10 @@ void ScenePanel::HandleInput()
 			if (ImGui::IsKeyPressed(ImGuiKey_R))
 				currOperation = ImGuizmo::SCALE;
 		}
+	}
+	else
+	{
+		camera->SetCanMove(false);
 	}
 }
 
@@ -94,9 +108,7 @@ void ScenePanel::DrawGizmo(ImVec2 pos)
 		(ImGuizmo::OPERATION)currOperation, ImGuizmo::LOCAL, glm::value_ptr(model));
 
 	if (ImGuizmo::IsUsing())
-	{
 		selectedEntity->UpdateTransform(model);
-	}
 }
 
 ScenePanel::~ScenePanel()

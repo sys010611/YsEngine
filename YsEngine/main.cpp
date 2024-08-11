@@ -17,7 +17,6 @@
 #include "imgui_impl_opengl3.h"
 #include "ImGuizmo.h"
 
-#include "Camera.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Window.h"
@@ -36,12 +35,18 @@
 #include "HierarchyPanel.h"
 #include "Entity.h"
 #include "Terrain.h"
+#include "Player.h"
+#include "FreeCamera.h"
+#include "PlayerCamera.h"
 
 #define WIDTH 1600
 #define HEIGHT 900
 
 Window* mainWindow;
-Camera* camera;
+
+CameraBase* currCamera;
+FreeCamera* freeCamera;
+PlayerCamera* playerCamera;
 
 GLfloat deltaTime = 0.f;
 GLfloat lastTime = 0.f;
@@ -58,6 +63,8 @@ std::vector<Entity*> entityList;
 
 Model* mainModel;
 Model* currModel;
+
+Player* player;
 
 Animator* animator;
 
@@ -112,9 +119,9 @@ glm::mat3 GetNormalMat(glm::mat4& modelMat)
 
 void MoveCamera()
 {
-	camera->keyControl(mainWindow->GetKeys(), deltaTime);
-	camera->mouseControl(mainWindow->getXChange(), mainWindow->getYChange());	
-	camera->SetSpeed(mainWindow->GetScrollYChange());
+	freeCamera->KeyControl(mainWindow->GetKeys(), deltaTime);
+	freeCamera->MouseControl(mainWindow->getXChange(), mainWindow->getYChange());
+	freeCamera->SetSpeed(mainWindow->GetScrollYChange());
 }
 
 int main()
@@ -133,9 +140,9 @@ int main()
 	CreateShader();
 
 	// 카메라
-	GLfloat initialPitch = 0.f;
-	GLfloat initialYaw = -90.f; // 카메라가 -z축을 보고 있도록
-	camera = new Camera(glm::vec3(0.f, 12.f, 5.f), glm::vec3(0.f, 1.f, 0.f), initialYaw, initialPitch, 10.f, 0.3f);
+	freeCamera = new FreeCamera(glm::vec3(0.f, 12.f, 5.f), 10.f, 0.3f);
+	playerCamera = new PlayerCamera(player);
+	currCamera = freeCamera;
 
 	// Directional Light
 	directionalLight = new DirectionalLight
@@ -182,6 +189,9 @@ int main()
 	entityList.push_back(mainModel);
 	currModel = mainModel;
 
+	// Player
+	player = new Player(mainModel);
+
 	// Animation
 	//idleAnim = new Animation("Models/devola_-_nier_automata/Idle.fbx", currModel);
 
@@ -206,7 +216,7 @@ int main()
 	mainWindow->SetSceneBuffer(&sceneBuffer);
 
 	// Panel 생성
-	scenePanel = new ScenePanel(&sceneBuffer, camera, mainWindow);
+	scenePanel = new ScenePanel(&sceneBuffer, currCamera, mainWindow);
 	hierarchyPanel = new HierarchyPanel(entityList, scenePanel);
 
     ///////////////////////////////////////////////////////////////////////////
@@ -221,8 +231,10 @@ int main()
 		// ---------------------------------------
 		glfwPollEvents();
 
-		if (camera->CanMove())
+		if (currCamera->CanMove())
 			MoveCamera();
+
+		player->HandleInput(mainWindow->GetKeys(), deltaTime);
 
 		//animator->UpdateAnimation(deltaTime);
 		// ----------------------------------------
@@ -244,10 +256,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// --------------------------------------------------------------------------------
 
-		glm::mat4 viewMat = camera->GetViewMatrix();
-		glm::mat4 projMat = camera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
+		glm::mat4 viewMat = currCamera->GetViewMatrix();
+		glm::mat4 projMat = currCamera->GetProjectionMatrix(scenePanel->GetWidth(), scenePanel->GetHeight());
 
-		glm::vec3 camPos = camera->GetPosition();
+		glm::vec3 camPos = currCamera->GetPosition();
 
 		skybox->DrawSkybox(viewMat, projMat);
 
