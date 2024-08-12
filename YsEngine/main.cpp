@@ -1,5 +1,4 @@
 #define STB_IMAGE_IMPLEMENTATION
-
 #include <iostream>
 #include <vector>
 
@@ -53,12 +52,10 @@ GLfloat lastTime = 0.f;
 
 // Vertex Shader
 static const char* vShaderPath = "Shaders/vertex.glsl";
-
 // Fragment Shader
 static const char* fShaderPath = "Shaders/fragment.glsl";
 
 std::vector<Shader*> shaderList;
-
 std::vector<Entity*> entityList;
 
 Model* mainModel;
@@ -92,37 +89,10 @@ GLuint loc_normalMat = 0;
 GLuint loc_eyePos = 0;
 GLuint loc_finalBonesMatrices = 0;
 
-// 쉐이더 컴파일
-void CreateShader()
-{
-	Shader* shader = new Shader;
-	shader->CreateFromFiles(vShaderPath, fShaderPath);
-	shaderList.push_back(shader);
-}
-
-void GetShaderHandles()
-{
-	// 핸들 얻어오기
-	loc_modelMat = shaderList[0]->GetModelMatLoc();
-	loc_PVM = shaderList[0]->GetPVMLoc();
-	loc_normalMat = shaderList[0]->GetNormalMatLoc();
-	loc_eyePos = shaderList[0]->GetEyePosLoc();
-	loc_finalBonesMatrices = shaderList[0]->GetFinalBonesMatricesLoc();
-	loc_diffuseSampler = shaderList[0]->GetColorSamplerLoc();
-	loc_normalSampler = shaderList[0]->GetNormalSamplerLoc();
-}
-
-glm::mat3 GetNormalMat(glm::mat4& modelMat)
-{
-	return glm::mat3(glm::transpose(glm::inverse(modelMat)));
-}
-
-void MoveCamera()
-{
-	freeCamera->KeyControl(mainWindow->GetKeys(), deltaTime);
-	freeCamera->MouseControl(mainWindow->getXChange(), mainWindow->getYChange());
-	freeCamera->SetSpeed(mainWindow->GetScrollYChange());
-}
+void CreateShader();
+void GetShaderHandles();
+glm::mat3 GetNormalMat(glm::mat4& modelMat);
+void MoveCamera();
 
 int main()
 {
@@ -138,11 +108,6 @@ int main()
     mainWindow->Initialize();
 
 	CreateShader();
-
-	// 카메라
-	freeCamera = new FreeCamera(glm::vec3(0.f, 12.f, 5.f), 10.f, 0.3f);
-	playerCamera = new PlayerCamera(player);
-	currCamera = freeCamera;
 
 	// Directional Light
 	directionalLight = new DirectionalLight
@@ -192,6 +157,11 @@ int main()
 	// Player
 	player = new Player(mainModel);
 
+	// Camera
+	freeCamera = new FreeCamera(glm::vec3(0.f, 12.f, 5.f), 10.f, 0.3f);
+	playerCamera = new PlayerCamera(player);
+	currCamera = playerCamera;
+
 	// Animation
 	//idleAnim = new Animation("Models/devola_-_nier_automata/Idle.fbx", currModel);
 
@@ -233,6 +203,7 @@ int main()
 
 		if (currCamera->CanMove())
 			MoveCamera();
+		currCamera->Update();
 
 		player->HandleInput(mainWindow->GetKeys(), deltaTime);
 
@@ -324,4 +295,35 @@ int main()
 	}
 
     return 0;
+}
+
+void CreateShader()
+{
+	Shader* shader = new Shader;
+	shader->CreateFromFiles(vShaderPath, fShaderPath);
+	shaderList.push_back(shader);
+}
+
+void GetShaderHandles()
+{
+	// 핸들 얻어오기
+	loc_modelMat = shaderList[0]->GetModelMatLoc();
+	loc_PVM = shaderList[0]->GetPVMLoc();
+	loc_normalMat = shaderList[0]->GetNormalMatLoc();
+	loc_eyePos = shaderList[0]->GetEyePosLoc();
+	loc_finalBonesMatrices = shaderList[0]->GetFinalBonesMatricesLoc();
+	loc_diffuseSampler = shaderList[0]->GetColorSamplerLoc();
+	loc_normalSampler = shaderList[0]->GetNormalSamplerLoc();
+}
+
+glm::mat3 GetNormalMat(glm::mat4& modelMat)
+{
+	return glm::mat3(glm::transpose(glm::inverse(modelMat)));
+}
+
+void MoveCamera()
+{
+	currCamera->KeyControl(mainWindow->GetKeys(), deltaTime);
+	currCamera->MouseControl(mainWindow->getXChange(), mainWindow->getYChange());
+	currCamera->ScrollControl(mainWindow->GetScrollYChange());
 }

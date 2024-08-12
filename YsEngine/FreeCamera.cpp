@@ -14,8 +14,6 @@ FreeCamera::FreeCamera(glm::vec3 startPosition, GLfloat moveSpeed, GLfloat turnS
 	this->turnSpeed = turnSpeed;
 
 	canMove = false;
-
-	Update();
 }
 
 
@@ -55,11 +53,9 @@ void FreeCamera::MouseControl(GLfloat xChange, GLfloat yChange)
 
 	if (pitch < -89.0f)
 		pitch = -89.0f;
-
-	Update();
 }
 
-void FreeCamera::SetSpeed(GLfloat scrollY)
+void FreeCamera::ScrollControl(GLfloat scrollY)
 {
 	moveSpeed += scrollY * 5.f;
 	moveSpeed = std::max(0.1f, moveSpeed);

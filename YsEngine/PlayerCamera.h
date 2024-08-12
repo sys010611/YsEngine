@@ -8,14 +8,21 @@ class PlayerCamera : public CameraBase
 public:
 	PlayerCamera(Player* player);
 
+	virtual void Update() override;
+	virtual void KeyControl(bool* keys, GLfloat deltaTime) override;
 	virtual void MouseControl(GLfloat xChange, GLfloat yChange) override;
-	virtual void SetCanMove(bool flag) override { canMove = flag; }
-	virtual bool CanMove() override { return canMove; }
+	virtual void ScrollControl(GLfloat scrollY) override;
 
 private:
+	float CalcHorizontalDistance();
+	float CalcVerticalDistance();
+	void CalcPosition(float horizontalDistance, float verticalDistance);
+
 	Player* player;
-	float distanceFromPlayer = 50.f;
-	float angleAroundPlayer = 0.f;
+	float distance;
+	float angle;
 	bool canMove;
+
+	const float HEIGHT_OFFSET;
 };
 

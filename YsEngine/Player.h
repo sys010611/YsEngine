@@ -9,12 +9,12 @@ public:
 	Player(Model* model);
 	void HandleInput(bool* keys, float deltaTime);
 	void Move(float deltaTime);
+	float GetRotY();
 	
 	Model* GetModel() { return model; }
 
 private:
 	void Jump();
-	float DegreeToRadian(float degree);
 
 	Model* model;
 

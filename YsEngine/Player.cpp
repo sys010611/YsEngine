@@ -58,8 +58,8 @@ void Player::Move(float deltaTime)
 	GLfloat* currPos = model->GetTranslate();
 	float distance = currMoveSpeed * deltaTime;
 
-	float dx = distance * sinf(DegreeToRadian(newRotY));
-	float dz = distance * cosf(DegreeToRadian(newRotY));
+	float dx = distance * sinf(glm::radians(newRotY));
+	float dz = distance * cosf(glm::radians(newRotY));
 
 	upwardSpeed -= GRAVITY * deltaTime;
 
@@ -75,6 +75,11 @@ void Player::Move(float deltaTime)
 	model->SetTranslate(newPos);
 }
 
+float Player::GetRotY()
+{
+	return model->GetRotate()[1];
+}
+
 void Player::Jump()
 {
 	if(isJumping)
@@ -82,10 +87,4 @@ void Player::Jump()
 	
 	upwardSpeed = JUMP_POWER;
 	isJumping = true;
-}
-
-float Player::DegreeToRadian(float degree)
-{
-	float pi = 3.14159f;
-	return (degree * (pi / 180.f));
 }
