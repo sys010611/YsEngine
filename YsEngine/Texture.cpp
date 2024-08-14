@@ -15,7 +15,7 @@ Texture::Texture(const char* fileLoc)
 	fileLocation = fileLoc;
 }
 
-bool Texture::LoadTexture(int nChannels)
+bool Texture::LoadTexture(int nChannels, bool preserveData)
 {
 	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, nChannels);
 	if (!texData)
@@ -53,7 +53,14 @@ bool Texture::LoadTexture(int nChannels)
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	stbi_image_free(texData);
+	if (preserveData)
+	{
+		this->texData = texData;
+	}
+	else
+	{
+		stbi_image_free(texData);
+	}
 	return true;
 }
 

@@ -15,10 +15,10 @@
 Terrain::Terrain()
 {
     heightScale = 64.f;
-    heightShift = -16.f;
+    heightShift = 0.f;
 }
 
-void Terrain::LoadTerrain(const char* fileName)
+void Terrain::LoadTerrain(const char* fileLoc)
 {
     // shader setup
     terrainShader = new Shader();
@@ -26,8 +26,33 @@ void Terrain::LoadTerrain(const char* fileName)
                                 "Shaders/terrainTC.glsl", "Shaders/terrainTE.glsl");
     // -------------------------------------------------------------------------
     // height map 로드
-    heightMap = new Texture(fileName);
-    heightMap->LoadTexture(4);
+    heightMap = new Texture(fileLoc);
+    heightMap->LoadTexture(4, true);
+    
+    width = heightMap->GetWidth();
+    height = heightMap->GetHeight();
+    nChannels = heightMap->GetBitDepth();
+
+    unsigned char* heightData = heightMap->GetTexData();
+
+    heights.resize(width);
+    for (int i = 0; i < heights.size(); i++)
+        heights[i].resize(height);
+
+    for (int i = 0; i < height; i++)
+    {
+        for (int j = 0; j < width; j++)
+        {
+            // retrieve texel for (i,j) tex coord
+            unsigned char* texel = heightData + (j + width * i) * nChannels;
+            // raw height at coordinate
+            GLfloat y = texel[0] / 255.f; // 값의 범위를 [0, 1]로
+
+            heights[j][i] = y;
+        }
+    }
+
+    stbi_image_free(heightData);
     // -------------------------------------------------------------------------
     // diffuse map 로드    
     diffuseMap = new Texture("Textures/aerial_grass_rock_4k.blend/aerial_grass_rock_diff_4k.jpg");
@@ -36,8 +61,6 @@ void Terrain::LoadTerrain(const char* fileName)
 
     // vertex generation
     rez = 100;
-    width = heightMap->GetWidth();
-    height = heightMap->GetHeight();
     for (unsigned i = 0; i < rez; i++)
     {
         for (unsigned j = 0; j < rez; j++)
@@ -109,12 +132,13 @@ void Terrain::DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat)
     diffuseMap->UseTexture(GL_TEXTURE1);
     terrainShader->setInt("diffuseSampler", 1);
     
-    glm::mat4 modelMat = glm::translate(glm::mat4(1.f), position);
+    glm::mat4 modelMat = GetModelMat();
     glm::mat4 PVM = projMat * viewMat * modelMat;
     loc_PVM = terrainShader->GetPVMLoc();
     glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
 
     terrainShader->setMat4("modelViewMat", modelMat * viewMat);
+    terrainShader->setMat4("modelMat", modelMat);
 
     glm::vec2 texelSize(1.f/width, 1.f/height);
     terrainShader->setVec2("texelSize", texelSize);
@@ -161,6 +185,18 @@ void Terrain::UpdateTransform(glm::mat4 newModelMat)
     ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(newModelMat), &T[0], &R[0], &S[0]);
 
     position = T;
+}
+
+GLfloat Terrain::GetHeight(float worldX, float worldZ)
+{
+    float terrainX = worldX + width/2.f;
+    float terrainZ = worldZ + height/2.f;
+
+    if(terrainX >= width || terrainZ >= height || terrainX < 0 || terrainZ < 0)
+        return 0.f;
+
+    GLfloat y = heights[terrainX][terrainZ];
+    return y * heightScale - heightShift;
 }
 
 Terrain::~Terrain()

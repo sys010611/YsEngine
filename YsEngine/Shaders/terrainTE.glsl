@@ -4,6 +4,7 @@ layout (quads, fractional_odd_spacing, ccw) in;
 
 uniform sampler2D heightSampler;
 uniform mat4 PVM;
+uniform mat4 modelMat;
 uniform float HEIGHT_SCALE;
 uniform float HEIGHT_SHIFT;
 
@@ -48,5 +49,5 @@ void main()
 	gl_Position = PVM * p;
 	TexCoord_global = texCoord;
 	TexCoord_local = gl_TessCoord.xy;
-	FragPos = p.xyz;
+	FragPos = (modelMat * p).xyz;
 }

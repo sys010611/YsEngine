@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Model.h"
+#include "Terrain.h"
 
 Player::Player(Model* model) : MOVE_SPEED(10.f), TURN_SPEED(200.f), GRAVITY(0.2f), JUMP_POWER(0.05f)
 {
@@ -33,11 +34,9 @@ void Player::HandleInput(bool* keys, float deltaTime)
 
 	if (keys[GLFW_KEY_SPACE])
 		Jump();
-
-	Move(deltaTime);
 }
 
-void Player::Move(float deltaTime)
+void Player::Move(float deltaTime, Terrain* terrain)
 {
 	// 회전
 	GLfloat* currRot = model->GetRotate();
@@ -65,6 +64,7 @@ void Player::Move(float deltaTime)
 
 	glm::vec3 newPos(currPos[0]+dx, currPos[1] + upwardSpeed, currPos[2]+dz);
 
+	groundHeight = terrain->GetHeight(currPos[0], currPos[2]);
 	if (newPos[1] <= groundHeight) // 땅에 닿았다면
 	{
 		upwardSpeed = 0;

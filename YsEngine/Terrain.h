@@ -12,7 +12,7 @@ class Terrain : public Entity
 public:	
 	Terrain();
 
-	void LoadTerrain(const char* fileName);
+	void LoadTerrain(const char* fileLoc);
 	void DrawTerrain(glm::mat4 viewMat, glm::mat4 projMat);
 	Shader* GetShader() { return terrainShader; }
 	void UseShader();
@@ -22,6 +22,7 @@ public:
 	virtual glm::mat4 GetModelMat() override;
 	virtual void UpdateTransform(glm::mat4 newModelMat) override;
 
+	GLfloat GetHeight(float worldX, float worldZ);
 	~Terrain();
 
 private:
@@ -42,5 +43,6 @@ private:
 	float heightShift;
 
 	glm::vec3 position;
+	std::vector<std::vector<GLfloat>> heights;
 };
 

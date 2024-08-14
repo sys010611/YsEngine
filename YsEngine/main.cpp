@@ -207,6 +207,9 @@ int main()
 
 		player->HandleInput(mainWindow->GetKeys(), deltaTime);
 
+		player->HandleInput(mainWindow->GetKeys(), deltaTime);
+		player->Move(deltaTime, terrain);
+
 		//animator->UpdateAnimation(deltaTime);
 		// ----------------------------------------
 
