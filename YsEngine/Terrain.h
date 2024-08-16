@@ -1,8 +1,10 @@
 #pragma once
 
+#include <vector>
+
 #include "GL/glew.h"
-#include "CommonValues.h"
 #include "Entity.h"
+#include "Vertex.h"
 
 class Shader;
 class Texture;

@@ -15,6 +15,7 @@
 #include <glm\gtc\type_ptr.hpp>
 
 #include "CommonValues.h"
+#include "Vertex.h"
 #include "Entity.h"
 
 class Mesh;

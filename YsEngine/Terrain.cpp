@@ -192,11 +192,25 @@ GLfloat Terrain::GetHeight(float worldX, float worldZ)
     float terrainX = worldX + width/2.f;
     float terrainZ = worldZ + height/2.f;
 
-    if(terrainX >= width || terrainZ >= height || terrainX < 0 || terrainZ < 0)
+    int gridX = floorf(terrainX);
+    int gridZ = floorf(terrainZ);
+
+    if(gridX >= width-1 || gridZ >= height-1 || gridX < 0 || gridZ < 0)
         return 0.f;
 
-    GLfloat y = heights[terrainX][terrainZ];
-    return y * heightScale - heightShift;
+    float xCoord = fmod(terrainX, gridX);
+    float zCoord = fmod(terrainZ, gridZ);
+
+    float h00 = heights[gridX][gridZ];
+    float h01 = heights[gridX+1][gridZ];
+    float h10 = heights[gridX][gridZ+1];
+    float h11 = heights[gridX+1][gridZ+1];
+
+    float h0 = glm::mix(h00, h01, xCoord);
+    float h1 = glm::mix(h10, h11, xCoord);
+    float h = glm::mix(h0, h1, zCoord);
+
+    return h * heightScale - heightShift;
 }
 
 Terrain::~Terrain()

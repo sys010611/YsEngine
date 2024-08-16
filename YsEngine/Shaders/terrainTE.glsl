@@ -25,9 +25,9 @@ void main()
 	vec2 t10 = TextureCoord[2];
 	vec2 t11 = TextureCoord[3];
 
-	vec2 t0 = (t01 - t00) * u + t00;
-	vec2 t1 = (t11 - t10) * u + t10;
-	vec2 texCoord = (t1 - t0) * v + t0;
+	vec2 t0 = mix(t00, t01, u);
+	vec2 t1 = mix(t10, t11, u);
+	vec2 texCoord = mix(t0, t1, v);
 
 	Height = texture(heightSampler, texCoord).x * HEIGHT_SCALE + HEIGHT_SHIFT;
 
@@ -40,10 +40,9 @@ void main()
 	vec4 vVec = p10 - p00;
 	vec4 normal = normalize(vec4(cross(vVec.xyz, uVec.xyz), 0));
 
-	vec4 p0 = (p01 - p00) * u + p00;
-	vec4 p1 = (p11 - p10) * u + p10;
-	vec4 p = (p1 - p0) * v + p0;
-
+	vec4 p0 = mix(p00, p01, u);
+	vec4 p1 = mix(p10, p11, u);
+	vec4 p = mix(p0, p1, v);
 	p += normal * Height;
 
 	gl_Position = PVM * p;

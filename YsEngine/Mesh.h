@@ -1,11 +1,11 @@
 #pragma once
-
-#include "CommonValues.h"
+#include <string>
 
 #include <GL\glew.h>
 #include <glm/glm.hpp>
 
-#include <string>
+#include "CommonValues.h"
+#include "Vertex.h"
 
 class Mesh
 {
