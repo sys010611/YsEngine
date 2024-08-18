@@ -43,19 +43,19 @@ void Mesh::CreateMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& 
 
 	// tangent
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Tangent)));
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
 	// bitangent
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, Bitangent)));
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(4);
 
 	// ids
 	glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
-	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(5);
 
 	// weights
 	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
-	glEnableVertexAttribArray(4);
+	glEnableVertexAttribArray(6);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
