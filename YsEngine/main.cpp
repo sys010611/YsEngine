@@ -67,7 +67,6 @@ Animator* animator;
 
 Animation* idleAnim;
 Animation* runAnim;
-Animation* danceAnim;
 
 DirectionalLight* directionalLight;
 
@@ -154,7 +153,7 @@ int main()
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "devola_-_nier_automata/Idle.fbx";
+	std::string modelPath = "devola_-_nier_automata/Rigged.fbx";
 	mainModel->LoadModel(modelPath);
 	entityList.push_back(mainModel);
 	currModel = mainModel;
@@ -169,9 +168,10 @@ int main()
 
 	// Animation
 	idleAnim = new Animation("Animations/Idle.fbx", currModel);
+	runAnim = new Animation("Animations/Slow Run.fbx", currModel);
 
 	// Animator
-	animator = new Animator(nullptr);
+	animator = new Animator(idleAnim);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -275,6 +275,12 @@ int main()
 			glUniform1i(loc_normalSampler, 1);
 
 			mainModel->RenderModel();
+
+			GLenum error = glGetError();
+			if (error != GL_NO_ERROR)
+			{
+				std::cout << "error : " << error << std::endl;
+			}
 		}
 		glUseProgram(0);
 
