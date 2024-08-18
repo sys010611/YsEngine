@@ -22,6 +22,7 @@ ScenePanel::ScenePanel(FrameBuffer* fb, CameraBase* cam, Window* win) :
 
 	width = -1;
 	height = -1;
+	isPlayMode = false;
 }
 
 void ScenePanel::Update()
@@ -45,7 +46,7 @@ void ScenePanel::Update()
 		ImVec2(1, 0)
 	);
 
-	if(selectedEntity)
+	if(selectedEntity && !isPlayMode)
 		DrawGizmo(pos);
 
 	HandleInput();
@@ -56,21 +57,18 @@ void ScenePanel::HandleInput()
 {
 	if (ImGui::IsWindowFocused())
 	{
-		PlayerCamera* pc = dynamic_cast<PlayerCamera*>(camera);
-		if (pc)
-			pc->SetCanMove(true);
+		if (isPlayMode)
+			camera->SetCanMove(true);
 
 		if (ImGui::IsKeyDown(ImGuiKey_MouseRight))
 		{
-			FreeCamera* fc = dynamic_cast<FreeCamera*>(camera);
-			if(fc)
-				fc->SetCanMove(true);
+			if(!isPlayMode)
+				camera->SetCanMove(true);
 		}
 		else
 		{
-			FreeCamera* fc = dynamic_cast<FreeCamera*>(camera);
-			if (fc)
-				fc->SetCanMove(false);
+			if (!isPlayMode)
+				camera->SetCanMove(false);
 
 			if (ImGui::IsKeyPressed(ImGuiKey_W))
 				currOperation = ImGuizmo::TRANSLATE;

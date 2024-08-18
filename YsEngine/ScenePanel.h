@@ -18,6 +18,8 @@ public:
 	virtual void Update() override;
 	void HandleInput();
 	void SetEntity(Entity* e);
+	void SetCamera(CameraBase* cam) { camera = cam; }
+	void SetIsPlayMode(bool flag) { isPlayMode = flag; }
 
 	GLfloat GetWidth() { return width; }
 	GLfloat GetHeight() { return height; }
@@ -35,5 +37,7 @@ private:
 	int currOperation;
 
 	GLfloat width, height;
+
+	bool isPlayMode;
 };
 

@@ -7,6 +7,8 @@
 
 class FrameBuffer;
 
+extern void TogglePlayMode();
+
 class Window
 {
 public:

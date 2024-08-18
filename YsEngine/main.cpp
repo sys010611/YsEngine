@@ -80,6 +80,8 @@ Terrain* terrain;
 ScenePanel* scenePanel;
 HierarchyPanel* hierarchyPanel;
 
+bool isPlayMode;
+
 // 쉐이더 변수 핸들
 GLuint loc_modelMat = 0;
 GLuint loc_PVM = 0;
@@ -93,6 +95,7 @@ void CreateShader();
 void GetShaderHandles();
 glm::mat3 GetNormalMat(glm::mat4& modelMat);
 void MoveCamera();
+void TogglePlayMode();
 
 int main()
 {
@@ -103,6 +106,8 @@ int main()
         glfwTerminate();
         return 1;
     }
+
+	isPlayMode = false;
 
     mainWindow = new Window(WIDTH, HEIGHT);
     mainWindow->Initialize();
@@ -149,7 +154,7 @@ int main()
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "devola_-_nier_automata/untitled.fbx";
+	std::string modelPath = "devola_-_nier_automata/Idle.fbx";
 	mainModel->LoadModel(modelPath);
 	entityList.push_back(mainModel);
 	currModel = mainModel;
@@ -158,15 +163,15 @@ int main()
 	player = new Player(mainModel);
 
 	// Camera
-	freeCamera = new FreeCamera(glm::vec3(0.f, 12.f, 5.f), 10.f, 0.3f);
+	freeCamera = new FreeCamera(glm::vec3(0.f, 0.f, 5.f), 10.f, 0.3f);
 	playerCamera = new PlayerCamera(player);
-	currCamera = playerCamera;
+	currCamera = freeCamera;
 
 	// Animation
-	//idleAnim = new Animation("Models/devola_-_nier_automata/Idle.fbx", currModel);
+	idleAnim = new Animation("Animations/Idle.fbx", currModel);
 
 	// Animator
-	//animator = new Animator(nullptr);
+	animator = new Animator(nullptr);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -205,12 +210,13 @@ int main()
 			MoveCamera();
 		currCamera->Update();
 
-		player->HandleInput(mainWindow->GetKeys(), deltaTime);
+		if (isPlayMode)
+		{
+			player->HandleInput(mainWindow->GetKeys(), deltaTime);
+			player->Move(deltaTime, terrain);
+		}
 
-		player->HandleInput(mainWindow->GetKeys(), deltaTime);
-		player->Move(deltaTime, terrain);
-
-		//animator->UpdateAnimation(deltaTime);
+		animator->UpdateAnimation(deltaTime);
 		// ----------------------------------------
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -262,8 +268,8 @@ int main()
 
 			shaderList[0]->UseMaterial(mainModel->GetMaterial());
 
-			//const auto& transforms = animator->GetFinalBoneMatrices();
-			//shaderList[0]->UseFinalBoneMatrices(transforms);
+			const auto& transforms = animator->GetFinalBoneMatrices();
+			shaderList[0]->UseFinalBoneMatrices(transforms);
 
 			glUniform1i(loc_diffuseSampler, 0);
 			glUniform1i(loc_normalSampler, 1);
@@ -329,4 +335,19 @@ void MoveCamera()
 	currCamera->KeyControl(mainWindow->GetKeys(), deltaTime);
 	currCamera->MouseControl(mainWindow->getXChange(), mainWindow->getYChange());
 	currCamera->ScrollControl(mainWindow->GetScrollYChange());
+}
+
+void TogglePlayMode()
+{
+	// 카메라 변경
+	if(currCamera == freeCamera)
+		currCamera = playerCamera;
+	else if (currCamera == playerCamera)
+		currCamera = freeCamera;
+
+	scenePanel->SetCamera(currCamera);
+
+	// 플래그 변경
+	isPlayMode = !isPlayMode;
+	scenePanel->SetIsPlayMode(isPlayMode);
 }

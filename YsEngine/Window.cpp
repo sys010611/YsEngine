@@ -131,6 +131,10 @@ void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int m
 	{
 		myWindow->ToggleWireframeMode();
 	}
+	if (key == GLFW_KEY_F5 && action == GLFW_PRESS)
+	{
+		TogglePlayMode();
+	}
 }
 
 void Window::handleMouseButton(GLFWwindow* window, int button, int action, int mods)

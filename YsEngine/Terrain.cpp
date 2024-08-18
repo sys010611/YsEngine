@@ -15,7 +15,7 @@
 Terrain::Terrain()
 {
     heightScale = 64.f;
-    heightShift = 0.f;
+    heightShift = -30.f;
 }
 
 void Terrain::LoadTerrain(const char* fileLoc)
@@ -169,7 +169,7 @@ void Terrain::ShowProperties()
     
     ImGui::Text("Height");
     ImGui::SliderFloat("HeightScale", &heightScale, 0.f, 100.f);
-    ImGui::SliderFloat("HeightShift", &heightShift, -30.f, 30.f);
+    ImGui::SliderFloat("HeightShift", &heightShift, -100.f, 100.f);
 }
 
 glm::mat4 Terrain::GetModelMat()
@@ -210,7 +210,7 @@ GLfloat Terrain::GetHeight(float worldX, float worldZ)
     float h1 = glm::mix(h10, h11, xCoord);
     float h = glm::mix(h0, h1, zCoord);
 
-    return h * heightScale - heightShift;
+    return h * heightScale + heightShift;
 }
 
 Terrain::~Terrain()

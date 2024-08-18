@@ -19,7 +19,7 @@
 
 Model::Model()
 {
-	translate = glm::vec3(0.f, 10.f, 0.f);
+	translate = glm::vec3(0.f, 0.f, 0.f);
 	rotate = glm::vec3(-90.f, 0.f, 0.f);
 	scale = glm::vec3(1.f, 1.f, 1.f);
 
@@ -276,11 +276,12 @@ void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 {
 	// normal map이
-	if (material->GetTextureCount(aiTextureType_NORMALS))
-	{
+	if (material->GetTextureCount(aiTextureType_NORMALS) || material->GetTextureCount(aiTextureType_HEIGHT))
+	{	
 		aiString texturePath;
 		// 텍스쳐 경로를 가져오는 데 성공했다면
-		if (material->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == aiReturn_SUCCESS)
+		if (material->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == aiReturn_SUCCESS || 
+			material->GetTexture(aiTextureType_HEIGHT, 0, &texturePath) == aiReturn_SUCCESS)
 		{
 			// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
 			int idx = std::string(texturePath.data).rfind("/");
