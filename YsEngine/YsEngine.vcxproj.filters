@@ -292,8 +292,5 @@
     <None Include="Shaders\terrainTE.glsl">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\normalGeo.glsl">
-      <Filter>Shader</Filter>
-    </None>
   </ItemGroup>
 </Project>

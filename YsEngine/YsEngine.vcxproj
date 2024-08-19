@@ -223,7 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fragment.glsl" />
-    <None Include="Shaders\normalGeo.glsl" />
     <None Include="Shaders\skyFragment.glsl" />
     <None Include="Shaders\skyVertex.glsl" />
     <None Include="Shaders\terrainFragment.glsl" />

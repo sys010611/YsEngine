@@ -335,9 +335,6 @@ void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* 
 		int boneID = -1;
 
 		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
-		//size_t pos = boneName.find(':');
-		//if (pos != std::string::npos)
-		//	boneName = boneName.substr(pos + 1);
 		
 		if (boneInfoMap.find(boneName) == boneInfoMap.end())
 		{

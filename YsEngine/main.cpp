@@ -153,7 +153,7 @@ int main()
 
 	// Model
 	mainModel = new Model();
-	std::string modelPath = "devola_-_nier_automata/Rigged.fbx";
+	std::string modelPath = "devola_-_nier_automata/Rigged.gltf";
 	mainModel->LoadModel(modelPath);
 	entityList.push_back(mainModel);
 	currModel = mainModel;
@@ -167,11 +167,11 @@ int main()
 	currCamera = freeCamera;
 
 	// Animation
-	idleAnim = new Animation("Animations/Idle.fbx", currModel);
-	runAnim = new Animation("Animations/Slow Run.fbx", currModel);
+	idleAnim = new Animation("Animations/Idle.gltf", currModel);
+	runAnim = new Animation("Animations/SlowRun.gltf", currModel);
 
 	// Animator
-	animator = new Animator(idleAnim);
+	animator = new Animator(nullptr);
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();

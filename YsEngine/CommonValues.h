@@ -9,7 +9,7 @@
 #include <glm\gtc\type_ptr.hpp>
 
 const int MAX_POINT_LIGHTS = 3;
-const int MAX_BONE_COUNT = 100;
+const int MAX_BONE_COUNT = 120;
 
 struct BoneInfo
 {
