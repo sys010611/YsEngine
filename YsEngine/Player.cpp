@@ -36,7 +36,7 @@ void Player::HandleInput(bool* keys, float deltaTime)
 		Jump();
 }
 
-void Player::Move(float deltaTime, Terrain* terrain)
+bool Player::Move(float deltaTime, Terrain* terrain)
 {
 	// 회전
 	GLfloat* currRot = model->GetRotate();
@@ -73,6 +73,8 @@ void Player::Move(float deltaTime, Terrain* terrain)
 	}
 
 	model->SetTranslate(newPos);
+
+	return currMoveSpeed != 0;
 }
 
 float Player::GetRotY()

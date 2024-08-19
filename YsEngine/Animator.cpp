@@ -69,3 +69,10 @@ std::vector<glm::mat4> Animator::GetFinalBoneMatrices()
 {
 	return finalBoneMatrices;
 }
+
+void Animator::Reset()
+{
+	currentAnimation = nullptr;
+	currentTime = 0.f;
+	fill(finalBoneMatrices.begin(), finalBoneMatrices.end(), glm::mat4(1.f));
+}

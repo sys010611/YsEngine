@@ -9,7 +9,7 @@ class Player
 public:
 	Player(Model* model);
 	void HandleInput(bool* keys, float deltaTime);
-	void Move(float deltaTime, Terrain* terrain);
+	bool Move(float deltaTime, Terrain* terrain);
 	float GetRotY();
 	
 	Model* GetModel() { return model; }

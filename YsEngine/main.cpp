@@ -213,7 +213,16 @@ int main()
 		if (isPlayMode)
 		{
 			player->HandleInput(mainWindow->GetKeys(), deltaTime);
-			player->Move(deltaTime, terrain);
+			if (player->Move(deltaTime, terrain))
+			{
+				if(animator->GetCurrAnimation() != runAnim)
+					animator->PlayAnimation(runAnim);
+			}
+			else
+			{
+				if (animator->GetCurrAnimation() != idleAnim)
+					animator->PlayAnimation(idleAnim);
+			}
 		}
 
 		animator->UpdateAnimation(deltaTime);
@@ -345,15 +354,31 @@ void MoveCamera()
 
 void TogglePlayMode()
 {
-	// 카메라 변경
-	if(currCamera == freeCamera)
-		currCamera = playerCamera;
-	else if (currCamera == playerCamera)
-		currCamera = freeCamera;
-
-	scenePanel->SetCamera(currCamera);
 
 	// 플래그 변경
 	isPlayMode = !isPlayMode;
+
+	// 카메라 변경
+	if(isPlayMode)
+		currCamera = playerCamera;
+	else
+	{
+		GLfloat* mp = mainModel->GetTranslate();
+		freeCamera->SetPosition(glm::vec3(mp[0], mp[1], mp[2]));
+		currCamera = freeCamera;
+	}
+	scenePanel->SetCamera(currCamera);
+
 	scenePanel->SetIsPlayMode(isPlayMode);
+
+	if (isPlayMode)
+	{
+		animator->PlayAnimation(idleAnim);
+		mainModel->SetRotate(glm::vec3(0.f, 0.f, 0.f));
+	}
+	else
+	{
+		animator->Reset();
+		mainModel->SetRotate(glm::vec3(-90.f, 0.f, 0.f));
+	}
 }

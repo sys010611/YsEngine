@@ -14,6 +14,7 @@ public:
 	virtual void KeyControl(bool* keys, GLfloat deltaTime) override;
 	virtual void MouseControl(GLfloat xChange, GLfloat yChange) override;
 	virtual void ScrollControl(GLfloat scrollY) override;
+	void SetPosition(glm::vec3 pos) { position = pos; }
 
 	~FreeCamera();
 
