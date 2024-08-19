@@ -24,6 +24,7 @@ uniform mat3 normalMat;
 void main()
 {
 	vec4 totalPosition = vec4(0.f);
+	mat4 BoneTransform = mat4(0.f);
 	for(int i = 0; i < MAX_BONE_INFLUENCE; i++)
 	{
 		if(boneIds[i] == -1)
@@ -35,18 +36,19 @@ void main()
 		}
 		vec4 localPosition = finalBonesMatrices[boneIds[i]] * vec4(pos, 1.f);
 		totalPosition += localPosition * weights[i];
-		vec3 localNormal = mat3(finalBonesMatrices[boneIds[i]]) * normal;
+		
+		BoneTransform += finalBonesMatrices[boneIds[i]] * weights[i];
 	}
+	mat3 normalMatrix = transpose(inverse(mat3(BoneTransform))) * normalMat; // 애니메이션에 의한 회전까지 고려
 
 	gl_Position = PVM * totalPosition;
 
 	FragPos = (modelMat * totalPosition).xyz; 
 	TexCoord = tex;
-	FragNormal = normalMat * normal;
 
-	vec3 T = normalize(normalMat * tangent);
-	vec3 B = normalize(normalMat * bitangent);
-	vec3 N = normalize(normalMat * normal);
+	vec3 T = normalize(normalMatrix * tangent);
+	vec3 B = normalize(normalMatrix * bitangent);
+	vec3 N = normalize(normalMatrix * normal);
 
 	TBN = mat3(T, B, N);
 }
