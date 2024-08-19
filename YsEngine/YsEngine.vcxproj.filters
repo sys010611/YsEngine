@@ -268,28 +268,28 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragment.glsl">
+    <None Include="Shaders\Shader.frag">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\vertex.glsl">
+    <None Include="Shaders\Shader.vert">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\skyFragment.glsl">
+    <None Include="Shaders\Skybox.frag">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\skyVertex.glsl">
+    <None Include="Shaders\Skybox.vert">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\terrainVertex.glsl">
+    <None Include="Shaders\Terrain.vert">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\terrainFragment.glsl">
+    <None Include="Shaders\Terrain.frag">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\terrainTC.glsl">
+    <None Include="Shaders\Terrain.tesc">
       <Filter>Shader</Filter>
     </None>
-    <None Include="Shaders\terrainTE.glsl">
+    <None Include="Shaders\Terrain.tese">
       <Filter>Shader</Filter>
     </None>
   </ItemGroup>

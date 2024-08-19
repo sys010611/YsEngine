@@ -222,14 +222,14 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fragment.glsl" />
-    <None Include="Shaders\skyFragment.glsl" />
-    <None Include="Shaders\skyVertex.glsl" />
-    <None Include="Shaders\terrainFragment.glsl" />
-    <None Include="Shaders\terrainTC.glsl" />
-    <None Include="Shaders\terrainTE.glsl" />
-    <None Include="Shaders\terrainVertex.glsl" />
-    <None Include="Shaders\vertex.glsl" />
+    <None Include="Shaders\Shader.frag" />
+    <None Include="Shaders\Skybox.frag" />
+    <None Include="Shaders\Skybox.vert" />
+    <None Include="Shaders\Terrain.frag" />
+    <None Include="Shaders\Terrain.tesc" />
+    <None Include="Shaders\Terrain.tese" />
+    <None Include="Shaders\Terrain.vert" />
+    <None Include="Shaders\Shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

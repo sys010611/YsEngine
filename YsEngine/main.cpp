@@ -51,9 +51,9 @@ GLfloat deltaTime = 0.f;
 GLfloat lastTime = 0.f;
 
 // Vertex Shader
-static const char* vShaderPath = "Shaders/vertex.glsl";
+static const char* vShaderPath = "Shaders/Shader.vert";
 // Fragment Shader
-static const char* fShaderPath = "Shaders/fragment.glsl";
+static const char* fShaderPath = "Shaders/Shader.frag";
 
 std::vector<Shader*> shaderList;
 std::vector<Entity*> entityList;

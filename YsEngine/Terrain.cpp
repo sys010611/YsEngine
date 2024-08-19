@@ -22,8 +22,8 @@ void Terrain::LoadTerrain(const char* fileLoc)
 {
     // shader setup
     terrainShader = new Shader();
-    terrainShader->CreateFromFiles("Shaders/terrainVertex.glsl", "Shaders/terrainFragment.glsl", nullptr,
-                                "Shaders/terrainTC.glsl", "Shaders/terrainTE.glsl");
+    terrainShader->CreateFromFiles("Shaders/Terrain.vert", "Shaders/Terrain.frag", nullptr,
+                                "Shaders/Terrain.tesc", "Shaders/Terrain.tese");
     // -------------------------------------------------------------------------
     // height map 로드
     heightMap = new Texture(fileLoc);

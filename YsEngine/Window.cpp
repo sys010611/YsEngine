@@ -44,7 +44,7 @@ int Window::Initialize()
 
 
 	// Create the window
-	mainWindow = glfwCreateWindow(width, height, "YS Engine", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "YS Engine (F5 : Play Mode) (F10 : Wireframe)", NULL, NULL);
 	if (!mainWindow)
 	{
 		printf("Error creating GLFW window!");
