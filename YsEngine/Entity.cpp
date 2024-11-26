@@ -7,3 +7,7 @@ Entity::Entity()
 	id = counter;
 	counter++;
 }
+
+Entity::~Entity()
+{
+}

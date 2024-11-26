@@ -23,6 +23,7 @@ public:
 	glm::mat4 GetProjectionMatrix(GLfloat width, GLfloat height);
 	glm::vec3 GetPosition();
 
+	virtual ~CameraBase();
 
 protected:
 	glm::vec3 position;

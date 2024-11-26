@@ -18,6 +18,8 @@ public:
 
 	uint32_t GetID() { return this->id; }
 
+	virtual ~Entity();
+
 	static uint32_t counter;
 
 protected:

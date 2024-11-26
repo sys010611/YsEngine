@@ -27,6 +27,10 @@ glm::vec3 CameraBase::GetPosition()
 	return position;
 }
 
+CameraBase::~CameraBase()
+{
+}
+
 void CameraBase::Update()
 {
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
