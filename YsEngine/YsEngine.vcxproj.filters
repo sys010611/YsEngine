@@ -292,5 +292,11 @@
     <None Include="Shaders\Terrain.tese">
       <Filter>Shader</Filter>
     </None>
+    <None Include="Shaders\PointLight.frag">
+      <Filter>Shader</Filter>
+    </None>
+    <None Include="Shaders\PointLight.vert">
+      <Filter>Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>

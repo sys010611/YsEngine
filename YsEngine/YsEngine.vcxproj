@@ -222,6 +222,8 @@
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\PointLight.frag" />
+    <None Include="Shaders\PointLight.vert" />
     <None Include="Shaders\Shader.frag" />
     <None Include="Shaders\Skybox.frag" />
     <None Include="Shaders\Skybox.vert" />

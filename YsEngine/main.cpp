@@ -55,7 +55,9 @@ static const char* vShaderPath = "Shaders/Shader.vert";
 // Fragment Shader
 static const char* fShaderPath = "Shaders/Shader.frag";
 
-std::vector<Shader*> shaderList;
+//std::vector<Shader*> shaderList;
+Shader* modelShader;
+Shader* pointLightShader;
 std::vector<Entity*> entityList;
 
 Model* mainModel;
@@ -91,7 +93,7 @@ GLuint loc_eyePos = 0;
 GLuint loc_finalBonesMatrices = 0;
 
 void CreateShader();
-void GetShaderHandles();
+void GetModelShaderHandles();
 glm::mat3 GetNormalMat(glm::mat4& modelMat);
 void MoveCamera();
 void TogglePlayMode();
@@ -123,16 +125,17 @@ int main()
 	// Point Light
 	pointLights[0] = new PointLight
 		(0.f, 0.5f,
-		glm::vec4(1.f, 1.f, 1.f, 1.f),
-		glm::vec3(0.f, 1.5f, 0.2f),
+		glm::vec4(1.f, 0.f, 0.f, 1.f),
+		glm::vec3(2.f, 1.5f, 0.2f),
 		1.0f, 0.22f, 0.20f);
 	pointLightCount++;
 	pointLights[1] = new PointLight
 		(0.0f, 0.5f,
-		glm::vec4(1.f, 1.f, 1.f, 1.f),
+		glm::vec4(0.f, 1.f, 0.f, 1.f),
 		glm::vec3(-2.0f, 2.0f, -1.f),
 		1.0, 0.045f, 0.0075f);
 	pointLightCount++;
+
 	for(int i=0;i<pointLightCount;i++)
 		entityList.push_back(pointLights[i]);
 
@@ -258,9 +261,13 @@ int main()
 		terrain->GetShader()->UseEyePos(camPos);
 		terrain->DrawTerrain(viewMat, projMat);
 
-		shaderList[0]->UseShader();
+		pointLightShader->UseShader();
+		for (int i = 0; i < pointLightCount; i++)
+			pointLights[i]->DrawPointLight(viewMat, projMat, pointLightShader);
+
+		modelShader->UseShader();
 		{
-			GetShaderHandles();
+			GetModelShaderHandles();
 
 			Model* currModel = mainModel;
 
@@ -271,14 +278,14 @@ int main()
 			glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
 			glUniformMatrix3fv(loc_normalMat, 1, GL_FALSE, glm::value_ptr(normalMat));
 
-			shaderList[0]->UseEyePos(camPos);
-			shaderList[0]->UseDirectionalLight(directionalLight);
-			shaderList[0]->UsePointLights(pointLights, pointLightCount);
-
-			shaderList[0]->UseMaterial(mainModel->GetMaterial());
+			modelShader->UseEyePos(camPos);
+			modelShader->UseDirectionalLight(directionalLight);
+			modelShader->UsePointLights(pointLights, pointLightCount);
+			
+			modelShader->UseMaterial(mainModel->GetMaterial());
 
 			const auto& transforms = animator->GetFinalBoneMatrices();
-			shaderList[0]->UseFinalBoneMatrices(transforms);
+			modelShader->UseFinalBoneMatrices(transforms);
 
 			glUniform1i(loc_diffuseSampler, 0);
 			glUniform1i(loc_normalSampler, 1);
@@ -287,10 +294,9 @@ int main()
 
 			GLenum error = glGetError();
 			if (error != GL_NO_ERROR)
-			{
 				std::cout << "error : " << error << std::endl;
-			}
 		}
+
 		glUseProgram(0);
 
 		// --------------------------------------------------------------------------------
@@ -323,21 +329,25 @@ int main()
 
 void CreateShader()
 {
-	Shader* shader = new Shader;
-	shader->CreateFromFiles(vShaderPath, fShaderPath);
-	shaderList.push_back(shader);
+	// shader setup
+
+	modelShader = new Shader;
+	modelShader->CreateFromFiles(vShaderPath, fShaderPath);
+
+	pointLightShader = new Shader();
+	pointLightShader->CreateFromFiles("Shaders/PointLight.vert", "Shaders/PointLight.frag");
 }
 
-void GetShaderHandles()
+void GetModelShaderHandles()
 {
 	// 핸들 얻어오기
-	loc_modelMat = shaderList[0]->GetModelMatLoc();
-	loc_PVM = shaderList[0]->GetPVMLoc();
-	loc_normalMat = shaderList[0]->GetNormalMatLoc();
-	loc_eyePos = shaderList[0]->GetEyePosLoc();
-	loc_finalBonesMatrices = shaderList[0]->GetFinalBonesMatricesLoc();
-	loc_diffuseSampler = shaderList[0]->GetColorSamplerLoc();
-	loc_normalSampler = shaderList[0]->GetNormalSamplerLoc();
+	loc_modelMat = modelShader->GetModelMatLoc();
+	loc_PVM = modelShader->GetPVMLoc();
+	loc_normalMat = modelShader->GetNormalMatLoc();
+	loc_eyePos = modelShader->GetEyePosLoc();
+	loc_finalBonesMatrices = modelShader->GetFinalBonesMatricesLoc();
+	loc_diffuseSampler = modelShader->GetColorSamplerLoc();
+	loc_normalSampler = modelShader->GetNormalSamplerLoc();
 }
 
 glm::mat3 GetNormalMat(glm::mat4& modelMat)

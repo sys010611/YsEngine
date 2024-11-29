@@ -11,8 +11,10 @@ struct Vertex
 	Vertex(float px, float py, float pz)
 	{
 		Position.x = px; Position.y = py; Position.z = pz;
-		TexCoords.s = 0.f; TexCoords.t = 0.f;
-		Normal.x = 0.f; Normal.y = 0.f; Normal.z = 0.f;
+		TexCoords = glm::vec2(0.f, 0.f);
+		Normal = glm::vec3(0.f, 0.f, 0.f);
+		Tangent = glm::vec3(0.f, 0.f, 0.f);
+		Bitangent = glm::vec3(0.f, 0.f, 0.f);
 	}
 
 	glm::vec3 Position;
