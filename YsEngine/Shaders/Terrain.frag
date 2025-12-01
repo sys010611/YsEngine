@@ -82,7 +82,7 @@ void main()
 {
     vec4 texColor = texture(diffuseSampler, TexCoord_local);
 
-	// 인접한 텍셀 4개를 쭉 긁어와서 normal 계산
+	// 隣接する4つのテクセルをまとめて取得して法線を計算
 	float left  = texture(heightSampler, TexCoord_global + vec2(-texelSize.x, 0.0)).r * HEIGHT_SCALE * 2.0 - 1.0;
 	float right = texture(heightSampler, TexCoord_global + vec2( texelSize.x, 0.0)).r * HEIGHT_SCALE * 2.0 - 1.0;
 	float up    = texture(heightSampler, TexCoord_global + vec2(0.0,  texelSize.y)).r * HEIGHT_SCALE * 2.0 - 1.0;

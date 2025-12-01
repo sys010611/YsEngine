@@ -33,13 +33,13 @@ int Window::Initialize()
 		return 1;
 	}
 
-	// GLFW 윈도우 속성 셋업
-	// OpenGL 버전
+	// GLFWウィンドウプロパティの設定
+	// OpenGL バージョン
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6); // 버전 4.6
-	// Core profile = 이전 버전 호환성 없음
+	// Core profile = 以前のバージョンとの互換性なし
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	// 앞으로의 호환성을 허용
+	// 将来の互換性を許可
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 
@@ -186,9 +186,9 @@ void Window::SetSceneBuffer(FrameBuffer* sceneBuffer)
 }
 
 void Window::ToggleWireframeMode()
-{	
+{
 	isWireframe = !isWireframe;
-	if(isWireframe)
+	if (isWireframe)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

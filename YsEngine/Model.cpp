@@ -52,7 +52,7 @@ void Model::ShowProperties()
 
 void Model::LoadModel(const std::string& fileName)
 {
-	// 모델 이름 추출
+	// モデル名を抽出
 	int firstSlashIdx = fileName.find('/', 0);
 	modelName = fileName.substr(0, firstSlashIdx);
 
@@ -77,12 +77,12 @@ void Model::RenderModel()
 	std::vector<std::pair<Mesh*, unsigned int>> solidMeshList;
 	std::vector<std::pair<Mesh*, unsigned int>> transparentMeshList;
 
-	// LoadMesh 함수에서 채워놓은 meshList를 순회하며 메시들을 분류한다.
+	// LoadMesh 関数で埋めておいた meshList を走査してメッシュを分類する。
 	for (size_t i = 0; i < meshList.size(); i++)
 	{
 		unsigned int materialIndex = meshToTex[i];
 
-		// 메시 분류
+		// メッシュ分類
 		if (meshList[i]->GetName().find("Hair") != std::string::npos ||
 			meshList[i]->GetName().find("facial_serious10") != std::string::npos ||
 			meshList[i]->GetName().find("facial_normal9") != std::string::npos)
@@ -91,7 +91,7 @@ void Model::RenderModel()
 			solidMeshList.push_back({ meshList[i], materialIndex });
 	}
 
-	// 불투명 메시 렌더링
+	// 不透明メッシュのレンダリング
 	for (auto& item : solidMeshList)
 	{
 		int materialIndex = item.second;
@@ -100,12 +100,12 @@ void Model::RenderModel()
 		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
 			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
 		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
-		    normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
+			normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
 
 		mesh->RenderMesh();
 	}
 
-	// 투명 메시 렌더링
+	// 透明メッシュのレンダリング
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -117,7 +117,7 @@ void Model::RenderModel()
 		if (materialIndex < diffuseMaps.size() && diffuseMaps[materialIndex])
 			diffuseMaps[materialIndex]->UseTexture(GL_TEXTURE0);
 		if (materialIndex < normalMaps.size() && normalMaps[materialIndex])
-		    normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
+			normalMaps[materialIndex]->UseTexture(GL_TEXTURE1);
 
 		mesh->RenderMesh();
 	}
@@ -153,25 +153,25 @@ void Model::LoadNode(aiNode* node, const aiScene* scene)
 {
 	for (size_t i = 0; i < node->mNumMeshes; i++)
 	{
-		// node->mMeshes[i] : 메시 자체가 아니고, 메시의 ID를 의미한다.
-		// 실제 메시는 scene에 저장되어있기 때문에 이렇게 참조하게 된다.
+		// node->mMeshes[i] はメッシュ自体ではなく、メッシュの ID を意味する。
+		// 実際のメッシュは scene に保存されているため、このように参照する。
 		LoadMesh(scene->mMeshes[node->mMeshes[i]], scene);
 	}
 
-	// 자식 노드들을 재귀호출을 통해 순회하며 메시를 쭉 로드한다.
+	// 子ノードを再帰呼び出しで巡回しながらメッシュを順にロードする。
 	for (size_t i = 0; i < node->mNumChildren; i++)
 	{
 		LoadNode(node->mChildren[i], scene);
 	}
 }
 
-// VBO, IBO에 담을 정보들을 구성한 뒤 쏴준다.
+// VBO と IBO に入れる情報を構成してから送る。
 void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 {
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-	// vertices 채워주기
+	// vertices を埋める
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		Vertex vertex;
@@ -188,9 +188,9 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 			vec.y = (mesh->mTextureCoords[0][i].y);
 			vertex.TexCoords = vec;
 		}
-		else // 존재하지 않을 경우 그냥 0을 넣어주기
+		else // 存在しない場合はそのまま 0 を入れる
 		{
-			vertex.TexCoords = glm::vec2(0.f,0.f);
+			vertex.TexCoords = glm::vec2(0.f, 0.f);
 		}
 
 		// normal 
@@ -203,7 +203,7 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 		vertices.push_back(vertex);
 	}
 
-	// indices 채워주기
+	// indices を埋める
 	for (size_t i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
@@ -216,11 +216,11 @@ void Model::LoadMesh(aiMesh* mesh, const aiScene* scene)
 	ExtractBoneWeightForVertices(vertices, mesh, scene);
 
 	Mesh* newMesh = new Mesh();
-	newMesh->CreateMesh(vertices, indices, mesh->mName.C_Str()); // GPU의 VBO, IBO로 버텍스 정보를 쏴준다.
+	newMesh->CreateMesh(vertices, indices, mesh->mName.C_Str()); // GPU の VBO と IBO に頂点情報を送る。
 	meshList.push_back(newMesh);
 
-	// meshList에 mesh를 채워줌과 동시에, meshToTex에는 그 mesh의 materialIndex를 채워준다.
-	// 이렇게 meshList와 meshToTex를 나란히 채워줌으로써 mesh와 맞는 material을 손쉽게 찾을 수 있다.
+	// meshList に mesh を追加すると同時に、meshToTex にはその mesh の materialIndex を入れる。
+	// このように meshList と meshToTex を並行して埋めることで、mesh に対応する material を簡単に見つけられる。
 	meshToTex.push_back(mesh->mMaterialIndex);
 }
 
@@ -244,14 +244,14 @@ void Model::LoadMaterials(const aiScene* scene)
 
 void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 {
-	// Diffuse 텍스쳐가 존재하는 지 먼저 확인
+	// Diffuse テクスチャが存在するか先に確認する
 	if (material->GetTextureCount(aiTextureType_DIFFUSE))
 	{
 		aiString texturePath;
-		// 텍스쳐 경로를 가져오는 데 성공했다면
+		// テクスチャパスの取得に成功した場合
 		if (material->GetTexture(aiTextureType_DIFFUSE, 0, &texturePath) == aiReturn_SUCCESS)
 		{
-			// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
+			// テクスチャパスが絶対パスになっている場合の処理
 			int idx = std::string(texturePath.data).rfind("/");
 			std::string textureName = std::string(texturePath.data).substr(idx + 1);
 			idx = std::string(textureName).rfind("\\");
@@ -262,9 +262,9 @@ void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 			diffuseMaps[i] = new Texture(texPath.c_str());
 			std::cout << "Loading Diffuse : " << texPath << std::endl;
 
-			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
+			// テクスチャをディスクからメモリにロードし、GPU に送る。
 			if (!diffuseMaps[i]->LoadTexture(4))
-			{ // 실패 시
+			{ // 失敗時
 				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete diffuseMaps[i];
 				diffuseMaps[i] = nullptr;
@@ -275,15 +275,15 @@ void Model::LoadDiffuseMaps(aiMaterial* material, const size_t& i)
 
 void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 {
-	// normal map이
+	// normal map が存在するかどうか
 	if (material->GetTextureCount(aiTextureType_NORMALS) || material->GetTextureCount(aiTextureType_HEIGHT))
-	{	
+	{
 		aiString texturePath;
-		// 텍스쳐 경로를 가져오는 데 성공했다면
-		if (material->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == aiReturn_SUCCESS || 
+		// テクスチャパスの取得に成功した場合
+		if (material->GetTexture(aiTextureType_NORMALS, 0, &texturePath) == aiReturn_SUCCESS ||
 			material->GetTexture(aiTextureType_HEIGHT, 0, &texturePath) == aiReturn_SUCCESS)
 		{
-			// 혹시나 텍스쳐 경로가 절대 경로로 되어있다면 그에 대한 처리
+			// テクスチャパスが絶対パスになっている場合の処理
 			int idx = std::string(texturePath.data).rfind("/");
 			std::string textureName = std::string(texturePath.data).substr(idx + 1);
 			idx = std::string(textureName).rfind("\\");
@@ -294,9 +294,9 @@ void Model::LoadNormalMaps(aiMaterial* material, const size_t& i)
 			normalMaps[i] = new Texture(texPath.c_str());
 			std::cout << "Loading Normal : " << texPath << std::endl;
 
-			// 텍스쳐를 디스크에서 메모리로 로드, GPU로 쏴준다.
+			// テクスチャをディスクからメモリにロードし、GPU に送る。
 			if (!normalMaps[i]->LoadTexture(3))
-			{ // 실패 시
+			{ // 失敗時
 				std::cout << "Failed to load texture : " << texPath << std::endl;
 				delete normalMaps[i];
 				normalMaps[i] = nullptr;
@@ -320,7 +320,7 @@ void Model::SetVertexBoneData(Vertex& vertex, int boneID, float weight)
 	{
 		if (vertex.m_BoneIDs[i] < 0)
 		{
-			// 하나만 채우고 도망가기
+			// 一つだけ埋めて抜ける
 			vertex.m_Weights[i] = weight;
 			vertex.m_BoneIDs[i] = boneID;
 			break;
@@ -335,14 +335,14 @@ void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* 
 		int boneID = -1;
 
 		std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
-		
+
 		if (boneInfoMap.find(boneName) == boneInfoMap.end())
 		{
 			BoneInfo boneInfo;
 			boneInfo.id = boneCounter;
 			auto offsetMat = mesh->mBones[boneIndex]->mOffsetMatrix;
 			boneInfo.offset = AssimpGLMHelpers::ConvertMatrixToGLMFormat(
-					mesh->mBones[boneIndex]->mOffsetMatrix
+				mesh->mBones[boneIndex]->mOffsetMatrix
 			);
 
 			boneInfoMap[boneName] = boneInfo;
@@ -369,7 +369,7 @@ void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* 
 
 glm::mat4 Model::GetModelMat()
 {
-	// model Matrix 구성
+	// model 行列を構成する
 	glm::mat4 T = glm::translate(glm::mat4(1.f), glm::vec3(translate[0], translate[1], translate[2]));
 	glm::mat4 R = glm::mat4_cast(glm::quat(glm::vec3(glm::radians(rotate[0]), glm::radians(rotate[1]), glm::radians(rotate[2]))));
 	glm::mat4 S = glm::scale(glm::mat4(1.f), glm::vec3(scale[0], scale[1], scale[2]));

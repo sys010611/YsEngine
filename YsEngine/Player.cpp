@@ -38,13 +38,13 @@ void Player::HandleInput(bool* keys, float deltaTime)
 
 bool Player::Move(float deltaTime, Terrain* terrain)
 {
-	// 회전
+	// 回転
 	GLfloat* currRot = model->GetRotate();
 
 	float rotation = currTurnSpeed * deltaTime;
 
 	float newRotY = currRot[1] + rotation; // new rotY
-	if(newRotY > 180)
+	if (newRotY > 180)
 		newRotY -= 360.f;
 	if (newRotY < -180.f)
 		newRotY += 360.f;
@@ -62,10 +62,10 @@ bool Player::Move(float deltaTime, Terrain* terrain)
 
 	upwardSpeed -= GRAVITY * deltaTime;
 
-	glm::vec3 newPos(currPos[0]+dx, currPos[1] + upwardSpeed, currPos[2]+dz);
+	glm::vec3 newPos(currPos[0] + dx, currPos[1] + upwardSpeed, currPos[2] + dz);
 
 	groundHeight = terrain->GetHeight(currPos[0], currPos[2]);
-	if (newPos[1] <= groundHeight) // 땅에 닿았다면
+	if (newPos[1] <= groundHeight) // 地面に着いたなら
 	{
 		upwardSpeed = 0;
 		newPos[1] = groundHeight;
@@ -84,9 +84,9 @@ float Player::GetRotY()
 
 void Player::Jump()
 {
-	if(isJumping)
+	if (isJumping)
 		return;
-	
+
 	upwardSpeed = JUMP_POWER;
 	isJumping = true;
 }

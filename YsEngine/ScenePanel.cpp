@@ -37,7 +37,7 @@ void ScenePanel::Update()
 	width = window_width;
 	height = window_height;
 
-	// 프레임버퍼 텍스처를 ImGui 윈도우에 렌더링
+	// フレームバッファテクスチャを ImGui ウィンドウにレンダリング
 	ImGui::GetWindowDrawList()->AddImage(
 		(void*)(intptr_t)sceneBuffer->getFrameTexture(),
 		ImVec2(pos.x, pos.y),

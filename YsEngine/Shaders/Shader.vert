@@ -12,7 +12,7 @@ const int MAX_BONES = 120;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
 
-out vec3 FragPos; // 월드 좌표계
+out vec3 FragPos; // ワールド座標系
 out vec2 TexCoord;
 out vec3 FragNormal;
 out mat3 TBN;
@@ -39,7 +39,7 @@ void main()
 		
 		BoneTransform += finalBonesMatrices[boneIds[i]] * weights[i];
 	}
-	mat3 normalMatrix = transpose(inverse(mat3(BoneTransform))) * normalMat; // 애니메이션에 의한 회전까지 고려
+	mat3 normalMatrix = transpose(inverse(mat3(BoneTransform))) * normalMat; // アニメーションによる回転まで考慮
 
 	gl_Position = PVM * totalPosition;
 

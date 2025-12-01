@@ -83,7 +83,7 @@ HierarchyPanel* hierarchyPanel;
 
 bool isPlayMode;
 
-// 쉐이더 변수 핸들
+// シェーダー変数ハンドル
 GLuint loc_modelMat = 0;
 GLuint loc_PVM = 0;
 GLuint loc_diffuseSampler = 0;
@@ -100,43 +100,43 @@ void TogglePlayMode();
 
 int main()
 {
-    // GLFW 초기화
-    if (!glfwInit())
-    {
-        printf("GLFW 초기화 실패\n");
-        glfwTerminate();
-        return 1;
-    }
+	// GLFW 初期化
+	if (!glfwInit())
+	{
+		printf("GLFW 초기화 실패\n");
+		glfwTerminate();
+		return 1;
+	}
 
 	isPlayMode = false;
 
-    mainWindow = new Window(WIDTH, HEIGHT);
-    mainWindow->Initialize();
+	mainWindow = new Window(WIDTH, HEIGHT);
+	mainWindow->Initialize();
 
 	CreateShader();
 
 	// Directional Light
 	directionalLight = new DirectionalLight
-		(0.5f, 1.f,
-		glm::vec4(1.f, 1.f, 1.f, 1.f), 
+	(0.5f, 1.f,
+		glm::vec4(1.f, 1.f, 1.f, 1.f),
 		glm::vec3(0.f, 1.f, 1.f));
 	entityList.push_back(directionalLight);
 
 	// Point Light
 	pointLights[0] = new PointLight
-		(0.f, 0.5f,
+	(0.f, 0.5f,
 		glm::vec4(1.f, 0.f, 0.f, 1.f),
 		glm::vec3(2.f, 1.5f, 0.2f),
 		1.0f, 0.22f, 0.20f);
 	pointLightCount++;
 	pointLights[1] = new PointLight
-		(0.0f, 0.5f,
+	(0.0f, 0.5f,
 		glm::vec4(0.f, 1.f, 0.f, 1.f),
 		glm::vec3(-2.0f, 2.0f, -1.f),
 		1.0, 0.045f, 0.0075f);
 	pointLightCount++;
 
-	for(int i=0;i<pointLightCount;i++)
+	for (int i = 0; i < pointLightCount; i++)
 		entityList.push_back(pointLights[i]);
 
 	// Skybox
@@ -189,17 +189,17 @@ int main()
 	ImGui_ImplGlfw_InitForOpenGL(mainWindow->GetGLFWwindow(), true); // Second param install_callback=true will install GLFW callbacks and chain to existing ones. 
 	ImGui_ImplOpenGL3_Init();
 
-	// Frame Buffer 생성
+	// フレームバッファ生成
 	FrameBuffer sceneBuffer(mainWindow->getBufferWidth(), mainWindow->getBufferHeight());
 	mainWindow->SetSceneBuffer(&sceneBuffer);
 
-	// Panel 생성
+	// パネル生成
 	scenePanel = new ScenePanel(&sceneBuffer, currCamera, mainWindow);
 	hierarchyPanel = new HierarchyPanel(entityList, scenePanel);
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// main loop
-    //////////////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////
+	/// main loop
+	//////////////////////////////////////////////////////////////////////////
 	while (!mainWindow->GetShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -218,7 +218,7 @@ int main()
 			player->HandleInput(mainWindow->GetKeys(), deltaTime);
 			if (player->Move(deltaTime, terrain))
 			{
-				if(animator->GetCurrAnimation() != runAnim)
+				if (animator->GetCurrAnimation() != runAnim)
 					animator->PlayAnimation(runAnim);
 			}
 			else
@@ -281,7 +281,7 @@ int main()
 			modelShader->UseEyePos(camPos);
 			modelShader->UseDirectionalLight(directionalLight);
 			modelShader->UsePointLights(pointLights, pointLightCount);
-			
+
 			modelShader->UseMaterial(mainModel->GetMaterial());
 
 			const auto& transforms = animator->GetFinalBoneMatrices();
@@ -324,7 +324,7 @@ int main()
 		mainWindow->swapBuffers();
 	}
 
-    return 0;
+	return 0;
 }
 
 void CreateShader()
@@ -340,7 +340,7 @@ void CreateShader()
 
 void GetModelShaderHandles()
 {
-	// 핸들 얻어오기
+	// ハンドル取得
 	loc_modelMat = modelShader->GetModelMatLoc();
 	loc_PVM = modelShader->GetPVMLoc();
 	loc_normalMat = modelShader->GetNormalMatLoc();
@@ -365,11 +365,11 @@ void MoveCamera()
 void TogglePlayMode()
 {
 
-	// 플래그 변경
+	// フラグ変更
 	isPlayMode = !isPlayMode;
 
-	// 카메라 변경
-	if(isPlayMode)
+	// カメラ変更
+	if (isPlayMode)
 		currCamera = playerCamera;
 	else
 	{

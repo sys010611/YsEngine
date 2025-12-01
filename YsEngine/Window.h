@@ -50,7 +50,7 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	bool mouseButton[8];
-	bool mouseRightButtonClicked; // 마우스 오른쪽 버튼이 클릭되었는지
+	bool mouseRightButtonClicked; // マウスの右ボタンがクリックされているかどうか
 	
 	bool isWireframe;
 

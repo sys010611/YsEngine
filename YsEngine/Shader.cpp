@@ -117,7 +117,7 @@ void Shader::CompileShader(const char* vertexCode, const char* fragmentCode,
 		return;
 	}
 
-	// 쉐이더 컴파일 성공, 쉐이더 내부 변수들 위치 가져오기
+	// シェーダーのコンパイルに成功、シェーダー内部の変数の位置を取得
 	GetVariableLocations();
 }
 

@@ -19,7 +19,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
 	int width, height, bitDepth;
-	// skybox의 6면에 각각 이미지를 쏴준다.
+	// skybox の6面それぞれに画像を読み込む
 	for (size_t i = 0; i < 6; i++)
 	{
 		unsigned char* texData = stbi_load(faceLocations[i].c_str(), &width, &height, &bitDepth, 0);
@@ -38,7 +38,7 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
+
 	// mesh setup
 	std::vector<unsigned int> skyboxIndices = {
 		// front
@@ -62,15 +62,15 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 	};
 
 	std::vector<Vertex> skyboxVertices = {
-		Vertex(-1.0f, 1.0f, -1.0f) ,	
+		Vertex(-1.0f, 1.0f, -1.0f) ,
 		Vertex(-1.0f, -1.0f, -1.0f),
-		Vertex(1.0f, 1.0f, -1.0f),		
-		Vertex(1.0f, -1.0f, -1.0f),	
+		Vertex(1.0f, 1.0f, -1.0f),
+		Vertex(1.0f, -1.0f, -1.0f),
 
-		Vertex(-1.0f, 1.0f, 1.0f),	
-		Vertex(1.0f, 1.0f, 1.0f),		
-		Vertex(-1.0f, -1.0f, 1.0f),		
-		Vertex(1.0f, -1.0f, 1.0f),	
+		Vertex(-1.0f, 1.0f, 1.0f),
+		Vertex(1.0f, 1.0f, 1.0f),
+		Vertex(-1.0f, -1.0f, 1.0f),
+		Vertex(1.0f, -1.0f, 1.0f),
 	};
 
 	skyMesh = new Mesh();
@@ -79,15 +79,15 @@ Skybox::Skybox(std::vector<std::string> faceLocations)
 
 void Skybox::DrawSkybox(glm::mat4 viewMat, glm::mat4 projMat)
 {
-	// viewMat에서 translate 부분을 도려낸다.
+	// viewMat から平行移動成分を取り除く
 	viewMat = glm::mat4(glm::mat3(viewMat));
 
-	// skybox는 depth mask 비활성화
+	// skybox は depth mask を無効化
 	glDepthMask(GL_FALSE);
 
 	skyShader->UseShader();
 
-	glm::mat4 PVM = projMat * viewMat; // modelMat은 사용하지 않음
+	glm::mat4 PVM = projMat * viewMat; // modelMat は使用しない
 	glUniformMatrix4fv(loc_PVM, 1, GL_FALSE, glm::value_ptr(PVM));
 
 	glActiveTexture(GL_TEXTURE0);
