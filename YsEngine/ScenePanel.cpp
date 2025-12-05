@@ -30,6 +30,11 @@ void ScenePanel::Update()
 	// Render ImGui
 	ImGui::Begin("Viewport", NULL);
 
+	if (ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows))
+	{
+		ImGui::SetWindowFocus();
+	}
+
 	ImVec2 pos = ImGui::GetCursorScreenPos();
 	const float window_width = ImGui::GetContentRegionAvail().x;
 	const float window_height = ImGui::GetContentRegionAvail().y;
